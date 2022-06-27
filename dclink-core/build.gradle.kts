@@ -12,6 +12,10 @@ repositories {
 
 dependencies {
     implementation(project(":dclink-api"))
+    implementation("net.kyori","adventure-api","4.11.0")
+    implementation("cloud.commandframework","cloud-core","1.7.0")
+    implementation("cloud.commandframework","cloud-annotations","1.7.0")
+
     implementation("org.spongepowered","configurate-yaml","4.0.0")
     implementation("net.dv8tion","JDA","5.0.0-alpha.12") {
         exclude(module= "opus-java")

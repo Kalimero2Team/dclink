@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.kalimero2.team.dclink.quilt.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface DCLinkApi {
 
-    static DCLinkApi getInstance() {
+    static DCLinkApi getApi() {
         return DCLinkApiHolder.getApi();
     }
 
