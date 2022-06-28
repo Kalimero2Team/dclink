@@ -2,6 +2,7 @@ package com.kalimero2.team.dclink.paper;
 
 import com.kalimero2.team.dclink.DCLink;
 
+import java.io.File;
 import java.util.UUID;
 
 
@@ -34,5 +35,10 @@ public class PaperDCLink extends DCLink {
             return plugin.getServer().getOfflinePlayer(uuid).getName();
         }
         return null;
+    }
+
+    @Override
+    public String getConfigPath() {
+        return new File(plugin.getDataFolder(), "dclink.conf").getAbsolutePath();
     }
 }
