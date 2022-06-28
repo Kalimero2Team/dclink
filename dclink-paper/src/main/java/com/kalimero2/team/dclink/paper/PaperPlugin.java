@@ -9,8 +9,8 @@ public class PaperPlugin extends JavaPlugin {
     @Override
     public void onLoad() {
         if(paperDCLink == null){
-            paperDCLink = new PaperDCLink();
-            paperDCLink.load();
+            paperDCLink = new PaperDCLink(this);
+            paperDCLink.init();
         }else {
             throw new IllegalStateException("DCLink Already initialized");
         }
@@ -18,11 +18,11 @@ public class PaperPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        paperDCLink.enable();
+        paperDCLink.load();
     }
 
     @Override
     public void onDisable() {
-        paperDCLink.disable();
+        paperDCLink.shutdown();
     }
 }

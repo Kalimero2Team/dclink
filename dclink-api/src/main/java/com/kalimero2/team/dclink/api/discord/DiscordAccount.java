@@ -45,6 +45,7 @@ public interface DiscordAccount {
      * Get the Minecraft Players linked to the account.
      *
      * @return The Minecraft Players linked to the account.
+     * @see com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer
      */
     Collection<MinecraftPlayer> getLinkedPlayers();
 }

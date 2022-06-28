@@ -1,5 +1,7 @@
 package com.kalimero2.team.dclink.api.minecraft;
 
+import com.kalimero2.team.dclink.api.discord.DiscordAccount;
+
 import java.util.UUID;
 
 public interface MinecraftPlayer {
@@ -24,5 +26,14 @@ public interface MinecraftPlayer {
      * @return true if the player is linked to a Discord account.
      */
     boolean isLinked();
+
+    /**
+     * Get the linked Discord Account. Returns null if there isn't any account linked
+     *
+     * @return Discord Account if present. Null if there isn't any account linked.
+     *
+     * @see com.kalimero2.team.dclink.api.discord.DiscordAccount
+     */
+    DiscordAccount getDiscordAccount();
 
 }
