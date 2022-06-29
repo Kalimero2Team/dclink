@@ -23,7 +23,7 @@ public interface DCLinkApi {
      *
      * @return DiscordAccount with the given ID.
      */
-    DiscordAccount getDiscordMember(String id);
+    DiscordAccount getDiscordAccount(String id);
 
     boolean linkAccounts(MinecraftPlayer minecraftPlayer, DiscordAccount discordAccount);
 

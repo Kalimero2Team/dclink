@@ -3,16 +3,20 @@ package com.kalimero2.team.dclink;
 import com.kalimero2.team.dclink.api.DCLinkApi;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.ConfigurateException;
 
+import java.io.File;
+import java.sql.SQLException;
 import java.util.UUID;
 
 public abstract class DCLink implements DCLinkApi {
 
     private final Logger logger = LoggerFactory.getLogger("dclink");
     private DCLinkConfig dcLinkConfig;
+    private Storage storage;
     private boolean initialised = false;
     private boolean loaded = false;
 
@@ -23,7 +27,13 @@ public abstract class DCLink implements DCLinkApi {
             }catch (ConfigurateException e){
                 logger.error("Failed to load config", e);
             }
-            // TODO: Connect to Database
+            logger.info("Loaded config");
+            if(dcLinkConfig.databaseConfiguration != null){
+                storage = new Storage(this, new File(getDataFolder(), dcLinkConfig.databaseConfiguration.getSqliteFile()));
+            }else {
+                logger.error("No database configuration found");
+            }
+            logger.info("Loaded storage");
             // TODO: Init Bot
             initialised = true;
         }
@@ -34,30 +44,47 @@ public abstract class DCLink implements DCLinkApi {
         if(!loaded && initialised){
             // TODO: Enable Bot Listener
             loaded = true;
+
+            MinecraftPlayer minecraftPlayer = getMinecraftPlayer(UUID.fromString("fed832f1-7c49-43af-8a54-5741d14d4e5b"));
+            DiscordAccount discordAccount = getDiscordAccount("303949887244992512");
+            linkAccounts(minecraftPlayer, discordAccount);
+            logger.info(minecraftPlayer.getDiscordAccount().getId());
+            logger.info(minecraftPlayer.getDiscordAccount().getLinkedPlayers().stream().toList().get(0).getName());
         }
     }
 
     public void shutdown(){
         if(loaded && initialised){
-            // TODO: Shutdown Bot
-            // TODO: Close Database connections
             loaded = false;
+            // TODO: Shutdown Bot
+            storage.close();
+            logger.info("Shutdown complete");
         }
     }
 
     @Override
     public MinecraftPlayer getMinecraftPlayer(UUID uuid) {
-        return null;
+        try {
+            return storage.getMinecraftPlayer(uuid);
+        } catch (SQLException e) {
+            logger.error("Error while getting MinecraftPlayer", e);
+            return null;
+        }
     }
 
     @Override
-    public DiscordAccount getDiscordMember(String id) {
-        return null;
+    public DiscordAccount getDiscordAccount(String id) {
+        try {
+            return storage.getDiscordAccount(id);
+        } catch (SQLException e) {
+            logger.error("Error while getting DiscordAccount", e);
+            return null;
+        }
     }
 
     @Override
     public boolean linkAccounts(MinecraftPlayer minecraftPlayer, DiscordAccount discordAccount) {
-        return false;
+        return storage.linkAccounts(minecraftPlayer, discordAccount);
     }
 
     public Logger getLogger() {
@@ -77,4 +104,5 @@ public abstract class DCLink implements DCLinkApi {
     public abstract String getUsername(UUID uuid);
 
     public abstract String getConfigPath();
+    public abstract File getDataFolder();
 }

@@ -45,22 +45,31 @@ public class DCLinkConfig {
 
     @ConfigSerializable
     static class DatabaseConfiguration{
+        @Comment("The Sqlite database filename")
+        private String sqliteFile = "dclink.db";
+
+        public String getSqliteFile() {
+            return sqliteFile;
+        }
+
+        /* Future Options when multiple database types are supported
         @Comment("The JDBC URL to use for the database (e.g. jdbc:mysql://localhost:3306/dclink)")
         private String jdbcUrl = "";
         @Comment("The username to use for the database (Can be left blank if the database (type) isn't requiring authentication)")
-        private String user = "";
+        private String username = "";
         @Comment("The password to use for the database (Can be left blank if the database (type) isn't requiring authentication)")
         private String password = "";
 
         public String getJdbcUrl() {
             return jdbcUrl;
         }
-        public String getUser() {
-            return user;
+        public String getUserName() {
+            return username;
         }
         public String getPassword() {
             return password;
         }
+        */
     }
 
     @ConfigSerializable
@@ -73,6 +82,8 @@ public class DCLinkConfig {
         private String linkChannel = "";
         @Comment("Category ID of the category where the bot will create the link channels")
         private String linkCategory = "";
+        @Comment("Message to show on the bot's status")
+        private String statusMessage = "Minecraft";
 
         public String getToken() {
             return token;
@@ -85,6 +96,9 @@ public class DCLinkConfig {
         }
         public String getLinkCategory() {
             return linkCategory;
+        }
+        public String getStatusMessage() {
+            return statusMessage;
         }
     }
 

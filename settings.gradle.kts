@@ -8,7 +8,7 @@ pluginManagement {
 }
 
 rootProject.name = "dclink"
-include("dclink-paper")
 include("dclink-api")
 include("dclink-core")
 include("dclink-quilt")
+include("dclink-paper")

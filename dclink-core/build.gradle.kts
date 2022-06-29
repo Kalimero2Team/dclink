@@ -20,5 +20,5 @@ dependencies {
     implementation("net.dv8tion","JDA","5.0.0-alpha.12") {
         exclude(module= "opus-java")
     }
-    implementation("org.knowm","yank", "3.4.0")
+    implementation("org.xerial","sqlite-jdbc","3.36.0.3")
 }

@@ -55,4 +55,9 @@ public class QuiltDCLink extends DCLink {
     public String getConfigPath() {
         return new File(QuiltLoader.getConfigDir().toFile(),"dclink.conf").getAbsolutePath();
     }
+
+    @Override
+    public File getDataFolder() {
+        return QuiltLoader.getConfigDir().toFile();
+    }
 }

@@ -41,4 +41,9 @@ public class PaperDCLink extends DCLink {
     public String getConfigPath() {
         return new File(plugin.getDataFolder(), "dclink.conf").getAbsolutePath();
     }
+
+    @Override
+    public File getDataFolder() {
+        return plugin.getDataFolder();
+    }
 }

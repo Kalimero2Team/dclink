@@ -6,7 +6,7 @@ import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 
 import java.util.UUID;
 
-public class MinecraftPlayerImpl implements MinecraftPlayer {
+public abstract class MinecraftPlayerImpl implements MinecraftPlayer {
 
     private final DCLink dcLink;
     private final UUID uuid;
@@ -28,11 +28,7 @@ public class MinecraftPlayerImpl implements MinecraftPlayer {
 
     @Override
     public boolean isLinked() {
-        return false;
+        return (getDiscordAccount() != null);
     }
 
-    @Override
-    public DiscordAccount getDiscordAccount() {
-        return null;
-    }
 }

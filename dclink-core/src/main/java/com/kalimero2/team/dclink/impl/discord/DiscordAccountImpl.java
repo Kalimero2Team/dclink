@@ -1,12 +1,21 @@
 package com.kalimero2.team.dclink.impl.discord;
 
+import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.discord.DiscordRole;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 
 import java.util.Collection;
 
-public class DiscordAccountImpl implements DiscordAccount {
+public abstract class DiscordAccountImpl implements DiscordAccount {
+
+    private final DCLink dcLink;
+    private final String discordId;
+
+    public DiscordAccountImpl(DCLink dcLink, String discordId) {
+        this.dcLink = dcLink;
+        this.discordId = discordId;
+    }
+
     @Override
     public String getName() {
         //TODO: Discord API get Name (and cache it)
@@ -21,8 +30,7 @@ public class DiscordAccountImpl implements DiscordAccount {
 
     @Override
     public String getId() {
-        //TODO: ID used to find Account in Database (and use on Discord)
-        return null;
+        return this.discordId;
     }
 
     @Override
@@ -37,9 +45,4 @@ public class DiscordAccountImpl implements DiscordAccount {
         return false;
     }
 
-    @Override
-    public Collection<MinecraftPlayer> getLinkedPlayers() {
-        //TODO: Get Linked Account from Database
-        return null;
-    }
 }
