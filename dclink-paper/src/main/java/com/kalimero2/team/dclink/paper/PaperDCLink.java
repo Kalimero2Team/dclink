@@ -38,8 +38,18 @@ public class PaperDCLink extends DCLink {
     }
 
     @Override
-    public String getConfigPath() {
-        return new File(plugin.getDataFolder(), "dclink.conf").getAbsolutePath();
+    protected String getConfigPath() {
+        return new File(getDataFolder(), "dclink.conf").getAbsolutePath();
+    }
+
+    @Override
+    protected String getMessagesFile() {
+        return new File(getDataFolder(), "messages.conf").getAbsolutePath();
+    }
+
+    @Override
+    protected void shutdownServer() {
+        plugin.getServer().shutdown();
     }
 
     @Override

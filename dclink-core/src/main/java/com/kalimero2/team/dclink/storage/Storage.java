@@ -158,5 +158,24 @@ public class Storage {
         return false;
     }
 
+    public void unLinkAccounts(DiscordAccount discordAccount) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("UPDATE MINECRAFT_ACCOUNTS SET DISCORD_ID = NULL WHERE DISCORD_ID = '" + discordAccount.getId() + "';");
+            statement.close();
+        } catch (SQLException e) {
+            dcLink.getLogger().error("Error while unlinking accounts", e);
+        }
+    }
+
+    public void unLinkAccount(MinecraftPlayer minecraftPlayer) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("UPDATE MINECRAFT_ACCOUNTS SET DISCORD_ID = NULL WHERE UUID = '" + minecraftPlayer.getUuid().toString() + "';");
+            statement.close();
+        } catch (SQLException e) {
+            dcLink.getLogger().error("Error while unlinking account", e);
+        }
+    }
 
 }

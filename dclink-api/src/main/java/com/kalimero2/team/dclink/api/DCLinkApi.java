@@ -27,4 +27,8 @@ public interface DCLinkApi {
 
     boolean linkAccounts(MinecraftPlayer minecraftPlayer, DiscordAccount discordAccount);
 
+    void unLinkAccounts(DiscordAccount discordAccount);
+
+    void unLinkAccount(MinecraftPlayer minecraftPlayer);
+
 }
