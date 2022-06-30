@@ -5,6 +5,7 @@ import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.discord.DiscordRole;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public abstract class DiscordAccountImpl implements DiscordAccount {
 
@@ -45,4 +46,23 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
         return false;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DiscordAccountImpl that = (DiscordAccountImpl) o;
+        return Objects.equals(discordId, that.discordId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(discordId);
+    }
+
+    @Override
+    public String toString() {
+        return "DiscordAccountImpl{" +
+                "discordId='" + discordId + '\'' +
+                '}';
+    }
 }

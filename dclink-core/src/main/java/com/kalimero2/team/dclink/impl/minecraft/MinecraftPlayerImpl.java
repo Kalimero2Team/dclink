@@ -4,6 +4,7 @@ import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class MinecraftPlayerImpl implements MinecraftPlayer {
@@ -31,4 +32,23 @@ public abstract class MinecraftPlayerImpl implements MinecraftPlayer {
         return (getDiscordAccount() != null);
     }
 
+    @Override
+    public String toString() {
+        return "MinecraftPlayerImpl{" +
+                "uuid=" + uuid +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MinecraftPlayerImpl that = (MinecraftPlayerImpl) o;
+        return Objects.equals(uuid, that.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
+    }
 }

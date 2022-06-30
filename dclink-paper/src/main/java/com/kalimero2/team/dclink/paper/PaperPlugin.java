@@ -19,6 +19,7 @@ public class PaperPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         paperDCLink.load();
+        getServer().getPluginManager().registerEvents(new PaperDCLinkListener(paperDCLink), this);
     }
 
     @Override

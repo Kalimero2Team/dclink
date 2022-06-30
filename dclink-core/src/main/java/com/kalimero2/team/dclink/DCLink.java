@@ -4,6 +4,7 @@ import com.kalimero2.team.dclink.api.DCLinkApi;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import com.kalimero2.team.dclink.storage.Storage;
+import net.kyori.adventure.text.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.ConfigurateException;
@@ -44,7 +45,6 @@ public abstract class DCLink implements DCLinkApi {
         if(!loaded && initialised){
             // TODO: Enable Bot Listener
             loaded = true;
-
             MinecraftPlayer minecraftPlayer = getMinecraftPlayer(UUID.fromString("fed832f1-7c49-43af-8a54-5741d14d4e5b"));
             DiscordAccount discordAccount = getDiscordAccount("303949887244992512");
             linkAccounts(minecraftPlayer, discordAccount);
@@ -101,8 +101,32 @@ public abstract class DCLink implements DCLinkApi {
         return loaded;
     }
 
-    public abstract String getUsername(UUID uuid);
+    public boolean isBedrock(MinecraftPlayer minecraftPlayer){
+        return isBedrock(minecraftPlayer.getUuid());
+    }
+    public boolean isBedrock(UUID uuid){
+        try {
+            Class.forName("org.geysermc.floodgate.api.FloodgateApi");
+            return org.geysermc.floodgate.api.FloodgateApi.getInstance().isFloodgateId(uuid);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 
+    public JoinResult onLogin(MinecraftPlayer minecraftPlayer){
+        return JoinResult.failure(Component.text(DCLinkCodes.addPlayer(minecraftPlayer)));
+    }
+
+    public record JoinResult(Component message, boolean success) {
+        public static JoinResult success(Component message) {
+            return new JoinResult(message, true);
+        }
+        public static JoinResult failure(Component message) {
+            return new JoinResult(message, false);
+        }
+    }
+
+    public abstract String getUsername(UUID uuid);
     public abstract String getConfigPath();
     public abstract File getDataFolder();
 }

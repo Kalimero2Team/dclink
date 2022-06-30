@@ -1,5 +1,6 @@
 package com.kalimero2.team.dclink;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationOptions;
@@ -15,6 +16,7 @@ public class DCLinkConfig {
     private final CommentedConfigurationNode node;
     public final DatabaseConfiguration databaseConfiguration;
     public final DiscordConfiguration discordConfiguration;
+    public final LinkingConfiguration linkingConfiguration;
 
 
     public DCLinkConfig(String configPath) throws ConfigurateException {
@@ -31,6 +33,7 @@ public class DCLinkConfig {
 
         databaseConfiguration = node.node("database").get(DatabaseConfiguration.class);
         discordConfiguration = node.node("discord").get(DiscordConfiguration.class);
+        linkingConfiguration = node.node("linking").get(LinkingConfiguration.class);
 
         if(!config.exists()){
             save();
@@ -40,11 +43,12 @@ public class DCLinkConfig {
     public void save() throws ConfigurateException {
         node.node("database").set(DatabaseConfiguration.class, databaseConfiguration);
         node.node("discord").set(DiscordConfiguration.class, discordConfiguration);
+        node.node("linking").set(LinkingConfiguration.class, linkingConfiguration);
         loader.save(node);
     }
 
     @ConfigSerializable
-    static class DatabaseConfiguration{
+    public static class DatabaseConfiguration{
         @Comment("The Sqlite database filename")
         private String sqliteFile = "dclink.db";
 
@@ -73,7 +77,7 @@ public class DCLinkConfig {
     }
 
     @ConfigSerializable
-    static class DiscordConfiguration{
+    public static class DiscordConfiguration{
         @Comment("Bot Token (see https://discord.com/developers/applications)")
         private String token = "";
         @Comment("Guild ID of the Guild where the bot will run")
@@ -82,6 +86,8 @@ public class DCLinkConfig {
         private String linkChannel = "";
         @Comment("Category ID of the category where the bot will create the link channels")
         private String linkCategory = "";
+        @Comment("Role ID of the role that the bot will give to the linked players (If left blank, the bot will not give any roles)")
+        private @Nullable String linkRole = "";
         @Comment("Message to show on the bot's status")
         private String statusMessage = "Minecraft";
 
@@ -97,8 +103,31 @@ public class DCLinkConfig {
         public String getLinkCategory() {
             return linkCategory;
         }
+        public String getLinkRole() {
+            return linkRole;
+        }
         public String getStatusMessage() {
             return statusMessage;
+        }
+    }
+
+    @ConfigSerializable
+    public static class LinkingConfiguration{
+        @Comment("If true, the player needs to be linked before they can join the server")
+        private boolean linkRequired = true;
+        @Comment("Limit of Java Edition accounts that can be linked to one Discord account")
+        private int javaLimit = 1;
+        @Comment("Limit of Bedrock Edition accounts that can be linked to one Discord account. Requires Floodgate to be installed")
+        private int bedrockLimit = 1;
+
+        public boolean isLinkRequired() {
+            return linkRequired;
+        }
+        public int getJavaLimit() {
+            return javaLimit;
+        }
+        public int getBedrockLimit() {
+            return bedrockLimit;
         }
     }
 

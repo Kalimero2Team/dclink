@@ -9,6 +9,9 @@ version = "1.0.0-SNAPSHOT"
 repositories {
     mavenCentral()
     maven("https://maven.quiltmc.org/repository/release")
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+        name = "sonatype-oss-snapshots"
+    }
 }
 
 dependencies {
@@ -19,6 +22,7 @@ dependencies {
     })
     modImplementation("org.quiltmc:quilt-loader:0.17.1-beta.4")
     modImplementation("org.quiltmc.quilted-fabric-api:quilted-fabric-api:2.0.0-beta.1+0.56.3-1.19")
+    modImplementation("net.kyori:adventure-platform-fabric:5.4.0-SNAPSHOT")
 
     implementation(project(":dclink-core"))
     implementation(project(":dclink-api"))
