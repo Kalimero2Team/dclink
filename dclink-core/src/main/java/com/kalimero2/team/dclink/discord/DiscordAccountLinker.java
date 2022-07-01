@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class DiscordAccountLinker extends ListenerAdapter {
@@ -49,12 +50,12 @@ public class DiscordAccountLinker extends ListenerAdapter {
         this.messages = dcLink.getMessages().discordBotMessages;
         this.preLinkedPlayers = new HashMap<>();
 
-        Guild guild = jda.getGuildById(config.getGuild());
+        Guild guild = jda.getGuildById(config.guild);
         if (guild == null) {
-            logger.error("Could not find guild with id {}", config.getGuild());
+            logger.error("Could not find guild with id {}", config.guild);
             return;
         }
-        String linkRoleId = config.getLinkRole();
+        String linkRoleId = config.linkRole;
         if(linkRoleId == null){
             logger.info("No link role configured");
         }else{
@@ -72,9 +73,9 @@ public class DiscordAccountLinker extends ListenerAdapter {
     }
 
     private void sendLinkChannelMessage(){
-        TextChannel linkChannel = jda.getTextChannelById(config.getLinkChannel());
+        TextChannel linkChannel = jda.getTextChannelById(config.linkChannel);
         if(linkChannel == null){
-            logger.error("Could not find link channel with id {}", config.getLinkChannel());
+            logger.error("Could not find link channel with id {}", config.linkChannel);
             return;
         }
         boolean found = linkChannel.retrievePinnedMessages().complete().stream().anyMatch(message -> message.getAuthor().getId().equals(jda.getSelfUser().getId()));
@@ -87,14 +88,16 @@ public class DiscordAccountLinker extends ListenerAdapter {
     }
 
     private void deleteOldLinkChannels(){
-        jda.getGuilds().forEach(guild -> guild.getTextChannels().stream().filter(channel -> channel.getName().equals(linkChannelName)).forEach(channel -> channel.delete().queue()));
+        if(config.autoDeleteLinkChannelsOnRestart){
+            jda.getGuilds().forEach(guild -> guild.getTextChannels().stream().filter(channel -> channel.getName().equals(linkChannelName)).forEach(channel -> channel.delete().queue()));
+        }
     }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event){
         boolean isSelf = event.getAuthor().getId().equals(jda.getSelfUser().getId());
         // Deletes Pin Message
-        if(isSelf && event.getChannel().getId().equals(config.getLinkChannel()) && event.getMessage().getType().equals(MessageType.CHANNEL_PINNED_ADD)){
+        if(isSelf && event.getChannel().getId().equals(config.linkChannel) && event.getMessage().getType().equals(MessageType.CHANNEL_PINNED_ADD)){
             event.getMessage().delete().queue();
         }
         if(isSelf || event.getAuthor().isBot()){
@@ -104,7 +107,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
         if(event.getChannelType().equals(ChannelType.TEXT)){
             TextChannel channel = event.getTextChannel();
             Category parentCategory = channel.getParentCategory();
-            if(parentCategory != null && parentCategory.getId().equals(config.getLinkCategory())){
+            if(parentCategory != null && parentCategory.getId().equals(config.linkCategory)){
                 if(channel.getTopic() != null && channel.getTopic().equals(event.getAuthor().getId())){
                     String code = event.getMessage().getContentStripped();
                     MinecraftPlayer minecraftPlayer = DCLinkCodes.getPlayer(code);
@@ -123,8 +126,8 @@ public class DiscordAccountLinker extends ListenerAdapter {
                             }
                         }
 
-                        boolean overBedrockLimit = bedrock > dcLink.getConfig().linkingConfiguration.getBedrockLimit();
-                        boolean overJavaLimit = java > dcLink.getConfig().linkingConfiguration.getJavaLimit();
+                        boolean overBedrockLimit = bedrock > dcLink.getConfig().linkingConfiguration.bedrockLimit;
+                        boolean overJavaLimit = java > dcLink.getConfig().linkingConfiguration.javaLimit;
 
                         if(overBedrockLimit && dcLink.isBedrock(minecraftPlayer)) {
                             event.getMessage().reply(messages.maxBedrock).queue();
@@ -158,9 +161,9 @@ public class DiscordAccountLinker extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        Guild guild = jda.getGuildById(config.getGuild());
+        Guild guild = jda.getGuildById(config.guild);
         if (guild == null) {
-            logger.error("Could not find guild with id {}", config.getGuild());
+            logger.error("Could not find guild with id {}", config.guild);
             return;
         }
 
@@ -170,9 +173,8 @@ public class DiscordAccountLinker extends ListenerAdapter {
             if(optionalTextChannel.isPresent()){
                 textChannel = optionalTextChannel.get();
             }
-
             if(textChannel == null){
-                Category category = guild.getCategoryById(config.getLinkCategory());
+                Category category = guild.getCategoryById(config.linkCategory);
                 if(category != null){
                     EnumSet<Permission> allow = EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND);
                     textChannel = category.createTextChannel(linkChannelName).setTopic(event.getUser().getId()).addMemberPermissionOverride(event.getUser().getIdLong(), allow,null).complete();

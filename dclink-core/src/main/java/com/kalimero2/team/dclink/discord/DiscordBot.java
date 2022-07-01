@@ -21,14 +21,14 @@ public class DiscordBot {
     public DiscordBot(DCLink dcLink) throws LoginException, InterruptedException {
         this.dcLink = dcLink;
         this.discordConfiguration = dcLink.getConfig().discordConfiguration;
-        JDABuilder builder = JDABuilder.createDefault(discordConfiguration.getToken());
+        JDABuilder builder = JDABuilder.createDefault(discordConfiguration.token);
         builder.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE);
         builder.setBulkDeleteSplittingEnabled(false);
         builder.disableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_TYPING);
         builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS);
         builder.setLargeThreshold(50);
 
-        builder.setActivity(Activity.playing(discordConfiguration.getStatusMessage()));
+        builder.setActivity(Activity.playing(discordConfiguration.statusMessage));
 
         jda = builder.build();
 
@@ -36,7 +36,7 @@ public class DiscordBot {
 
     }
     public void loadFeatures(){
-        new BotCommands(dcLink, jda, discordConfiguration.getGuild());
+        new BotCommands(dcLink, jda, discordConfiguration.guild);
         new DiscordAccountLinker(dcLink, jda);
     }
 
@@ -44,7 +44,7 @@ public class DiscordBot {
         jda.shutdown();
     }
 
-
-
-
+    public JDA getJda() {
+        return jda;
+    }
 }

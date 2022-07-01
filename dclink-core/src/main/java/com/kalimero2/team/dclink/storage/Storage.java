@@ -91,6 +91,9 @@ public class Storage {
     }
 
     public DiscordAccount getDiscordAccount(String discordID) throws SQLException {
+        if(discordID == null || discordID.isEmpty() || discordID.equals("null")){
+            return null;
+        }
 
         List<MinecraftPlayer> linkedPlayers = new ArrayList<>();
 
@@ -125,13 +128,15 @@ public class Storage {
         MinecraftPlayerImpl minecraftPlayer = null;
         if(resultSet.next()){
             String discordID = resultSet.getString("DISCORD_ID");
-            DiscordAccount discordAccount = getDiscordAccount(discordID);
-            minecraftPlayer = new MinecraftPlayerImpl(dcLink, uuid) {
-                @Override
-                public DiscordAccount getDiscordAccount() {
-                    return discordAccount;
-                }
-            };
+            if(discordID != null){
+                DiscordAccount discordAccount = getDiscordAccount(discordID);
+                minecraftPlayer = new MinecraftPlayerImpl(dcLink, uuid) {
+                    @Override
+                    public DiscordAccount getDiscordAccount() {
+                        return discordAccount;
+                    }
+                };
+            }
         }
         if(minecraftPlayer == null){
             minecraftPlayer = new MinecraftPlayerImpl(dcLink, uuid) {

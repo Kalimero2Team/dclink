@@ -52,6 +52,14 @@ public class QuiltDCLink extends DCLink {
     }
 
     @Override
+    public UUID getUUID(String username) {
+        if(isLoaded()){
+            return server.getUserCache().findByName(username).get().getId();
+        }
+        return null;
+    }
+
+    @Override
     protected String getConfigPath() {
         return new File(getDataFolder(),"dclink.conf").getAbsolutePath();
     }

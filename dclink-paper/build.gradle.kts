@@ -18,11 +18,16 @@ repositories {
 
 dependencies {
     paperDevBundle("1.19-R0.1-SNAPSHOT")
-
+    implementation("cloud.commandframework","cloud-paper","1.7.0")
     implementation(project(":dclink-api"))
     implementation(project(":dclink-core"))
 }
 tasks {
+    shadowJar{
+        fun reloc(pkg: String) = relocate(pkg, "com.kalimero2.team.dclink.libs.cloud.dependency.$pkg")
+        reloc("cloud.commandframework")
+        reloc("io.leangen")
+    }
     assemble {
         dependsOn(reobfJar)
     }

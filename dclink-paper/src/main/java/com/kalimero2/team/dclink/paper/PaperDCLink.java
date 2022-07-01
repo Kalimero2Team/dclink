@@ -1,6 +1,13 @@
 package com.kalimero2.team.dclink.paper;
 
 import com.kalimero2.team.dclink.DCLink;
+import com.kalimero2.team.dclink.api.discord.DiscordAccount;
+import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+import net.minecraft.server.MinecraftServer;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.UUID;
@@ -12,6 +19,10 @@ public class PaperDCLink extends DCLink {
 
     public PaperDCLink(PaperPlugin plugin){
         this.plugin = plugin;
+    }
+
+    public PaperPlugin getPlugin() {
+        return plugin;
     }
 
     @Override
@@ -32,9 +43,20 @@ public class PaperDCLink extends DCLink {
     @Override
     public String getUsername(UUID uuid) {
         if(isLoaded()){
-            return plugin.getServer().getOfflinePlayer(uuid).getName();
+            String name = plugin.getServer().getOfflinePlayer(uuid).getName();
+            if(name == null){
+                MinecraftSessionService sessionService = MinecraftServer.getServer().getSessionService();
+                GameProfile gameProfile = sessionService.fillProfileProperties(new GameProfile(uuid, null), true);
+                return gameProfile.getName();
+            }
+            return name;
         }
         return null;
+    }
+
+    @Override
+    public UUID getUUID(String username) {
+        return plugin.getServer().getOfflinePlayer(username).getUniqueId();
     }
 
     @Override
@@ -50,6 +72,34 @@ public class PaperDCLink extends DCLink {
     @Override
     protected void shutdownServer() {
         plugin.getServer().shutdown();
+    }
+
+    @Override
+    public void unLinkAccount(MinecraftPlayer minecraftPlayer) {
+        kickUnlinked(minecraftPlayer);
+        super.unLinkAccount(minecraftPlayer);
+    }
+
+    @Override
+    public void unLinkAccounts(DiscordAccount discordAccount) {
+        discordAccount.getLinkedPlayers().forEach(this::kickUnlinked);
+        super.unLinkAccounts(discordAccount);
+    }
+
+    private void kickUnlinked(MinecraftPlayer minecraftPlayer) {
+        if (getConfig().linkingConfiguration != null && getConfig().linkingConfiguration.linkRequired) {
+            OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(minecraftPlayer.getUuid());
+            if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        if (getMessages().minecraftMessages != null) {
+                            offlinePlayer.getPlayer().kick(getMessages().getMinifiedMessage(getMessages().minecraftMessages.kickUnlinked));
+                        }
+                    }
+                }.runTask(plugin);
+            }
+        }
     }
 
     @Override

@@ -50,11 +50,8 @@ public class DCLinkConfig {
     @ConfigSerializable
     public static class DatabaseConfiguration{
         @Comment("The Sqlite database filename")
-        private String sqliteFile = "dclink.db";
+        public String sqliteFile = "dclink.db";
 
-        public String getSqliteFile() {
-            return sqliteFile;
-        }
 
         /* Future Options when multiple database types are supported
         @Comment("The JDBC URL to use for the database (e.g. jdbc:mysql://localhost:3306/dclink)")
@@ -77,58 +74,31 @@ public class DCLinkConfig {
     }
 
     @ConfigSerializable
-    public static class DiscordConfiguration{
+    public static class DiscordConfiguration {
         @Comment("Bot Token (see https://discord.com/developers/applications)")
-        private String token = "";
+        public String token = "";
         @Comment("Guild ID of the Guild where the bot will run")
-        private String guild = "";
+        public String guild = "";
         @Comment("Channel ID of the channel where the bot will send the message with the button to link their account")
-        private String linkChannel = "";
+        public String linkChannel = "";
         @Comment("Category ID of the category where the bot will create the link channels")
-        private String linkCategory = "";
+        public String linkCategory = "";
         @Comment("Role ID of the role that the bot will give to the linked players (If left blank, the bot will not give any roles)")
-        private @Nullable String linkRole = "";
+        public @Nullable String linkRole = "";
         @Comment("Message to show on the bot's status")
-        private String statusMessage = "Minecraft";
-
-        public String getToken() {
-            return token;
-        }
-        public String getGuild() {
-            return guild;
-        }
-        public String getLinkChannel() {
-            return linkChannel;
-        }
-        public String getLinkCategory() {
-            return linkCategory;
-        }
-        public String getLinkRole() {
-            return linkRole;
-        }
-        public String getStatusMessage() {
-            return statusMessage;
-        }
+        public String statusMessage = "Minecraft";
+        @Comment("Automatically delete link Channels when restarting the server")
+        public boolean autoDeleteLinkChannelsOnRestart = false;
     }
 
     @ConfigSerializable
     public static class LinkingConfiguration{
         @Comment("If true, the player needs to be linked before they can join the server")
-        private boolean linkRequired = true;
+        public boolean linkRequired = true;
         @Comment("Limit of Java Edition accounts that can be linked to one Discord account")
-        private int javaLimit = 1;
+        public int javaLimit = 1;
         @Comment("Limit of Bedrock Edition accounts that can be linked to one Discord account. Requires Floodgate to be installed")
-        private int bedrockLimit = 1;
-
-        public boolean isLinkRequired() {
-            return linkRequired;
-        }
-        public int getJavaLimit() {
-            return javaLimit;
-        }
-        public int getBedrockLimit() {
-            return bedrockLimit;
-        }
+        public int bedrockLimit = 1;
     }
 
 }

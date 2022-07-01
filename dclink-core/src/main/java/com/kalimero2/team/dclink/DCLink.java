@@ -3,10 +3,10 @@ package com.kalimero2.team.dclink;
 import com.kalimero2.team.dclink.api.DCLinkApi;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
-import com.kalimero2.team.dclink.discord.DiscordAccountLinker;
 import com.kalimero2.team.dclink.discord.DiscordBot;
 import com.kalimero2.team.dclink.storage.Storage;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.ConfigurateException;
@@ -14,6 +14,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class DCLink implements DCLinkApi {
@@ -43,7 +44,7 @@ public abstract class DCLink implements DCLinkApi {
             }
             logger.info("Loaded config");
             if(dcLinkConfig.databaseConfiguration != null){
-                storage = new Storage(this, new File(getDataFolder(), dcLinkConfig.databaseConfiguration.getSqliteFile()));
+                storage = new Storage(this, new File(getDataFolder(), dcLinkConfig.databaseConfiguration.sqliteFile));
             }else {
                 logger.error("No database configuration found");
                 shutdownServer();
@@ -78,6 +79,10 @@ public abstract class DCLink implements DCLinkApi {
             storage.close();
             logger.info("Shutdown complete");
         }
+    }
+
+    public DiscordBot getDiscordBot() {
+        return discordBot;
     }
 
     @Override
@@ -140,8 +145,9 @@ public abstract class DCLink implements DCLinkApi {
     }
 
     public JoinResult onLogin(MinecraftPlayer minecraftPlayer){
-        if(!minecraftPlayer.isLinked()){
-            return JoinResult.failure(Component.text(DCLinkCodes.addPlayer(minecraftPlayer)));
+        if(!minecraftPlayer.isLinked() && Objects.requireNonNull(dcLinkConfig.linkingConfiguration).linkRequired){
+            Component code = dcLinkMessages.getMinifiedMessage(dcLinkMessages.minecraftMessages.linkCodeMessage, Placeholder.unparsed("code",DCLinkCodes.addPlayer(minecraftPlayer)));
+            return JoinResult.failure(code);
         }else {
             return JoinResult.success(null);
         }
@@ -161,6 +167,7 @@ public abstract class DCLink implements DCLinkApi {
     }
 
     public abstract String getUsername(UUID uuid);
+    public abstract UUID getUUID(String username);
     protected abstract String getConfigPath();
     protected abstract String getMessagesFile();
     protected abstract void shutdownServer();
