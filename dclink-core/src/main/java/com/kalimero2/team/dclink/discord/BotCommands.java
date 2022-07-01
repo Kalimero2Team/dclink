@@ -50,7 +50,7 @@ public class BotCommands extends ListenerAdapter {
             }
         }else{
             guild.upsertCommand("minecraft", "Minecraft User Lookup")
-                    .addOption(OptionType.USER, "discorduser","User",true,true)
+                    .addOption(OptionType.USER, "discorduser","User",true)
                     .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
             .queue();
         }
