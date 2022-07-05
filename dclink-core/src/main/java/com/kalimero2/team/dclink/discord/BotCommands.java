@@ -1,7 +1,6 @@
 package com.kalimero2.team.dclink.discord;
 
 import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.DCLinkConfig;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import net.dv8tion.jda.api.JDA;

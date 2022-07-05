@@ -29,6 +29,8 @@ public abstract class DCLink implements DCLinkApi {
 
     public void init(){
         if(!initialised){
+            logger.info("Initialising DCLink");
+
             try{
                 dcLinkMessages = new DCLinkMessages(getMessagesFile());
             }catch (ConfigurateException e){
@@ -57,7 +59,14 @@ public abstract class DCLink implements DCLinkApi {
                 shutdownServer();
             }
             logger.info("Initialised Discord bot");
+            try {
+                Class.forName("org.geysermc.floodgate.api.FloodgateApi");
+                logger.info("Found Floodgate API");
+            } catch (ClassNotFoundException e) {
+                logger.info("Floodgate not found, Bedrock players won't be detected");
+            }
             initialised = true;
+            logger.info("Initialised DCLink");
         }
     }
 
@@ -138,7 +147,7 @@ public abstract class DCLink implements DCLinkApi {
     public boolean isBedrock(UUID uuid){
         try {
             Class.forName("org.geysermc.floodgate.api.FloodgateApi");
-            return org.geysermc.floodgate.api.FloodgateApi.getInstance().isFloodgateId(uuid);
+            return org.geysermc.floodgate.api.FloodgateApi.getInstance().isFloodgatePlayer(uuid);
         } catch (ClassNotFoundException e) {
             return false;
         }

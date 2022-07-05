@@ -126,8 +126,8 @@ public class DiscordAccountLinker extends ListenerAdapter {
                             }
                         }
 
-                        boolean overBedrockLimit = bedrock > dcLink.getConfig().linkingConfiguration.bedrockLimit;
-                        boolean overJavaLimit = java > dcLink.getConfig().linkingConfiguration.javaLimit;
+                        boolean overBedrockLimit = bedrock >= dcLink.getConfig().linkingConfiguration.bedrockLimit;
+                        boolean overJavaLimit = java >= dcLink.getConfig().linkingConfiguration.javaLimit;
 
                         if(overBedrockLimit && dcLink.isBedrock(minecraftPlayer)) {
                             event.getMessage().reply(messages.maxBedrock).queue();
