@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.kalimero2.team"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.1-SNAPSHOT"
 description = "Discord Bot for linking Minecraft Accounts with Discord Accounts"
 
 java {
