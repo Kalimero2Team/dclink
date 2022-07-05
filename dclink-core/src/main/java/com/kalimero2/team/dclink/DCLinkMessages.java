@@ -55,6 +55,7 @@ public class DCLinkMessages {
         public String wrongCode = "The code you entered is incorrect";
         public String maxBedrock = "You can't link any more Java accounts.";
         public String maxJava = "You can't link any more Java accounts.";
+        public String alreadyLinked = "You are already linked to this account.";
 
         public String rules = "To join the server you have to accept the rules";
         public String rulesAccepted = "You have accepted the rules. You can now join the server.";

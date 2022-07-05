@@ -115,6 +115,12 @@ public class DiscordAccountLinker extends ListenerAdapter {
                         DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getAuthor().getId());
                         Collection<MinecraftPlayer> linkedPlayers = discordAccount.getLinkedPlayers();
 
+                        if(linkedPlayers.contains(minecraftPlayer)){
+                            event.getChannel().sendMessage(messages.alreadyLinked).queue();
+                            preLinkedPlayers.remove(discordAccount);
+                            return;
+                        }
+
                         int java = 0;
                         int bedrock = 0;
 
@@ -129,10 +135,16 @@ public class DiscordAccountLinker extends ListenerAdapter {
                         boolean overBedrockLimit = bedrock >= dcLink.getConfig().linkingConfiguration.bedrockLimit;
                         boolean overJavaLimit = java >= dcLink.getConfig().linkingConfiguration.javaLimit;
 
-                        if(overBedrockLimit && dcLink.isBedrock(minecraftPlayer)) {
+                        boolean isBedrock = dcLink.isBedrock(minecraftPlayer);
+                        boolean isJava = !isBedrock;
+                        logger.info("{} is attempting to link {} which is a {} Account", event.getAuthor().getName(), minecraftPlayer.getName(), isBedrock ? "Bedrock":"Java");
+
+                        if(overBedrockLimit && isBedrock) {
+                            logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getAuthor().getName(), bedrock, dcLink.getConfig().linkingConfiguration.bedrockLimit);
                             event.getMessage().reply(messages.maxBedrock).queue();
                             return;
-                        } else if (overJavaLimit) {
+                        } else if (overJavaLimit && isJava) {
+                            logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getAuthor().getName(), java, dcLink.getConfig().linkingConfiguration.javaLimit);
                             event.getMessage().reply(messages.maxJava).queue();
                             return;
                         }
@@ -182,7 +194,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
                     textChannel.sendMessage(messages.trustChannel).
                             setActionRows(ActionRow.of(Button.primary("cancel", messages.cancel))).queue();
 
-                    textChannel.delete().queueAfter(10, TimeUnit.MINUTES);
+                    textChannel.delete().onErrorMap(throwable -> null).queueAfter(10, TimeUnit.MINUTES);
                 }
             }
 
@@ -191,14 +203,16 @@ public class DiscordAccountLinker extends ListenerAdapter {
             }
 
         }else if(event.getChannel().getName().equals(linkChannelName)){
+            DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
             if(event.getComponentId().equals("cancel")){
+                preLinkedPlayers.remove(discordAccount);
                 event.getChannel().delete().queue();
                 return;
             }
-            DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
             if(event.getComponentId().equals("accept")){
                 MinecraftPlayer minecraftPlayer = preLinkedPlayers.get(discordAccount);
                 dcLink.linkAccounts(minecraftPlayer, discordAccount);
+                preLinkedPlayers.remove(discordAccount);
                 logger.info(event.getUser().getName() + " accepted the rules");
                 event.reply(messages.rulesAccepted).setEphemeral(true).queue();
             } else if (event.getComponentId().equals("decline")){

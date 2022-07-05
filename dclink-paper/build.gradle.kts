@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.kalimero2.team"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.2-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -38,4 +38,5 @@ bukkit {
     main = "com.kalimero2.team.dclink.paper.PaperPlugin"
     apiVersion = "1.19"
     authors = listOf("byquanton")
+    softDepend = listOf("floodgate")
 }
