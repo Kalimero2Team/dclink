@@ -18,16 +18,16 @@ repositories {
 
 dependencies {
     paperDevBundle("1.19-R0.1-SNAPSHOT")
-    implementation("cloud.commandframework","cloud-paper","1.7.0")
+    bukkitLibrary("cloud.commandframework","cloud-paper","1.7.0")
+    bukkitLibrary("org.spongepowered","configurate-hocon","4.0.0")
+    bukkitLibrary("net.dv8tion","JDA","5.0.0-alpha.13")
+    bukkitLibrary("org.xerial","sqlite-jdbc","3.36.0.3")
     implementation(project(":dclink-api"))
-    implementation(project(":dclink-core"))
+    implementation(project(":dclink-core")){
+        exclude("*", "*") // Excludes all dependencies of dclink-core because they are put into the plugin.yml file
+    }
 }
 tasks {
-    shadowJar{
-        fun reloc(pkg: String) = relocate(pkg, "com.kalimero2.team.dclink.libs.cloud.dependency.$pkg")
-        reloc("cloud.commandframework")
-        reloc("io.leangen")
-    }
     assemble {
         dependsOn(reobfJar)
     }
