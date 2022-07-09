@@ -9,10 +9,9 @@ TODO:
 - [x] Add Discord /unlink Command
 - [x] Add Discord /minecraft Command
 - [x] Add MiniMessage Messages to Message Config
-- [ ] Make Message Config Better
-- [ ] Make Quilt Implementation work
 - [ ] Add other Platforms:
   - [ ] Velocity
+  - [ ] *Fabric/Quilt*
   - [ ] *Forge*
   - [ ] *Bungeecord/Waterfall*
   - [ ] *Bukkit/Spigot*
