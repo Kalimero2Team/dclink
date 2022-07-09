@@ -7,37 +7,33 @@ import com.kalimero2.team.dclink.DCLinkMessages;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Category;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.Modal;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.text.TextInput;
+import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public class DiscordAccountLinker extends ListenerAdapter {
     private final Logger logger = LoggerFactory.getLogger("dclink-discord");
     private final DCLink dcLink;
     private final JDA jda;
-    private final String linkChannelName = "link";
     private final DCLinkConfig.DiscordConfiguration config;
     private final DCLinkMessages.DiscordBotMessages messages;
     private final Map<DiscordAccount, MinecraftPlayer> preLinkedPlayers;
@@ -69,7 +65,6 @@ public class DiscordAccountLinker extends ListenerAdapter {
         }
         jda.addEventListener(this);
         sendLinkChannelMessage();
-        deleteOldLinkChannels();
     }
 
     private void sendLinkChannelMessage(){
@@ -87,82 +82,12 @@ public class DiscordAccountLinker extends ListenerAdapter {
         }
     }
 
-    private void deleteOldLinkChannels(){
-        if(config.autoDeleteLinkChannelsOnRestart){
-            jda.getGuilds().forEach(guild -> guild.getTextChannels().stream().filter(channel -> channel.getName().equals(linkChannelName)).forEach(channel -> channel.delete().queue()));
-        }
-    }
-
     @Override
     public void onMessageReceived(MessageReceivedEvent event){
         boolean isSelf = event.getAuthor().getId().equals(jda.getSelfUser().getId());
         // Deletes Pin Message
         if(isSelf && event.getChannel().getId().equals(config.linkChannel) && event.getMessage().getType().equals(MessageType.CHANNEL_PINNED_ADD)){
             event.getMessage().delete().queue();
-        }
-        if(isSelf || event.getAuthor().isBot()){
-            return;
-        }
-
-        if(event.getChannelType().equals(ChannelType.TEXT)){
-            TextChannel channel = event.getTextChannel();
-            Category parentCategory = channel.getParentCategory();
-            if(parentCategory != null && parentCategory.getId().equals(config.linkCategory)){
-                if(channel.getTopic() != null && channel.getTopic().equals(event.getAuthor().getId())){
-                    String code = event.getMessage().getContentStripped();
-                    MinecraftPlayer minecraftPlayer = DCLinkCodes.getPlayer(code);
-                    if(minecraftPlayer != null){
-                        DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getAuthor().getId());
-                        Collection<MinecraftPlayer> linkedPlayers = discordAccount.getLinkedPlayers();
-
-                        if(linkedPlayers.contains(minecraftPlayer)){
-                            event.getChannel().sendMessage(messages.alreadyLinked).queue();
-                            preLinkedPlayers.remove(discordAccount);
-                            return;
-                        }
-
-                        int java = 0;
-                        int bedrock = 0;
-
-                        for(MinecraftPlayer linkedPlayer:linkedPlayers){
-                            if(dcLink.isBedrock(linkedPlayer)){
-                                bedrock++;
-                            }else{
-                                java++;
-                            }
-                        }
-
-                        boolean overBedrockLimit = bedrock >= dcLink.getConfig().linkingConfiguration.bedrockLimit;
-                        boolean overJavaLimit = java >= dcLink.getConfig().linkingConfiguration.javaLimit;
-
-                        boolean isBedrock = dcLink.isBedrock(minecraftPlayer);
-                        boolean isJava = !isBedrock;
-                        logger.info("{} is attempting to link {} which is a {} Account", event.getAuthor().getName(), minecraftPlayer.getName(), isBedrock ? "Bedrock":"Java");
-
-                        if(overBedrockLimit && isBedrock) {
-                            logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getAuthor().getName(), bedrock, dcLink.getConfig().linkingConfiguration.bedrockLimit);
-                            event.getMessage().reply(messages.maxBedrock).queue();
-                            return;
-                        } else if (overJavaLimit && isJava) {
-                            logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getAuthor().getName(), java, dcLink.getConfig().linkingConfiguration.javaLimit);
-                            event.getMessage().reply(messages.maxJava).queue();
-                            return;
-                        }
-
-                        preLinkedPlayers.put(discordAccount, minecraftPlayer);
-
-                        event.getMessage().reply(messages.rules).setActionRows(
-                                ActionRow.of(
-                                        Button.success("accept",messages.accept),
-                                        Button.danger("decline",messages.decline)
-                                )
-                        ).queue();
-
-                    }else{
-                        event.getMessage().reply(messages.wrongCode).queue();
-                    }
-                }
-            }
         }
     }
 
@@ -179,48 +104,96 @@ public class DiscordAccountLinker extends ListenerAdapter {
             return;
         }
 
-        if(event.getComponentId().equals("add")){
-            TextChannel textChannel = null;
-            Optional<TextChannel> optionalTextChannel = guild.getTextChannelsByName(linkChannelName, false).stream().filter(channel -> Objects.equals(channel.getTopic(), event.getUser().getId())).findFirst();
-            if(optionalTextChannel.isPresent()){
-                textChannel = optionalTextChannel.get();
-            }
-            if(textChannel == null){
-                Category category = guild.getCategoryById(config.linkCategory);
-                if(category != null){
-                    EnumSet<Permission> allow = EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND);
-                    textChannel = category.createTextChannel(linkChannelName).setTopic(event.getUser().getId()).addMemberPermissionOverride(event.getUser().getIdLong(), allow,null).complete();
-                    textChannel.sendMessage(event.getUser().getAsMention()).queue();
-                    textChannel.sendMessage(messages.trustChannel).
-                            setActionRows(ActionRow.of(Button.primary("cancel", messages.cancel))).queue();
-
-                    textChannel.delete().onErrorMap(throwable -> null).queueAfter(10, TimeUnit.MINUTES);
+        if(event.getChannel().getId().equals(config.linkChannel)){
+            DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
+            if (event.getComponentId().equals("add")){
+                TextInput code = TextInput.create("code", messages.modalInputDescription, TextInputStyle.SHORT)
+                        .setRequiredRange(4,4)
+                        .setRequired(true).
+                        build();
+                Modal modal = Modal.create("linkModal", messages.modalTitle).addActionRows(ActionRow.of(code)).build();
+                event.replyModal(modal).queue();
+            }else if (event.getComponentId().equals("accept")){
+                if(preLinkedPlayers.containsKey(discordAccount)){
+                    MinecraftPlayer minecraftPlayer = preLinkedPlayers.get(discordAccount);
+                    dcLink.linkAccounts(minecraftPlayer, discordAccount);
+                    preLinkedPlayers.remove(discordAccount);
+                    logger.info(event.getUser().getName() + " accepted the rules");
+                    event.editMessage(messages.rulesAccepted).setActionRows().queue();
+                    if(giveRoleWhenLinked){
+                        guild.addRoleToMember(event.getUser(), Objects.requireNonNull(guild.getRoleById(config.linkRole))).queue();
+                    }
+                }else {
+                    logger.error(event.getUser().getName() + " tried to accept the rules but was not prelinked");
+                    event.editMessage(messages.genericLinkError).setActionRows().queue();
+                }
+            } else if (event.getComponentId().equals("decline")){
+                if(preLinkedPlayers.containsKey(discordAccount)){
+                    preLinkedPlayers.remove(discordAccount);
+                    logger.info(event.getUser().getName() + " declined the rules");
+                    event.editMessage(messages.rulesDenied).setActionRows().queue();
+                }else {
+                    logger.error(event.getUser().getName() + " tried to decline the rules but was not prelinked");
+                    event.editMessage(messages.genericLinkError).setActionRows().queue();
                 }
             }
+        }
+    }
 
-            if(textChannel != null){
-                event.reply(textChannel.getAsMention()).setEphemeral(true).queue();
-            }
+    @Override
+    public void onModalInteraction(ModalInteractionEvent event){
+        if(event.getModalId().equals("linkModal")){
+            String code = Objects.requireNonNull(event.getValue("code")).getAsString();
+            logger.info("{} entered {}", event.getUser().getName(), code);
+            MinecraftPlayer minecraftPlayer = DCLinkCodes.getPlayer(code);
+            if(minecraftPlayer != null){
+                DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
+                Collection<MinecraftPlayer> linkedPlayers = discordAccount.getLinkedPlayers();
 
-        }else if(event.getChannel().getName().equals(linkChannelName)){
-            DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
-            if(event.getComponentId().equals("cancel")){
-                preLinkedPlayers.remove(discordAccount);
-                event.getChannel().delete().queue();
-                return;
+                if(linkedPlayers.contains(minecraftPlayer)){
+                    event.reply(messages.alreadyLinked).setEphemeral(true).queue();
+                    preLinkedPlayers.remove(discordAccount);
+                    return;
+                }
+
+                int java = 0;
+                int bedrock = 0;
+
+                for(MinecraftPlayer linkedPlayer:linkedPlayers){
+                    if(dcLink.isBedrock(linkedPlayer)){
+                        bedrock++;
+                    }else{
+                        java++;
+                    }
+                }
+
+                boolean overBedrockLimit = bedrock >= dcLink.getConfig().linkingConfiguration.bedrockLimit;
+                boolean overJavaLimit = java >= dcLink.getConfig().linkingConfiguration.javaLimit;
+
+                boolean isBedrock = dcLink.isBedrock(minecraftPlayer);
+                boolean isJava = !isBedrock;
+                logger.info("{} is attempting to link {} which is a {} Account", event.getUser().getName(), minecraftPlayer.getName(), isBedrock ? "Bedrock":"Java");
+
+                if(overBedrockLimit && isBedrock) {
+                    logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getUser().getName(), bedrock, dcLink.getConfig().linkingConfiguration.bedrockLimit);
+                    event.reply(messages.maxBedrock).setEphemeral(true).queue();
+                    return;
+                } else if (overJavaLimit && isJava) {
+                    logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getUser().getName(), java, dcLink.getConfig().linkingConfiguration.javaLimit);
+                    event.reply(messages.maxJava).setEphemeral(true).queue();
+                    return;
+                }
+
+                preLinkedPlayers.put(discordAccount, minecraftPlayer);
+
+                event.reply(messages.rules).setEphemeral(true).addActionRows(ActionRow.of(
+                                Button.success("accept",messages.accept),
+                                Button.danger("decline",messages.decline)
+                        )
+                ).queue();
+            }else{
+                event.reply(messages.wrongCode).setEphemeral(true).queue();
             }
-            if(event.getComponentId().equals("accept")){
-                MinecraftPlayer minecraftPlayer = preLinkedPlayers.get(discordAccount);
-                dcLink.linkAccounts(minecraftPlayer, discordAccount);
-                preLinkedPlayers.remove(discordAccount);
-                logger.info(event.getUser().getName() + " accepted the rules");
-                event.reply(messages.rulesAccepted).setEphemeral(true).queue();
-            } else if (event.getComponentId().equals("decline")){
-                preLinkedPlayers.remove(discordAccount);
-                logger.info(event.getUser().getName() + " declined the rules");
-                event.reply(messages.rulesDenied).setEphemeral(true).queue();
-            }
-            event.getChannel().delete().queueAfter(3, TimeUnit.SECONDS);
         }
     }
 
