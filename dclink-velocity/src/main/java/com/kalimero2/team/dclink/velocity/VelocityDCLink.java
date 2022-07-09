@@ -3,7 +3,6 @@ package com.kalimero2.team.dclink.velocity;
 import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
-import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
@@ -32,16 +31,17 @@ public class VelocityDCLink extends DCLink {
         return server;
     }
 
-    @Override
-    public String getUsername(UUID uuid) {
-        Optional<Player> player = server.getPlayer(uuid);
-        return player.map(Player::getUsername).orElse(null);
-    }
 
     @Override
     public UUID getUUID(String username) {
         Optional<Player> player = server.getPlayer(username);
         return player.map(Player::getUniqueId).orElse(null);
+    }
+
+    @Override
+    protected String getUserNameViaPlatformMethods(UUID uuid) {
+        Optional<Player> player = server.getPlayer(uuid);
+        return player.map(Player::getUsername).orElse(null);
     }
 
     @Override

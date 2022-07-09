@@ -41,7 +41,12 @@ public class PaperDCLink extends DCLink {
     }
 
     @Override
-    public String getUsername(UUID uuid) {
+    public UUID getUUID(String username) {
+        return plugin.getServer().getOfflinePlayer(username).getUniqueId();
+    }
+
+    @Override
+    protected String getUserNameViaPlatformMethods(UUID uuid) {
         if(isLoaded()){
             String name = plugin.getServer().getOfflinePlayer(uuid).getName();
             if(name == null){
@@ -50,19 +55,11 @@ public class PaperDCLink extends DCLink {
                     GameProfile gameProfile = sessionService.fillProfileProperties(new GameProfile(uuid, null), true);
                     return gameProfile.getName();
                 }catch (IllegalArgumentException ignored){
-                    if(isBedrock(uuid)){
-                        return org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(uuid).getUsername();
-                    }
                 }
             }
             return name;
         }
         return null;
-    }
-
-    @Override
-    public UUID getUUID(String username) {
-        return plugin.getServer().getOfflinePlayer(username).getUniqueId();
     }
 
     @Override

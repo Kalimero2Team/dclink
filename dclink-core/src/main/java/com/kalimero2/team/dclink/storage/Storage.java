@@ -38,6 +38,7 @@ public class Storage {
     private void createTablesIfNotExists() throws SQLException {
         createDiscordTableIfNotExists();
         createMinecraftTableIfNotExists();
+        updateMinecraftTable();
         dcLink.getLogger().info("Database initialized");
     }
 
@@ -55,12 +56,33 @@ public class Storage {
         Statement statement = connection.createStatement();
         statement.executeUpdate(
                 "CREATE TABLE IF NOT EXISTS MINECRAFT_ACCOUNTS(" +
-                "    UUID       TEXT PRIMARY KEY NOT NULL UNIQUE," +
-                "    DISCORD_ID TEXT," +
+                "    UUID               TEXT PRIMARY KEY NOT NULL UNIQUE," +
+                "    LAST_KNOWN_NAME    TEXT NULL,"+
+                "    DISCORD_ID         TEXT NULL," +
                 "    FOREIGN KEY (DISCORD_ID) REFERENCES DISCORD_ACCOUNTS(DISCORD_ID)" +
                 ");"
         );
         statement.close();
+    }
+
+    private void updateMinecraftTable() throws SQLException {
+        Statement checkStatement = connection.createStatement();
+        ResultSet resultSet = checkStatement.executeQuery("PRAGMA table_info(MINECRAFT_ACCOUNTS);");
+        boolean hasLastKnownName = false;
+        while(resultSet.next()){
+            if(resultSet.getString("name").equalsIgnoreCase("last_known_name")){
+                hasLastKnownName = true;
+                break;
+            }
+        }
+        if(!hasLastKnownName){
+            dcLink.getLogger().info("Updating MINECRAFT_ACCOUNTS table");
+            Statement addStatement = connection.createStatement();
+            addStatement.executeUpdate(
+                    "ALTER TABLE MINECRAFT_ACCOUNTS ADD COLUMN LAST_KNOWN_NAME TEXT NULL;"
+            );
+            addStatement.close();
+        }
     }
 
     private void saveDiscordAccount(DiscordAccount discordAccount) throws SQLException {
@@ -71,14 +93,16 @@ public class Storage {
 
     private void saveMinecraftPlayer(MinecraftPlayer minecraftPlayer) throws SQLException {
         Statement statement = connection.createStatement();
+        String name = minecraftPlayer.getName();
+        String uuid = minecraftPlayer.getUuid().toString();
         String discordId;
         if(minecraftPlayer.getDiscordAccount() != null){
             discordId = minecraftPlayer.getDiscordAccount().getId();
         }else {
             discordId = null;
         }
-
-        statement.executeUpdate("INSERT OR IGNORE INTO MINECRAFT_ACCOUNTS (UUID, DISCORD_ID) VALUES ('" + minecraftPlayer.getUuid() + "', '" + discordId + "');");
+        statement.executeUpdate("INSERT OR IGNORE INTO MINECRAFT_ACCOUNTS (UUID, DISCORD_ID, LAST_KNOWN_NAME) VALUES ('" + uuid + "', '" + discordId + "', '" + name + "' );");
+        statement.executeUpdate("UPDATE OR IGNORE MINECRAFT_ACCOUNTS SET LAST_KNOWN_NAME = '" + name + "' WHERE UUID = '" + uuid + "';");
         statement.close();
     }
 
@@ -88,6 +112,15 @@ public class Storage {
         } catch (SQLException e) {
             dcLink.getLogger().error("Error while closing database connection", e);
         }
+    }
+
+    public String getLastKnownName(UUID uuid) throws SQLException{
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT LAST_KNOWN_NAME FROM MINECRAFT_ACCOUNTS WHERE UUID = '" + uuid.toString() + "';");
+        if(resultSet.next()){
+            return resultSet.getString("LAST_KNOWN_NAME");
+        }
+        return null;
     }
 
     public DiscordAccount getDiscordAccount(String discordID) throws SQLException {

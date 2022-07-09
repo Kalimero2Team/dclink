@@ -175,8 +175,28 @@ public abstract class DCLink implements DCLinkApi {
         }
     }
 
-    public abstract String getUsername(UUID uuid);
+    public String getUsername(UUID uuid){
+        String name = getUserNameViaPlatformMethods(uuid);
+        if(name == null){
+            if(isBedrock(uuid)){
+                name = org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(uuid).getJavaUsername();
+            }
+            if(name == null){
+                try{
+                    name = storage.getLastKnownName(uuid);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }
+
+        return name;
+    }
+
     public abstract UUID getUUID(String username);
+
+    protected abstract String getUserNameViaPlatformMethods(UUID uuid);
     protected abstract String getConfigPath();
     protected abstract String getMessagesFile();
     protected abstract void shutdownServer();

@@ -23,7 +23,6 @@ dependencies {
     bukkitLibrary("org.spongepowered","configurate-hocon","4.0.0")
     bukkitLibrary("net.dv8tion","JDA","5.0.0-alpha.13")
     bukkitLibrary("org.xerial","sqlite-jdbc","3.36.0.3")
-    compileOnly("org.geysermc.floodgate","api","2.0-SNAPSHOT")
     implementation(project(":dclink-api"))
     implementation(project(":dclink-core")){
         exclude("*", "*") // Excludes all dependencies of dclink-core because they are put into the plugin.yml file
