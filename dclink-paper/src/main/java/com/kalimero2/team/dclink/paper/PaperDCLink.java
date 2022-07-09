@@ -46,8 +46,14 @@ public class PaperDCLink extends DCLink {
             String name = plugin.getServer().getOfflinePlayer(uuid).getName();
             if(name == null){
                 MinecraftSessionService sessionService = MinecraftServer.getServer().getSessionService();
-                GameProfile gameProfile = sessionService.fillProfileProperties(new GameProfile(uuid, null), true);
-                return gameProfile.getName();
+                try{
+                    GameProfile gameProfile = sessionService.fillProfileProperties(new GameProfile(uuid, null), true);
+                    return gameProfile.getName();
+                }catch (IllegalArgumentException ignored){
+                    if(isBedrock(uuid)){
+                        return org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(uuid).getUsername();
+                    }
+                }
             }
             return name;
         }
