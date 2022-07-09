@@ -1,6 +1,7 @@
 package com.kalimero2.team.dclink.velocity;
 
 import com.google.inject.Inject;
+import com.kalimero2.team.dclink.velocity.commands.CommandManager;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
@@ -27,6 +28,7 @@ public class VelocityPlugin {
     public void onProxyInitialize(ProxyInitializeEvent event) {
         dclink.load();
         server.getEventManager().register(this, new VelocityDCLinkListener(dclink));
+        new CommandManager(dclink);
     }
 
 }

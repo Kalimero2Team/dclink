@@ -10,10 +10,10 @@ TODO:
 - [x] Add Discord /minecraft Command
 - [x] Add MiniMessage Messages to Message Config
 - [ ] Add other Platforms:
-  - [ ] Velocity
+  - [x] Velocity
   - [ ] *Fabric/Quilt*
   - [ ] *Forge*
   - [ ] *Bungeecord/Waterfall*
   - [ ] *Bukkit/Spigot*
 - [ ] Add more (/remote) Database Options
-- [ ] Create Documentation
+- [ ] Create (more) Documentation
