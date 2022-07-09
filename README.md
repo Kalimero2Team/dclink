@@ -11,7 +11,7 @@ TODO:
 - [x] Add MiniMessage Messages to Message Config
 - [ ] Add other Platforms:
   - [x] Velocity
-  - [ ] *Fabric/Quilt*
+  - [x] *Fabric*
   - [ ] *Forge*
   - [ ] *Bungeecord/Waterfall*
   - [x] *Bukkit/Spigot*

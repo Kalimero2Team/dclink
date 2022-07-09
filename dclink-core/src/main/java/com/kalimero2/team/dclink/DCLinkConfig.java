@@ -81,14 +81,10 @@ public class DCLinkConfig {
         public String guild = "";
         @Comment("Channel ID of the channel where the bot will send the message with the button to link their account")
         public String linkChannel = "";
-        @Comment("Category ID of the category where the bot will create the link channels")
-        public String linkCategory = "";
         @Comment("Role ID of the role that the bot will give to the linked players (If left blank, the bot will not give any roles)")
         public @Nullable String linkRole = "";
         @Comment("Message to show on the bot's status")
         public String statusMessage = "Minecraft";
-        @Comment("Automatically delete link Channels when restarting the server")
-        public boolean autoDeleteLinkChannelsOnRestart = false;
     }
 
     @ConfigSerializable
