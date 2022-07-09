@@ -14,6 +14,6 @@ TODO:
   - [ ] *Fabric/Quilt*
   - [ ] *Forge*
   - [ ] *Bungeecord/Waterfall*
-  - [ ] *Bukkit/Spigot*
+  - [x] *Bukkit/Spigot*
 - [ ] Add more (/remote) Database Options
 - [ ] Create (more) Documentation
