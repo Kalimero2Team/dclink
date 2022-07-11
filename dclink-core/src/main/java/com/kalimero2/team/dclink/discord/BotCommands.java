@@ -12,6 +12,9 @@ import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class BotCommands extends ListenerAdapter {
 
@@ -41,18 +45,18 @@ public class BotCommands extends ListenerAdapter {
             logger.error("Could not find guild with id {}", guildId);
             return;
         }
-        Optional<Command> optionalMinecraftCommand = guild.retrieveCommands().complete().stream().filter(command -> command.getName().equals("minecraft")).findAny();
-        if(optionalMinecraftCommand.isPresent()){
-            Command minecraftCommand = optionalMinecraftCommand.get();
-            if(minecraftCommand.getOptions().stream().noneMatch(option -> option.getName().equals("discorduser"))){
-                minecraftCommand.editCommand().addOption(OptionType.USER, "discorduser", "User", true).queue();
-            }
-        }else{
-            guild.upsertCommand("minecraft", "Minecraft User Lookup")
-                    .addOption(OptionType.USER, "discorduser","User",true)
-                    .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
-            .queue();
+        Optional<Command> lookupCommand = guild.retrieveCommands().complete().stream().filter(command -> command.getName().equals("lookup")).findAny();
+
+        if(lookupCommand.isEmpty()){
+            guild.upsertCommand("lookup","Get information about a player").addSubcommands(
+                new SubcommandData("minecraft", "Via Minecraft Username")
+                    .addOption(OptionType.STRING, "minecraft", "Minecraft Username", true),
+                new SubcommandData("discord", "Via Discord User")
+                    .addOption(OptionType.USER, "discorduser", "Discord User", true))
+                .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
+                .queue();
         }
+
         Optional<Command> optionalLinkCommand = guild.retrieveCommands().complete().stream().filter(command -> command.getName().equals("link")).findAny();
         if(optionalLinkCommand.isPresent()) {
             Command linkCommand = optionalLinkCommand.get();
@@ -91,22 +95,29 @@ public class BotCommands extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event){
-        if (event.getName().equals("minecraft")){
-            minecraftCommand(event);
+        if (event.getName().equals("lookup")){
+            lookupCommand(event);
         } else if (event.getName().equals("link")) {
             linkCommand(event);
         } else if (event.getName().equals("unlink")) {
             unLinkCommand(event);
         } else {
-            event.reply("I can't handle that command right now :(").setEphemeral(true).queue();
+            String id = "rmCmd" + event.getCommandId();
+            event.reply("I can't handle that command right now :(").setEphemeral(true).addActionRows(ActionRow.of(Button.danger(id,"Delete Command"))).queue();
             logger.error("Unhandled command {}", event.getName());
         }
     }
 
-    private void minecraftCommand(SlashCommandInteractionEvent event) {
-        OptionMapping discorduser = event.getOption("discorduser");
-        if(discorduser != null){
-            User user = discorduser.getAsUser();
+    private void lookupCommand(SlashCommandInteractionEvent event) {
+        OptionMapping discordOption = event.getOption("discorduser");
+        OptionMapping minecraftOption = event.getOption("minecraft");
+        String subcommandName = event.getSubcommandName();
+        if(subcommandName == null){
+            return;
+        }
+
+        if(subcommandName.equals("discord") && discordOption != null){
+            User user = discordOption.getAsUser();
             Collection<MinecraftPlayer> linkedPlayers = dcLink.getDiscordAccount(user.getId()).getLinkedPlayers();
             if(linkedPlayers.size() > 0){
                 StringBuilder message = new StringBuilder("Minecraft accounts linked to " + user.getAsMention() + ": ");
@@ -114,6 +125,15 @@ public class BotCommands extends ListenerAdapter {
                 event.reply(message.toString()).setEphemeral(true).queue();
             }else{
                 event.reply("No Minecraft accounts linked to " + user.getAsMention()).setEphemeral(true).queue();
+            }
+        } else if (subcommandName.equals("minecraft") && minecraftOption != null) {
+            String name = minecraftOption.getAsString();
+            MinecraftPlayer minecraftPlayer = dcLink.getMinecraftPlayer(dcLink.getUUID(name));
+            if(minecraftPlayer != null && minecraftPlayer.getDiscordAccount() != null){
+                User discordUser = jda.retrieveUserById(minecraftPlayer.getDiscordAccount().getId()).complete();
+                event.reply("Discord account linked to " + name + ": " + discordUser.getAsMention()).setEphemeral(true).queue();
+            }else{
+                event.reply("No Discord accounts linked to " + name).setEphemeral(true).queue();
             }
         }
     }

@@ -98,6 +98,18 @@ public class DiscordAccountLinker extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
+        String componentId = event.getComponentId();
+        if(componentId.startsWith("rmCmd")){
+            String commandId = componentId.replace("rmCmd","");
+            if(event.getGuild() != null && event.getGuild().retrieveCommandById(commandId).complete() != null){
+                event.getGuild().deleteCommandById(commandId).complete();
+            }else{
+                jda.deleteCommandById(commandId).complete();
+            }
+
+            event.editMessage("Removed Command").setActionRows().queue();
+        }
+
         Guild guild = jda.getGuildById(config.guild);
         if (guild == null) {
             logger.error("Could not find guild with id {}", config.guild);
@@ -106,14 +118,14 @@ public class DiscordAccountLinker extends ListenerAdapter {
 
         if(event.getChannel().getId().equals(config.linkChannel)){
             DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
-            if (event.getComponentId().equals("add")){
+            if (componentId.equals("add")){
                 TextInput code = TextInput.create("code", messages.modalInputDescription, TextInputStyle.SHORT)
                         .setRequiredRange(4,4)
                         .setRequired(true).
                         build();
                 Modal modal = Modal.create("linkModal", messages.modalTitle).addActionRows(ActionRow.of(code)).build();
                 event.replyModal(modal).queue();
-            }else if (event.getComponentId().equals("accept")){
+            }else if (componentId.equals("accept")){
                 if(preLinkedPlayers.containsKey(discordAccount)){
                     MinecraftPlayer minecraftPlayer = preLinkedPlayers.get(discordAccount);
                     dcLink.linkAccounts(minecraftPlayer, discordAccount);
@@ -127,7 +139,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
                     logger.error(event.getUser().getName() + " tried to accept the rules but was not prelinked");
                     event.editMessage(messages.genericLinkError).setActionRows().queue();
                 }
-            } else if (event.getComponentId().equals("decline")){
+            } else if (componentId.equals("decline")){
                 if(preLinkedPlayers.containsKey(discordAccount)){
                     preLinkedPlayers.remove(discordAccount);
                     logger.info(event.getUser().getName() + " declined the rules");
