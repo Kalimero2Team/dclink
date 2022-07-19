@@ -1,15 +1,15 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
-    id("java")
-    id("io.papermc.paperweight.userdev") version "1.3.7"
-    id("xyz.jpenilla.run-paper") version "1.0.6"
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
+    alias(libs.plugins.paper.userdev)
+    @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
+    alias(libs.plugins.paper.run)
+    @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
+    alias(libs.plugins.plugin.yml)
+    @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
+    alias(libs.plugins.shadow)
 }
-
-group = "com.kalimero2.team"
-version = "1.0.2-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -18,11 +18,11 @@ repositories {
 }
 
 dependencies {
-    paperDevBundle("1.19-R0.1-SNAPSHOT")
-    bukkitLibrary("cloud.commandframework","cloud-paper","1.7.0")
-    bukkitLibrary("org.spongepowered","configurate-hocon","4.0.0")
-    bukkitLibrary("net.dv8tion","JDA","5.0.0-alpha.13")
-    bukkitLibrary("org.xerial","sqlite-jdbc","3.36.0.3")
+    paperDevBundle(libs.versions.paper.api.get())
+    bukkitLibrary(libs.commandframework.paper)
+    bukkitLibrary(libs.configurate.hocon)
+    bukkitLibrary(libs.jda)
+    bukkitLibrary(libs.sqlite)
     implementation(project(":dclink-api"))
     implementation(project(":dclink-core")){
         exclude("*", "*") // Excludes all dependencies of dclink-core because they are put into the plugin.yml file

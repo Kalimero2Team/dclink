@@ -1,10 +1,7 @@
 plugins {
-    id("java")
-    id("fabric-loom") version "0.12.+"
+    @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
+    alias(libs.plugins.fabric.loom)
 }
-
-group = "com.kalimero2.team"
-version = "1.0.2-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -14,25 +11,25 @@ repositories {
 }
 
 dependencies {
-    minecraft("com.mojang", "minecraft", "1.19")
+    minecraft("com.mojang", "minecraft", libs.versions.minecraft.get())
     mappings(loom.layered {
         officialMojangMappings()
     })
-    modImplementation("net.fabricmc","fabric-loader","0.14.6")
-    modImplementation("net.fabricmc.fabric-api","fabric-api","0.57.0+1.19")
-    modImplementation("net.kyori","adventure-platform-fabric","5.4.0-SNAPSHOT")
-    modImplementation("cloud.commandframework","cloud-fabric","1.7.0")
+    modImplementation(libs.fabric.loader)
+    modImplementation(libs.fabric.api)
+    modImplementation(libs.adventure.fabric)
+    modImplementation(libs.commandframework.fabric)
 
     implementation(project(":dclink-core"))
     include(project(":dclink-core"))
     implementation(project(":dclink-api"))
     include(project(":dclink-core"))
 
-    include("net.kyori","adventure-api","4.11.0")
-    include("net.kyori","adventure-text-minimessage","4.11.0")
-    include("org.spongepowered","configurate-hocon","4.0.0")
-    include("net.dv8tion","JDA","5.0.0-alpha.13") {
+    include(libs.adventure.api)
+    include(libs.adventure.minimessage)
+    include(libs.configurate.hocon)
+    include(libs.jda) {
         exclude(module= "opus-java")
     }
-    include("org.xerial","sqlite-jdbc","3.36.0.3")
+    include(libs.sqlite)
 }

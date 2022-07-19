@@ -1,21 +1,11 @@
 package com.kalimero2.team.dclink.spigot;
 
 import com.kalimero2.team.dclink.spigot.commands.CommandManager;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpigotPlugin extends JavaPlugin {
 
     private SpigotDCLink spigotDCLink;
-
-    private BukkitAudiences adventure;
-
-    public BukkitAudiences adventure() {
-        if(this.adventure == null) {
-            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
-        }
-        return this.adventure;
-    }
 
     @Override
     public void onLoad() {
@@ -29,7 +19,6 @@ public class SpigotPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        this.adventure = BukkitAudiences.create(this);
         spigotDCLink.load();
         getServer().getPluginManager().registerEvents(new SpigotDCLinkListener(spigotDCLink), this);
         try {
@@ -43,9 +32,5 @@ public class SpigotPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         spigotDCLink.shutdown();
-        if(this.adventure != null) {
-            this.adventure.close();
-            this.adventure = null;
-        }
     }
 }

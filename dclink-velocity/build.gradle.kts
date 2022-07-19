@@ -1,10 +1,7 @@
 plugins {
-    id("java")
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
+    alias(libs.plugins.shadow)
 }
-
-group = "com.kalimero2.team"
-version = "1.0.2-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -13,11 +10,10 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.velocitypowered","velocity-api", "3.1.1")
-    annotationProcessor("com.velocitypowered","velocity-api", "3.1.1")
-
-    implementation("net.kyori","adventure-text-minimessage","4.11.0")
-    implementation("cloud.commandframework","cloud-velocity","1.7.0")
+    compileOnly(libs.velocity.api)
+    annotationProcessor(libs.velocity.api)
+    implementation(libs.adventure.minimessage)
+    implementation(libs.commandframework.velocity)
     implementation(project(":dclink-api"))
     implementation(project(":dclink-core"))
 }
@@ -32,17 +28,5 @@ tasks{
         reloc("io.leangen")
         reloc("net.dv8tion")
         reloc("org.xerial")
-    }
-    processResources {
-        filesMatching(listOf("velocity-plugin.json")) {
-            expand(
-                "id" to "dclink-velocity",
-                "name" to "DCLink",
-                "version" to project.version,
-                "description" to project.description,
-                "url" to "https://github.com/Kalimero2Team/dclink",
-                "author" to "byquanton"
-            )
-        }
     }
 }
