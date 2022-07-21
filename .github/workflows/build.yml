@@ -20,9 +20,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout
+      uses: actions/checkout@v3
     - name: Gradle Cache
       uses: burrunan/gradle-cache-action@v1 
-    - uses: actions/checkout@v3
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
