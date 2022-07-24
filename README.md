@@ -11,10 +11,10 @@ TODO: Create Setup Guide
 [Wiki](https://github.com/Kalimero2Team/dclink/wiki/)
 
 **Downloads:**\
-[Paper Forums (Paper Version)]() \
-[Paper Forums (Velocity Version)]() \
+~~[Paper Forums (Paper Version)]()~~ (Not yet available) \
+~~[Paper Forums (Velocity Version)]()~~ (Not yet available)\
 [SpigotMC (Spigot Version)](https://www.spigotmc.org/resources/dclink.103585/) \
-*[Modrinth (Fabric Version)](https://modrinth.com/mod/dclink)*
+~~[Modrinth (Fabric Version)](https://modrinth.com/mod/dclink)~~ (Not yet available)
 
 ## Libraries Used
 
