@@ -1,10 +1,12 @@
 package com.kalimero2.team.dclink.velocity;
 
 import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.command.Commands;
+import com.kalimero2.team.dclink.velocity.command.VelocityCommands;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import net.kyori.adventure.text.Component;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -31,11 +33,28 @@ public class VelocityDCLink extends DCLink {
         return server;
     }
 
+    @Override
+    public void load() {
+        try {
+            VelocityCommands paperCommands = new VelocityCommands(this);
+            Commands commands = new Commands(this, paperCommands);
+            commands.registerCommands();
+            getLogger().info("Registered Commands");
+        } catch (Exception e) {
+            getLogger().error("Failed to initialize Commands " + e.getMessage());
+        }
+        super.load();
+    }
 
     @Override
     public UUID getUUID(String username) {
         Optional<Player> player = server.getPlayer(username);
         return player.map(Player::getUniqueId).orElse(null);
+    }
+
+    @Override
+    protected void kickPlayer(MinecraftPlayer minecraftPlayer, Component message) {
+        server.getPlayer(minecraftPlayer.getUuid()).ifPresent(player -> player.disconnect(message));
     }
 
     @Override
@@ -57,28 +76,6 @@ public class VelocityDCLink extends DCLink {
     @Override
     protected void shutdownServer() {
         server.shutdown();
-    }
-
-    @Override
-    public void unLinkAccount(MinecraftPlayer minecraftPlayer) {
-        kickUnlinked(minecraftPlayer);
-        super.unLinkAccount(minecraftPlayer);
-    }
-
-    @Override
-    public void unLinkAccounts(DiscordAccount discordAccount) {
-        discordAccount.getLinkedPlayers().forEach(this::kickUnlinked);
-        super.unLinkAccounts(discordAccount);
-    }
-
-    private void kickUnlinked(MinecraftPlayer minecraftPlayer) {
-        if (getConfig().linkingConfiguration != null && getConfig().linkingConfiguration.linkRequired) {
-            Optional<Player> player = server.getPlayer(minecraftPlayer.getUuid());
-            if(player.isPresent()){
-                assert getMessages().minecraftMessages != null;
-                player.get().disconnect(getMessages().getMinifiedMessage(getMessages().minecraftMessages.kickUnlinked));
-            }
-        }
     }
 
     @Override

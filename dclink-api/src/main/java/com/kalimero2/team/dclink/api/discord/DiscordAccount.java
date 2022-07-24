@@ -35,6 +35,20 @@ public interface DiscordAccount {
     Collection<DiscordRole> getRoles();
 
     /**
+     * Add a Discord Role to the account.
+     *
+     * @return Whether the role was added.
+     */
+    boolean addRole(DiscordRole role);
+
+    /**
+     * Remove a Discord Role to the account.
+     *
+     * @return Whether the role was removed.
+     */
+    boolean removeRole(DiscordRole role);
+
+    /**
      * Check if the Discord account is a Member of the Guild.
      *
      * @return true if the account is a Member of the Guild.

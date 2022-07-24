@@ -1,10 +1,15 @@
 package com.kalimero2.team.dclink.fabric;
 
 import com.kalimero2.team.dclink.DCLink;
+import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.command.Commands;
+import com.kalimero2.team.dclink.fabric.command.FabricCommands;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import net.fabricmc.loader.api.FabricLoader;
+import net.kyori.adventure.text.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.io.File;
 import java.util.Optional;
@@ -13,31 +18,22 @@ import java.util.UUID;
 public class FabricDCLink extends DCLink {
 
     private final FabricMod mod;
-    private final MinecraftServer server;
+    private MinecraftServer server;
 
-    public FabricDCLink(FabricMod mod, MinecraftServer server){
+    public FabricDCLink(FabricMod mod){
         this.mod = mod;
-        this.server = server;
     }
 
     public FabricMod getMod() {
         return mod;
     }
 
-    @Override
-    public void init() {
-        super.init();
-    }
 
     @Override
     public void load() {
         super.load();
     }
 
-    @Override
-    public void shutdown() {
-        super.shutdown();
-    }
 
     @Override
     public UUID getUUID(String username) {
@@ -48,6 +44,14 @@ public class FabricDCLink extends DCLink {
             }
         }
         return null;
+    }
+
+    @Override
+    protected void kickPlayer(MinecraftPlayer minecraftPlayer, Component message) {
+        ServerPlayer player = server.getPlayerList().getPlayer(minecraftPlayer.getUuid());
+        if(player != null){
+            player.connection.disconnect(mod.adventure().toNative(message));
+        }
     }
 
     @Override
@@ -83,5 +87,9 @@ public class FabricDCLink extends DCLink {
     @Override
     public File getDataFolder() {
         return FabricLoader.getInstance().getConfigDir().toFile();
+    }
+
+    public void setServer(MinecraftServer server) {
+        this.server = server;
     }
 }

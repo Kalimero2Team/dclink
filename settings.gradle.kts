@@ -17,7 +17,8 @@ dependencyResolutionManagement{
             library("adventure-api","net.kyori","adventure-api").versionRef("adventure")
             library("adventure-minimessage","net.kyori","adventure-text-minimessage").versionRef("adventure")
             library("floodgate-api","org.geysermc.floodgate","api").versionRef("floodgate-api")
-
+            library("commandframework-core","cloud.commandframework","cloud-core").versionRef("commandframework")
+            library("commandframework-brigadier","cloud.commandframework","cloud-brigadier").versionRef("commandframework")
 
             // Spigot
             plugin("plugin-yml","net.minecrell.plugin-yml.bukkit").version("0.5.2")
@@ -55,6 +56,7 @@ dependencyResolutionManagement{
 
             library("fabric-loader","net.fabricmc","fabric-loader").versionRef("fabric-loader")
             library("fabric-api","net.fabricmc.fabric-api","fabric-api").versionRef("fabric-api")
+            library("fabric-api-deprecated","net.fabricmc.fabric-api","fabric-api-deprecated").versionRef("fabric-api")
             library("adventure-fabric","net.kyori","adventure-platform-fabric").versionRef("adventure-platform-fabric")
             library("commandframework-fabric","cloud.commandframework","cloud-fabric").versionRef("commandframework")
         }

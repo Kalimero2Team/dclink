@@ -42,16 +42,16 @@ public class DiscordAccountLinker extends ListenerAdapter {
     protected DiscordAccountLinker(DCLink dcLink, JDA jda) {
         this.dcLink = dcLink;
         this.jda = jda;
-        this.config = dcLink.getConfig().discordConfiguration;
-        this.messages = dcLink.getMessages().discordBotMessages;
+        this.config = dcLink.getConfig().getDiscordConfiguration();
+        this.messages = dcLink.getMessages().getDiscordBotMessages();
         this.preLinkedPlayers = new HashMap<>();
 
-        Guild guild = jda.getGuildById(config.guild);
+        Guild guild = jda.getGuildById(config.getGuild());
         if (guild == null) {
-            logger.error("Could not find guild with id {}", config.guild);
+            logger.error("Could not find guild with id {}", config.getGuild());
             return;
         }
-        String linkRoleId = config.linkRole;
+        String linkRoleId = config.getLinkRole();
         if(linkRoleId == null){
             logger.info("No link role configured");
         }else{
@@ -68,9 +68,9 @@ public class DiscordAccountLinker extends ListenerAdapter {
     }
 
     private void sendLinkChannelMessage(){
-        TextChannel linkChannel = jda.getTextChannelById(config.linkChannel);
+        TextChannel linkChannel = jda.getTextChannelById(config.getLinkChannel());
         if(linkChannel == null){
-            logger.error("Could not find link channel with id {}", config.linkChannel);
+            logger.error("Could not find link channel with id {}", config.getLinkChannel());
             return;
         }
         boolean found = linkChannel.retrievePinnedMessages().complete().stream().anyMatch(message -> message.getAuthor().getId().equals(jda.getSelfUser().getId()));
@@ -86,7 +86,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event){
         boolean isSelf = event.getAuthor().getId().equals(jda.getSelfUser().getId());
         // Deletes Pin Message
-        if(isSelf && event.getChannel().getId().equals(config.linkChannel) && event.getMessage().getType().equals(MessageType.CHANNEL_PINNED_ADD)){
+        if(isSelf && event.getChannel().getId().equals(config.getLinkChannel()) && event.getMessage().getType().equals(MessageType.CHANNEL_PINNED_ADD)){
             event.getMessage().delete().queue();
         }
     }
@@ -110,13 +110,13 @@ public class DiscordAccountLinker extends ListenerAdapter {
             event.editMessage("Removed Command").setActionRows().queue();
         }
 
-        Guild guild = jda.getGuildById(config.guild);
+        Guild guild = jda.getGuildById(config.getGuild());
         if (guild == null) {
-            logger.error("Could not find guild with id {}", config.guild);
+            logger.error("Could not find guild with id {}", config.getGuild());
             return;
         }
 
-        if(event.getChannel().getId().equals(config.linkChannel)){
+        if(event.getChannel().getId().equals(config.getLinkChannel())){
             DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
             if (componentId.equals("add")){
                 TextInput code = TextInput.create("code", messages.modalInputDescription, TextInputStyle.SHORT)
@@ -133,7 +133,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
                     logger.info(event.getUser().getName() + " accepted the rules");
                     event.editMessage(messages.rulesAccepted).setActionRows().queue();
                     if(giveRoleWhenLinked){
-                        guild.addRoleToMember(event.getUser(), Objects.requireNonNull(guild.getRoleById(config.linkRole))).queue();
+                        discordAccount.addRole(dcLink.getDiscordRole(config.getLinkRole()));
                     }
                 }else {
                     logger.error(event.getUser().getName() + " tried to accept the rules but was not prelinked");
@@ -179,19 +179,22 @@ public class DiscordAccountLinker extends ListenerAdapter {
                     }
                 }
 
-                boolean overBedrockLimit = bedrock >= dcLink.getConfig().linkingConfiguration.bedrockLimit;
-                boolean overJavaLimit = java >= dcLink.getConfig().linkingConfiguration.javaLimit;
+                int bedrockLimit = dcLink.getConfig().getLinkingConfiguration().getBedrockLimit();
+                int javaLimit = dcLink.getConfig().getLinkingConfiguration().getJavaLimit();
+
+                boolean overBedrockLimit = bedrock >= bedrockLimit;
+                boolean overJavaLimit = java >= javaLimit;
 
                 boolean isBedrock = dcLink.isBedrock(minecraftPlayer);
                 boolean isJava = !isBedrock;
                 logger.info("{} is attempting to link {} which is a {} Account", event.getUser().getName(), minecraftPlayer.getName(), isBedrock ? "Bedrock":"Java");
 
                 if(overBedrockLimit && isBedrock) {
-                    logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getUser().getName(), bedrock, dcLink.getConfig().linkingConfiguration.bedrockLimit);
+                    logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getUser().getName(), bedrock, bedrockLimit);
                     event.reply(messages.maxBedrock).setEphemeral(true).queue();
                     return;
                 } else if (overJavaLimit && isJava) {
-                    logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getUser().getName(), java, dcLink.getConfig().linkingConfiguration.javaLimit);
+                    logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getUser().getName(), java, javaLimit);
                     event.reply(messages.maxJava).setEphemeral(true).queue();
                     return;
                 }

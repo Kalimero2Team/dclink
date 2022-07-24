@@ -15,8 +15,8 @@ public class DCLinkMessages {
 
     private final HoconConfigurationLoader loader;
     private final CommentedConfigurationNode node;
-    public final DiscordBotMessages discordBotMessages;
-    public final MinecraftMessages minecraftMessages;
+    private final DiscordBotMessages discordBotMessages;
+    private final MinecraftMessages minecraftMessages;
 
     public DCLinkMessages(String configPath) throws ConfigurateException {
         File config = new File(configPath);
@@ -78,4 +78,11 @@ public class DCLinkMessages {
         return MiniMessage.miniMessage().deserialize(message, tagResolvers);
     }
 
+    public DiscordBotMessages getDiscordBotMessages() {
+        return discordBotMessages;
+    }
+
+    public MinecraftMessages getMinecraftMessages() {
+        return minecraftMessages;
+    }
 }

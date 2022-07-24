@@ -14,9 +14,9 @@ public class DCLinkConfig {
 
     private final HoconConfigurationLoader loader;
     private final CommentedConfigurationNode node;
-    public final DatabaseConfiguration databaseConfiguration;
-    public final DiscordConfiguration discordConfiguration;
-    public final LinkingConfiguration linkingConfiguration;
+    private final DatabaseConfiguration databaseConfiguration;
+    private final DiscordConfiguration discordConfiguration;
+    private final LinkingConfiguration linkingConfiguration;
 
 
     public DCLinkConfig(String configPath) throws ConfigurateException {
@@ -50,51 +50,114 @@ public class DCLinkConfig {
     @ConfigSerializable
     public static class DatabaseConfiguration{
         @Comment("The Sqlite database filename")
-        public String sqliteFile = "dclink.db";
+        private String sqliteFile = "dclink.db";
 
+        public String getSqliteFile() {
+            return sqliteFile;
+        }
 
-        /* Future Options when multiple database types are supported
-        @Comment("The JDBC URL to use for the database (e.g. jdbc:mysql://localhost:3306/dclink)")
-        private String jdbcUrl = "";
-        @Comment("The username to use for the database (Can be left blank if the database (type) isn't requiring authentication)")
-        private String username = "";
-        @Comment("The password to use for the database (Can be left blank if the database (type) isn't requiring authentication)")
-        private String password = "";
-
-        public String getJdbcUrl() {
-            return jdbcUrl;
+        public void setSqliteFile(String sqliteFile) {
+            this.sqliteFile = sqliteFile;
         }
-        public String getUserName() {
-            return username;
-        }
-        public String getPassword() {
-            return password;
-        }
-        */
     }
 
     @ConfigSerializable
     public static class DiscordConfiguration {
         @Comment("Bot Token (see https://discord.com/developers/applications)")
-        public String token = "";
+        private String token = "";
         @Comment("Guild ID of the Guild where the bot will run")
-        public String guild = "";
+        private String guild = "";
         @Comment("Channel ID of the channel where the bot will send the message with the button to link their account")
-        public String linkChannel = "";
+        private String linkChannel = "";
         @Comment("Role ID of the role that the bot will give to the linked players (If left blank, the bot will not give any roles)")
-        public @Nullable String linkRole = "";
+        private @Nullable String linkRole = "";
         @Comment("Message to show on the bot's status")
-        public String statusMessage = "Minecraft";
+        private String statusMessage = "Minecraft";
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public String getGuild() {
+            return guild;
+        }
+
+        public void setGuild(String guild) {
+            this.guild = guild;
+        }
+
+        public String getLinkChannel() {
+            return linkChannel;
+        }
+
+        public void setLinkChannel(String linkChannel) {
+            this.linkChannel = linkChannel;
+        }
+
+        public String getLinkRole() {
+            return linkRole;
+        }
+
+        public void setLinkRole(String linkRole) {
+            this.linkRole = linkRole;
+        }
+
+        public String getStatusMessage() {
+            return statusMessage;
+        }
+
+        public void setStatusMessage(String statusMessage) {
+            this.statusMessage = statusMessage;
+        }
     }
 
     @ConfigSerializable
     public static class LinkingConfiguration{
         @Comment("If true, the player needs to be linked before they can join the server")
-        public boolean linkRequired = true;
+        private boolean linkRequired = true;
         @Comment("Limit of Java Edition accounts that can be linked to one Discord account")
-        public int javaLimit = 1;
+        private int javaLimit = 1;
         @Comment("Limit of Bedrock Edition accounts that can be linked to one Discord account. Requires Floodgate to be installed")
-        public int bedrockLimit = 1;
+        private int bedrockLimit = 1;
+
+        public boolean isLinkRequired() {
+            return linkRequired;
+        }
+
+        public void setLinkRequired(boolean linkRequired) {
+            this.linkRequired = linkRequired;
+        }
+
+        public int getJavaLimit() {
+            return javaLimit;
+        }
+
+        public void setJavaLimit(int javaLimit) {
+            this.javaLimit = javaLimit;
+        }
+
+        public int getBedrockLimit() {
+            return bedrockLimit;
+        }
+
+        public void setBedrockLimit(int bedrockLimit) {
+            this.bedrockLimit = bedrockLimit;
+        }
     }
 
+    public DatabaseConfiguration getDatabaseConfiguration() {
+        return databaseConfiguration;
+    }
+
+    public DiscordConfiguration getDiscordConfiguration() {
+        return discordConfiguration;
+    }
+
+    public LinkingConfiguration getLinkingConfiguration() {
+        return linkingConfiguration;
+    }
 }

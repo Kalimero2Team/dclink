@@ -1,10 +1,12 @@
 package com.kalimero2.team.dclink.paper;
 
 import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.command.Commands;
+import com.kalimero2.team.dclink.paper.command.PaperCommands;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
+import net.kyori.adventure.text.Component;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -26,18 +28,16 @@ public class PaperDCLink extends DCLink {
     }
 
     @Override
-    public void init() {
-        super.init();
-    }
-
-    @Override
     public void load() {
+        try {
+            PaperCommands paperCommands = new PaperCommands(this);
+            Commands commands = new Commands(this, paperCommands);
+            commands.registerCommands();
+            getLogger().info("Registered Commands");
+        } catch (Exception e) {
+            getLogger().error("Failed to initialize Commands " + e.getMessage());
+        }
         super.load();
-    }
-
-    @Override
-    public void shutdown() {
-        super.shutdown();
     }
 
     @Override
@@ -78,30 +78,15 @@ public class PaperDCLink extends DCLink {
     }
 
     @Override
-    public void unLinkAccount(MinecraftPlayer minecraftPlayer) {
-        kickUnlinked(minecraftPlayer);
-        super.unLinkAccount(minecraftPlayer);
-    }
-
-    @Override
-    public void unLinkAccounts(DiscordAccount discordAccount) {
-        discordAccount.getLinkedPlayers().forEach(this::kickUnlinked);
-        super.unLinkAccounts(discordAccount);
-    }
-
-    private void kickUnlinked(MinecraftPlayer minecraftPlayer) {
-        if (getConfig().linkingConfiguration != null && getConfig().linkingConfiguration.linkRequired) {
-            OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(minecraftPlayer.getUuid());
-            if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
-                new BukkitRunnable(){
-                    @Override
-                    public void run() {
-                        if (getMessages().minecraftMessages != null) {
-                            offlinePlayer.getPlayer().kick(getMessages().getMinifiedMessage(getMessages().minecraftMessages.kickUnlinked));
-                        }
-                    }
-                }.runTask(plugin);
-            }
+    protected void kickPlayer(MinecraftPlayer minecraftPlayer, Component message) {
+        OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(minecraftPlayer.getUuid());
+        if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    offlinePlayer.getPlayer().kick(message);
+                }
+            }.runTask(plugin);
         }
     }
 

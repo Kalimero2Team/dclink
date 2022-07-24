@@ -1,9 +1,18 @@
 package com.kalimero2.team.dclink.spigot;
 
-import com.kalimero2.team.dclink.spigot.commands.CommandManager;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpigotPlugin extends JavaPlugin {
+
+    private BukkitAudiences adventure;
+
+    public BukkitAudiences adventure() {
+        if(this.adventure == null) {
+            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
+        }
+        return this.adventure;
+    }
 
     private SpigotDCLink spigotDCLink;
 
@@ -20,9 +29,9 @@ public class SpigotPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         spigotDCLink.load();
+        this.adventure = BukkitAudiences.create(this);
         getServer().getPluginManager().registerEvents(new SpigotDCLinkListener(spigotDCLink), this);
         try {
-            new CommandManager(spigotDCLink);
             spigotDCLink.getLogger().info("Registered Commands");
         } catch (Exception e) {
             spigotDCLink.getLogger().error("Failed to initialize Commands" + e.getMessage());
@@ -32,5 +41,9 @@ public class SpigotPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         spigotDCLink.shutdown();
+        if(this.adventure != null) {
+            this.adventure.close();
+            this.adventure = null;
+        }
     }
 }

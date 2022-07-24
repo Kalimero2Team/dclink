@@ -6,6 +6,7 @@ import com.kalimero2.team.dclink.api.discord.DiscordRole;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
@@ -54,8 +55,8 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
         }
 
         List<DiscordRole> roleList = new ArrayList<>();
-        if(dcLink.getConfig().discordConfiguration != null){
-            Guild guild = jda.getGuildById(dcLink.getConfig().discordConfiguration.guild);
+        if(dcLink.getConfig().getDiscordConfiguration() != null){
+            Guild guild = jda.getGuildById(dcLink.getConfig().getDiscordConfiguration().getGuild());
             if(guild != null){
                 Member member = guild.retrieveMemberById(this.discordId).complete();
                 if(member != null){
@@ -68,17 +69,49 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
     }
 
     @Override
+    public boolean addRole(DiscordRole apiRole) {
+        if(this.discordId == null) {
+            return false;
+        }
+        Guild guild = jda.getGuildById(dcLink.getConfig().getDiscordConfiguration().getGuild());
+        if(guild != null){
+            Role role = guild.getRoleById(apiRole.getId());
+            if(role != null){
+                Member member = guild.retrieveMemberById(this.discordId).complete();
+                guild.addRoleToMember(member, role).complete();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean removeRole(DiscordRole apiRole) {
+        if(this.discordId == null) {
+            return false;
+        }
+        Guild guild = jda.getGuildById(dcLink.getConfig().getDiscordConfiguration().getGuild());
+        if(guild != null){
+            Role role = guild.getRoleById(apiRole.getId());
+            if(role != null){
+                Member member = guild.retrieveMemberById(this.discordId).complete();
+                guild.removeRoleFromMember(member, role).complete();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean isMemberOfGuild() {
         if(this.discordId == null) {
             return false;
         }
 
-        if(dcLink.getConfig().discordConfiguration != null){
-            Guild guild = jda.getGuildById(dcLink.getConfig().discordConfiguration.guild);
-            if(guild != null){
-                Member member = guild.retrieveMemberById(this.discordId).complete();
-                return member != null;
-            }
+        Guild guild = jda.getGuildById(dcLink.getConfig().getDiscordConfiguration().getGuild());
+        if(guild != null){
+            Member member = guild.retrieveMemberById(this.discordId).complete();
+            return member != null;
         }
         return false;
     }

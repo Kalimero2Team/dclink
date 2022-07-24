@@ -1,6 +1,7 @@
 package com.kalimero2.team.dclink.paper;
 
-import com.kalimero2.team.dclink.paper.commands.CommandManager;
+import com.kalimero2.team.dclink.command.Commands;
+import com.kalimero2.team.dclink.paper.command.PaperCommands;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class PaperPlugin extends JavaPlugin {
@@ -21,12 +22,6 @@ public class PaperPlugin extends JavaPlugin {
     public void onEnable() {
         paperDCLink.load();
         getServer().getPluginManager().registerEvents(new PaperDCLinkListener(paperDCLink), this);
-        try {
-            new CommandManager(paperDCLink);
-            paperDCLink.getLogger().info("Registered Commands");
-        } catch (Exception e) {
-            paperDCLink.getLogger().error("Failed to initialize Commands" + e.getMessage());
-        }
     }
 
     @Override

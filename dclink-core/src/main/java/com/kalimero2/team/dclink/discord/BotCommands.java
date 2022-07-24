@@ -159,8 +159,11 @@ public class BotCommands extends ListenerAdapter {
                 if(discordAccount.getLinkedPlayers().contains(minecraftPlayer)){
                     event.reply("Minecraft account " + minecraftPlayer.getName() + " is already linked to " + user.getAsMention()).setEphemeral(true).queue();
                 }else{
-                    dcLink.linkAccounts(minecraftPlayer, discordAccount);
-                    event.reply("Linked " + user.getAsMention() + " to " + minecraftPlayer.getName()).setEphemeral(true).queue();
+                    if(dcLink.linkAccounts(minecraftPlayer, discordAccount)){
+                        event.reply("Linked " + user.getAsMention() + " to " + minecraftPlayer.getName()).setEphemeral(true).queue();
+                    }else{
+                        event.reply("Could not link " + user.getAsMention() + " to " + minecraftPlayer.getName()).setEphemeral(true).queue();
+                    }
                 }
             }
         }
