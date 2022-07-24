@@ -1,19 +1,25 @@
-# DCLink
+# DCLink (WIP)
 
-TODO:
-- [x] Add Minecraft Commands *(currently only on Paper)*
-  - [x] /discord Command
-  - [x] /unlink Command
-  - [x] /alts Command
-- [x] Add Discord /link Command
-- [x] Add Discord /unlink Command
-- [x] Add Discord /minecraft Command
-- [x] Add MiniMessage Messages to Message Config
-- [ ] Add other Platforms:
-  - [x] Velocity
-  - [x] *Fabric*
-  - [ ] *Forge*
-  - [ ] *Bungeecord/Waterfall*
-  - [x] *Bukkit/Spigot*
-- [ ] Add more (/remote) Database Options
-- [ ] Create (more) Documentation
+DCLink is a simple plugin/mod for Linking Minecraft Accounts with Discord Accounts.
+
+
+## Setup
+
+TODO: Create Setup Guide
+
+## Links
+[Wiki](https://github.com/Kalimero2Team/dclink/wiki/)
+
+**Downloads:**\
+[Paper Forums (Paper Version)]() \
+[Paper Forums (Velocity Version)]() \
+[SpigotMC (Spigot Version)](https://www.spigotmc.org/resources/dclink.103585/) \
+*[Modrinth (Fabric Version)](https://modrinth.com/mod/dclink)*
+
+## Libraries Used
+
+- [JDA](https://github.com/DV8FromTheWorld/JDA)
+- [Adventure](https://github.com/KyoriPowered/adventure)
+- [Cloud](https://github.com/Incendo/cloud)
+- [Configurate](https://github.com/SpongePowered/Configurate) 
+- [Sqlite JDBC](https://github.com/xerial/sqlite-jdbc)

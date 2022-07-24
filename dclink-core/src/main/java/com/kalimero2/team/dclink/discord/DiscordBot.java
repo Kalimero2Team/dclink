@@ -21,7 +21,13 @@ public class DiscordBot {
     public DiscordBot(DCLink dcLink) throws LoginException, InterruptedException {
         this.dcLink = dcLink;
         this.discordConfiguration = dcLink.getConfig().getDiscordConfiguration();
-        JDABuilder builder = JDABuilder.createDefault(discordConfiguration.getToken());
+        String token = discordConfiguration.getToken();
+        if(token.equals("")){
+            logger.error("No token found in config");
+            throw new LoginException("No token found in config");
+        }
+
+        JDABuilder builder = JDABuilder.createDefault(token);
         builder.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE);
         builder.setBulkDeleteSplittingEnabled(false);
         builder.disableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_TYPING);
@@ -46,5 +52,9 @@ public class DiscordBot {
 
     public JDA getJda() {
         return jda;
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 }

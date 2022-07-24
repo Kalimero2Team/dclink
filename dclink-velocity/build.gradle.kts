@@ -13,7 +13,7 @@ dependencies {
     compileOnly(libs.velocity.api)
     annotationProcessor(libs.velocity.api)
     implementation(libs.adventure.minimessage)
-    implementation(libs.commandframework.velocity)
+    implementation(libs.cloud.velocity)
     implementation(project(":dclink-api"))
     implementation(project(":dclink-core"))
 }

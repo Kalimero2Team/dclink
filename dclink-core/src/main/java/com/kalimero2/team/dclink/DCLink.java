@@ -60,6 +60,7 @@ public abstract class DCLink implements DCLinkApi {
             } catch (LoginException | InterruptedException e) {
                 logger.error("Failed to load discord bot", e);
                 shutdownServer();
+                return;
             }
             logger.info("Initialised Discord bot");
             try {

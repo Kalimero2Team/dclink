@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     paperDevBundle(libs.versions.paper.api.get())
-    bukkitLibrary(libs.commandframework.paper)
+    bukkitLibrary(libs.cloud.paper)
     bukkitLibrary(libs.configurate.hocon)
     bukkitLibrary(libs.jda)
     bukkitLibrary(libs.sqlite)

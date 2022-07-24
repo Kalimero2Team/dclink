@@ -35,13 +35,15 @@ public class VelocityDCLink extends DCLink {
 
     @Override
     public void load() {
-        try {
-            VelocityCommands paperCommands = new VelocityCommands(this);
-            Commands commands = new Commands(this, paperCommands);
-            commands.registerCommands();
-            getLogger().info("Registered Commands");
-        } catch (Exception e) {
-            getLogger().error("Failed to initialize Commands " + e.getMessage());
+        if(isInitialised()){
+            try {
+                VelocityCommands paperCommands = new VelocityCommands(this);
+                Commands commands = new Commands(this, paperCommands);
+                commands.registerCommands();
+                getLogger().info("Registered Commands");
+            } catch (Exception e) {
+                getLogger().error("Failed to initialize Commands " + e.getMessage());
+            }
         }
         super.load();
     }

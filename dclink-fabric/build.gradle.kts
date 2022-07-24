@@ -17,7 +17,7 @@ dependencies {
     modImplementation(libs.fabric.loader)
     modImplementation(libs.fabric.api)
     modImplementation(libs.adventure.fabric)
-    modImplementation(libs.commandframework.fabric)
+    modImplementation(libs.cloud.fabric)
 
     implementation(project(":dclink-core"))
     include(project(":dclink-core"))

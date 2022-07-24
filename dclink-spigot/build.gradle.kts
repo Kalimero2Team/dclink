@@ -17,10 +17,15 @@ dependencies {
     compileOnly(libs.spigot.api)
     bukkitLibrary(libs.adventure.bukkit)
     bukkitLibrary(libs.adventure.minimessage)
-    bukkitLibrary(libs.commandframework.bukkit)
+    bukkitLibrary(libs.cloud.bukkit)
     bukkitLibrary(libs.configurate.hocon)
-    bukkitLibrary(libs.jda)
+    bukkitLibrary(libs.jda){
+        exclude("club.minnced","opus-java")
+    }
     bukkitLibrary(libs.sqlite)
+    bukkitLibrary(libs.commodore){
+        exclude("com.mojang","brigadier")
+    }
     implementation(project(":dclink-api"))
     implementation(project(":dclink-core")){
         exclude("*", "*") // Excludes all dependencies of dclink-core because they are put into the plugin.yml file
@@ -33,4 +38,10 @@ bukkit {
     apiVersion = "1.19"
     authors = listOf("byquanton")
     softDepend = listOf("floodgate")
+}
+
+tasks {
+    assemble {
+        dependsOn(shadowJar)
+    }
 }

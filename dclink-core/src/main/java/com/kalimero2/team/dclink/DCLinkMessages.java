@@ -46,17 +46,17 @@ public class DCLinkMessages {
 
     @ConfigSerializable
     public static class DiscordBotMessages{
-        public String add = "Click to add yourself to the whitelist";
+        public String add = "Link Account";
         public String accept = "Accept";
         public String decline = "Decline";
-        public String infoChannel = "Press the button below to link your account";
-        public String wrongCode = "The code you entered is incorrect";
-        public String maxBedrock = "You can't link any more Java accounts.";
+        public String infoChannel = "Press the button below to link your account.";
+        public String wrongCode = "The code you entered is incorrect.";
+        public String maxBedrock = "You can't link any more Bedrock accounts.";
         public String maxJava = "You can't link any more Java accounts.";
         public String alreadyLinked = "You are already linked to this account.";
 
-        public String rules = "To join the server you have to accept the rules";
-        public String rulesAccepted = "You have accepted the rules. You can now join the server.";
+        public String rules = "Accept the following rules in order to link your account!\nRules: \nRule1\nRule2\nRule3";
+        public String rulesAccepted = "You have accepted the rules! Your account is now linked.";
         public String rulesDenied = "You have denied the rules.";
         public String genericLinkError = "An error occurred while linking your accounts. Contact the server administrator if this problem persists.";
 

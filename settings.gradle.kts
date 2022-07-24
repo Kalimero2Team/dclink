@@ -9,7 +9,7 @@ dependencyResolutionManagement{
             version("sqlite","3.36.0.3")
             version("adventure","4.11.0")
             version("floodgate-api","2.0-SNAPSHOT")
-            version("commandframework", "1.7.0")
+            version("cloud", "1.7.0")
 
             library("jda","net.dv8tion","JDA").versionRef("jda")
             library("configurate-hocon","org.spongepowered","configurate-hocon").versionRef("configurate-hocon")
@@ -17,17 +17,19 @@ dependencyResolutionManagement{
             library("adventure-api","net.kyori","adventure-api").versionRef("adventure")
             library("adventure-minimessage","net.kyori","adventure-text-minimessage").versionRef("adventure")
             library("floodgate-api","org.geysermc.floodgate","api").versionRef("floodgate-api")
-            library("commandframework-core","cloud.commandframework","cloud-core").versionRef("commandframework")
-            library("commandframework-brigadier","cloud.commandframework","cloud-brigadier").versionRef("commandframework")
+            library("cloud-core","cloud.commandframework","cloud-core").versionRef("cloud")
+            library("cloud-brigadier","cloud.commandframework","cloud-brigadier").versionRef("cloud")
 
             // Spigot
             plugin("plugin-yml","net.minecrell.plugin-yml.bukkit").version("0.5.2")
             version("spigot-api","1.19-R0.1-SNAPSHOT")
             version("adventure-platform","4.1.1")
+            version("commodore","2.0")
 
             library("spigot-api","org.spigotmc","spigot-api").versionRef("spigot-api")
             library("adventure-bukkit","net.kyori","adventure-platform-bukkit").versionRef("adventure-platform")
-            library("commandframework-bukkit","cloud.commandframework","cloud-bukkit").versionRef("commandframework")
+            library("cloud-bukkit","cloud.commandframework","cloud-bukkit").versionRef("cloud")
+            library("commodore","me.lucko","commodore").versionRef("commodore")
 
 
             // Paper
@@ -36,14 +38,14 @@ dependencyResolutionManagement{
 
             version("paper-api","1.19-R0.1-SNAPSHOT")
 
-            library("commandframework-paper","cloud.commandframework","cloud-paper").versionRef("commandframework")
+            library("cloud-paper","cloud.commandframework","cloud-paper").versionRef("cloud")
 
 
             // Velocity
             version("velocity-api","3.1.1")
 
             library("velocity-api","com.velocitypowered","velocity-api").versionRef("velocity-api")
-            library("commandframework-velocity","cloud.commandframework","cloud-velocity").versionRef("commandframework")
+            library("cloud-velocity","cloud.commandframework","cloud-velocity").versionRef("cloud")
 
 
             // Fabric
@@ -58,7 +60,7 @@ dependencyResolutionManagement{
             library("fabric-api","net.fabricmc.fabric-api","fabric-api").versionRef("fabric-api")
             library("fabric-api-deprecated","net.fabricmc.fabric-api","fabric-api-deprecated").versionRef("fabric-api")
             library("adventure-fabric","net.kyori","adventure-platform-fabric").versionRef("adventure-platform-fabric")
-            library("commandframework-fabric","cloud.commandframework","cloud-fabric").versionRef("commandframework")
+            library("cloud-fabric","cloud.commandframework","cloud-fabric").versionRef("cloud")
         }
     }
 }

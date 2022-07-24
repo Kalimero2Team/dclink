@@ -27,13 +27,15 @@ public class SpigotDCLink extends DCLink {
 
     @Override
     public void load() {
-        try {
-            SpigotCommands paperCommands = new SpigotCommands(this);
-            Commands commands = new Commands(this, paperCommands);
-            commands.registerCommands();
-            getLogger().info("Registered Commands");
-        } catch (Exception e) {
-            getLogger().error("Failed to initialize Commands " + e.getMessage());
+        if(isInitialised()){
+            try {
+                SpigotCommands paperCommands = new SpigotCommands(this);
+                Commands commands = new Commands(this, paperCommands);
+                commands.registerCommands();
+                getLogger().info("Registered Commands");
+            } catch (Exception e) {
+                getLogger().error("Failed to initialize Commands " + e.getMessage());
+            }
         }
         super.load();
     }

@@ -26,9 +26,7 @@ public class FabricMod implements DedicatedServerModInitializer {
     public void onInitializeServer() {
         fabricDCLink = new FabricDCLink(this);
         fabricDCLink.init();
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            fabricDCLink.setServer(server);
-        });
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> fabricDCLink.setServer(server));
         ServerPlayConnectionEvents.INIT.register((handler, server) -> {
             MinecraftPlayer minecraftPlayer = fabricDCLink.getMinecraftPlayer(handler.getPlayer().getUUID());
             DCLink.JoinResult joinResult = fabricDCLink.onLogin(minecraftPlayer);
@@ -38,7 +36,7 @@ public class FabricMod implements DedicatedServerModInitializer {
         });
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             try {
-                FabricCommands paperCommands = new FabricCommands(fabricDCLink);
+                FabricCommands paperCommands = new FabricCommands();
                 Commands commands = new Commands(fabricDCLink, paperCommands);
                 commands.registerCommands();
                 fabricDCLink.getLogger().info("Registered Commands");
@@ -46,17 +44,9 @@ public class FabricMod implements DedicatedServerModInitializer {
                 fabricDCLink.getLogger().error("Failed to initialize Commands " + e.getMessage());
             }
         });
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            this.adventure = FabricServerAudiences.of(server);
-        });
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            fabricDCLink.load();
-        });
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-            fabricDCLink.shutdown();
-        });
-        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-            this.adventure = null;
-        });
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> this.adventure = FabricServerAudiences.of(server));
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> fabricDCLink.load());
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> fabricDCLink.shutdown());
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> this.adventure = null);
     }
 }

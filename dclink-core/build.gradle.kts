@@ -9,8 +9,8 @@ dependencies {
     implementation(project(":dclink-api"))
     implementation(libs.adventure.api)
     implementation(libs.adventure.minimessage)
-    implementation(libs.commandframework.core)
-    implementation(libs.commandframework.brigadier)
+    implementation(libs.cloud.core)
+    implementation(libs.cloud.brigadier)
     compileOnly(libs.floodgate.api)
     implementation(libs.configurate.hocon)
     implementation(libs.jda) {
