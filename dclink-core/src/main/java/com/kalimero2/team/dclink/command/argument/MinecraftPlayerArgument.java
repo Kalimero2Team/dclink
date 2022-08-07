@@ -88,7 +88,7 @@ public final class MinecraftPlayerArgument<C> extends CommandArgument<C, Minecra
 
         @Override
         public List<String> suggestions(final CommandContext<C> commandContext, final String input) {
-            return List.of("");
+            return commandContext.get(Commands.PLATFORMCOMMANDS).playerArgumentSuggestions(commandContext);
         }
     }
 

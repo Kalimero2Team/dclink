@@ -2,8 +2,6 @@ package com.kalimero2.team.dclink.fabric;
 
 import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
-import com.kalimero2.team.dclink.command.Commands;
-import com.kalimero2.team.dclink.fabric.command.FabricCommands;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import net.fabricmc.loader.api.FabricLoader;
@@ -91,5 +89,9 @@ public class FabricDCLink extends DCLink {
 
     public void setServer(MinecraftServer server) {
         this.server = server;
+    }
+
+    public MinecraftServer getServer() {
+        return server;
     }
 }

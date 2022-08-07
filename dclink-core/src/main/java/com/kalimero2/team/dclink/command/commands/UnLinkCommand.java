@@ -2,13 +2,11 @@ package com.kalimero2.team.dclink.command.commands;
 
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.context.CommandContext;
-import com.kalimero2.team.dclink.DCLinkMessages;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import com.kalimero2.team.dclink.command.Commander;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.command.DCLinkCommand;
-import com.kalimero2.team.dclink.command.PlayerCommander;
 import com.kalimero2.team.dclink.command.argument.MinecraftPlayerArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -29,21 +27,16 @@ public class UnLinkCommand extends DCLinkCommand {
     }
 
     private void unLink(CommandContext<Commander> context) {
-        if(context.getSender() instanceof PlayerCommander player){
-            MinecraftPlayer minecraftPlayer = context.getOrDefault("player", player.player());
-            DiscordAccount discordAccount = null;
-            if(minecraftPlayer != null){
-                discordAccount = minecraftPlayer.getDiscordAccount();
-            }
+        MinecraftPlayer minecraftPlayer = context.get("player");
+        DiscordAccount discordAccount = minecraftPlayer.getDiscordAccount();
 
-            if(discordAccount == null){
-                Component message = dcLink.getMessages().getMinifiedMessage(dcLink.getMessages().getMinecraftMessages().notLinked);
-                player.sendMessage(message);
-            }else{
-                dcLink.unLinkAccount(minecraftPlayer);
-                Component message = dcLink.getMessages().getMinifiedMessage(dcLink.getMessages().getMinecraftMessages().unLinkCommand, Placeholder.unparsed("player", minecraftPlayer.getName()));
-                player.sendMessage(message);
-            }
+        if(discordAccount == null){
+            Component message = dcLink.getMessages().getMinifiedMessage(dcLink.getMessages().getMinecraftMessages().notLinked);
+            context.getSender().sendMessage(message);
+        }else{
+            dcLink.unLinkAccount(minecraftPlayer);
+            Component message = dcLink.getMessages().getMinifiedMessage(dcLink.getMessages().getMinecraftMessages().unLinkCommand, Placeholder.unparsed("player", minecraftPlayer.getName()));
+            context.getSender().sendMessage(message);
         }
     }
 }

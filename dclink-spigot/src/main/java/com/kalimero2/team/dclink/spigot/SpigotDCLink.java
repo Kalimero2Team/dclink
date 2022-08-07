@@ -48,7 +48,12 @@ public class SpigotDCLink extends DCLink {
     @Override
     protected String getUserNameViaPlatformMethods(UUID uuid) {
         if(isLoaded()){
-            return plugin.getServer().getOfflinePlayer(uuid).getName();
+            String name = plugin.getServer().getOfflinePlayer(uuid).getName();
+            if(name == null){
+                // Resolve Name of never joined player
+                name = plugin.getServer().createPlayerProfile(uuid).update().join().getName();
+            }
+            return name;
         }
         return null;
     }

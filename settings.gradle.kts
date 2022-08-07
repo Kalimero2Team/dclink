@@ -6,7 +6,7 @@ dependencyResolutionManagement{
 
             version("jda", "5.0.0-alpha.16")
             version("configurate-hocon", "4.1.2")
-            version("sqlite","3.36.0.3")
+            version("sqlite","3.39.2.0")
             version("adventure","4.11.0")
             version("floodgate-api","2.0-SNAPSHOT")
             version("cloud", "1.7.0")
@@ -22,7 +22,7 @@ dependencyResolutionManagement{
 
             // Spigot
             plugin("plugin-yml","net.minecrell.plugin-yml.bukkit").version("0.5.2")
-            version("spigot-api","1.19-R0.1-SNAPSHOT")
+            version("spigot-api","1.19.2-R0.1-SNAPSHOT")
             version("adventure-platform","4.1.1")
             version("commodore","2.0")
 
@@ -36,7 +36,7 @@ dependencyResolutionManagement{
             plugin("paper-userdev","io.papermc.paperweight.userdev").version("1.3.8")
             plugin("paper-run","xyz.jpenilla.run-paper").version("1.0.6")
 
-            version("paper-api","1.19-R0.1-SNAPSHOT")
+            version("paper-api","1.19.2-R0.1-SNAPSHOT")
 
             library("cloud-paper","cloud.commandframework","cloud-paper").versionRef("cloud")
 
@@ -51,10 +51,10 @@ dependencyResolutionManagement{
             // Fabric
             plugin("fabric-loom","fabric-loom").version("0.12.+")
 
-            version("minecraft","1.19")
-            version("fabric-loader","0.14.8")
-            version("fabric-api","0.57.0+1.19")
-            version("adventure-platform-fabric","5.4.0-SNAPSHOT")
+            version("minecraft","1.19.2")
+            version("fabric-loader","0.14.9")
+            version("fabric-api","0.59.0+1.19.2")
+            version("adventure-platform-fabric","5.5.0-SNAPSHOT")
 
             library("fabric-loader","net.fabricmc","fabric-loader").versionRef("fabric-loader")
             library("fabric-api","net.fabricmc.fabric-api","fabric-api").versionRef("fabric-api")

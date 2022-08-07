@@ -1,6 +1,5 @@
 package com.kalimero2.team.dclink.command;
 
-import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.keys.CloudKey;
@@ -17,6 +16,7 @@ import java.util.List;
 public class Commands {
 
     public static final CloudKey<DCLink> DCLINK = createTypeKey(DCLink.class);
+    public static final CloudKey<PlatformCommands> PLATFORMCOMMANDS = createTypeKey(PlatformCommands.class);
     private final CommandManager<Commander> commandManager;
     private final DCLink dcLink;
 
@@ -27,6 +27,7 @@ public class Commands {
         this.commandManager.registerCommandPreProcessor(preprocessContext -> {
             final CommandContext<Commander> commandContext = preprocessContext.getCommandContext();
             commandContext.store(DCLINK, dcLink);
+            commandContext.store(PLATFORMCOMMANDS, platformCommands);
         });
     }
 

@@ -18,18 +18,6 @@ public class SpigotPlugin extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        try{
-            Class.forName("com.destroystokyo.paper.PaperConfig");
-            getLogger().warning("!!! WARNING !!!");
-            getLogger().warning("You are using a Paper based Server Software. Please use the Paper Version of DCLink for better performance.");
-            getLogger().warning("Link: ");
-            getLogger().warning("!!! WARNING !!!");
-
-        }catch (ClassNotFoundException ignored){
-
-        }
-
-
         if(spigotDCLink == null){
             spigotDCLink = new SpigotDCLink(this);
             spigotDCLink.init();

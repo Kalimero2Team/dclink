@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,21 +26,29 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
         this.discordId = discordId;
     }
 
-    @Override
-    public String getName() {
+    @Nullable
+    private User getUser() {
         if(this.discordId == null) {
             return null;
         }
-        User user = jda.retrieveUserById(this.discordId).complete();
+        User user = jda.getUserById(this.discordId);
+        if(user == null){
+            user = jda.retrieveUserById(this.discordId).useCache(true).complete();
+        }
+        return user;
+    }
+
+    @Override
+    public String getName() {
+        User user = getUser();
+        if (user == null) return null;
         return user.getName();
     }
 
     @Override
     public String getDiscriminator() {
-        if(this.discordId == null) {
-            return null;
-        }
-        User user = jda.retrieveUserById(this.discordId).complete();
+        User user = getUser();
+        if (user == null) return null;
         return user.getDiscriminator();
     }
 
@@ -60,8 +69,7 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
             if(guild != null){
                 Member member = guild.retrieveMemberById(this.discordId).complete();
                 if(member != null){
-                    member.getRoles().forEach(role -> roleList.add(new DiscordRoleImpl(jda, role.getId()))
-                    );
+                    member.getRoles().forEach(role -> roleList.add(new DiscordRoleImpl(jda, role.getId())));
                 }
             }
         }
@@ -77,7 +85,10 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
         if(guild != null){
             Role role = guild.getRoleById(apiRole.getId());
             if(role != null){
-                Member member = guild.retrieveMemberById(this.discordId).complete();
+                Member member = guild.getMemberById(this.discordId);
+                if(member == null){
+                    member = guild.retrieveMemberById(this.discordId).complete();
+                }
                 guild.addRoleToMember(member, role).complete();
                 return true;
             }
@@ -94,7 +105,10 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
         if(guild != null){
             Role role = guild.getRoleById(apiRole.getId());
             if(role != null){
-                Member member = guild.retrieveMemberById(this.discordId).complete();
+                Member member = guild.getMemberById(this.discordId);
+                if(member == null){
+                    member = guild.retrieveMemberById(this.discordId).complete();
+                }
                 guild.removeRoleFromMember(member, role).complete();
                 return true;
             }

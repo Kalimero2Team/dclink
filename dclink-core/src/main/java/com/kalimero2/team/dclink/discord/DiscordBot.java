@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +29,10 @@ public class DiscordBot {
         }
 
         JDABuilder builder = JDABuilder.createDefault(token);
-        builder.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE);
+        builder.disableCache(CacheFlag.VOICE_STATE);
         builder.setBulkDeleteSplittingEnabled(false);
+        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
+        builder.enableCache(CacheFlag.MEMBER_OVERRIDES);
         builder.disableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_TYPING);
         builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS);
         builder.setLargeThreshold(50);

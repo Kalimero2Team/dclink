@@ -52,7 +52,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
             return;
         }
         String linkRoleId = config.getLinkRole();
-        if(linkRoleId == null){
+        if(linkRoleId == null || linkRoleId.equals("")){
             logger.info("No link role configured");
         }else{
             Role linkRole = guild.getRoleById(linkRoleId);
@@ -118,36 +118,40 @@ public class DiscordAccountLinker extends ListenerAdapter {
 
         if(event.getChannel().getId().equals(config.getLinkChannel())){
             DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
-            if (componentId.equals("add")){
-                TextInput code = TextInput.create("code", messages.modalInputDescription, TextInputStyle.SHORT)
-                        .setRequiredRange(4,4)
-                        .setRequired(true).
-                        build();
-                Modal modal = Modal.create("linkModal", messages.modalTitle).addActionRows(ActionRow.of(code)).build();
-                event.replyModal(modal).queue();
-            }else if (componentId.equals("accept")){
-                if(preLinkedPlayers.containsKey(discordAccount)){
-                    MinecraftPlayer minecraftPlayer = preLinkedPlayers.get(discordAccount);
-                    dcLink.linkAccounts(minecraftPlayer, discordAccount);
-                    preLinkedPlayers.remove(discordAccount);
-                    logger.info(event.getUser().getName() + " accepted the rules");
-                    event.editMessage(messages.rulesAccepted).setActionRows().queue();
-                    if(giveRoleWhenLinked){
-                        discordAccount.addRole(dcLink.getDiscordRole(config.getLinkRole()));
+            switch (componentId) {
+                case "add":
+                    TextInput code = TextInput.create("code", messages.modalInputDescription, TextInputStyle.SHORT)
+                            .setRequiredRange(4, 4)
+                            .setRequired(true).
+                            build();
+                    Modal modal = Modal.create("linkModal", messages.modalTitle).addActionRows(ActionRow.of(code)).build();
+                    event.replyModal(modal).queue();
+                    break;
+                case "accept":
+                    if (preLinkedPlayers.containsKey(discordAccount)) {
+                        MinecraftPlayer minecraftPlayer = preLinkedPlayers.get(discordAccount);
+                        dcLink.linkAccounts(minecraftPlayer, discordAccount);
+                        preLinkedPlayers.remove(discordAccount);
+                        logger.info(event.getUser().getName() + " accepted the rules");
+                        event.editMessage(messages.rulesAccepted).setActionRows().queue();
+                        if (giveRoleWhenLinked) {
+                            discordAccount.addRole(dcLink.getDiscordRole(config.getLinkRole()));
+                        }
+                    } else {
+                        logger.error(event.getUser().getName() + " tried to accept the rules but was not prelinked");
+                        event.editMessage(messages.genericLinkError).setActionRows().queue();
                     }
-                }else {
-                    logger.error(event.getUser().getName() + " tried to accept the rules but was not prelinked");
-                    event.editMessage(messages.genericLinkError).setActionRows().queue();
-                }
-            } else if (componentId.equals("decline")){
-                if(preLinkedPlayers.containsKey(discordAccount)){
-                    preLinkedPlayers.remove(discordAccount);
-                    logger.info(event.getUser().getName() + " declined the rules");
-                    event.editMessage(messages.rulesDenied).setActionRows().queue();
-                }else {
-                    logger.error(event.getUser().getName() + " tried to decline the rules but was not prelinked");
-                    event.editMessage(messages.genericLinkError).setActionRows().queue();
-                }
+                    break;
+                case "decline":
+                    if (preLinkedPlayers.containsKey(discordAccount)) {
+                        preLinkedPlayers.remove(discordAccount);
+                        logger.info(event.getUser().getName() + " declined the rules");
+                        event.editMessage(messages.rulesDenied).setActionRows().queue();
+                    } else {
+                        logger.error(event.getUser().getName() + " tried to decline the rules but was not prelinked");
+                        event.editMessage(messages.genericLinkError).setActionRows().queue();
+                    }
+                    break;
             }
         }
     }
@@ -187,14 +191,14 @@ public class DiscordAccountLinker extends ListenerAdapter {
 
                 boolean isBedrock = dcLink.isBedrock(minecraftPlayer);
                 boolean isJava = !isBedrock;
-                logger.info("{} is attempting to link {} which is a {} Account", event.getUser().getName(), minecraftPlayer.getName(), isBedrock ? "Bedrock":"Java");
+                logger.info("{} is attempting to link {} which is a {} Account", event.getUser().getAsTag(), minecraftPlayer.getName(), isBedrock ? "Bedrock":"Java");
 
                 if(overBedrockLimit && isBedrock) {
-                    logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getUser().getName(), bedrock, bedrockLimit);
+                    logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getUser().getAsTag(), bedrock, bedrockLimit);
                     event.reply(messages.maxBedrock).setEphemeral(true).queue();
                     return;
                 } else if (overJavaLimit && isJava) {
-                    logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getUser().getName(), java, javaLimit);
+                    logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getUser().getAsTag(), java, javaLimit);
                     event.reply(messages.maxJava).setEphemeral(true).queue();
                     return;
                 }
