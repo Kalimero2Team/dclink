@@ -9,9 +9,9 @@ import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -68,7 +68,13 @@ public class DiscordAccountLinker extends ListenerAdapter {
     }
 
     private void sendLinkChannelMessage(){
-        TextChannel linkChannel = jda.getTextChannelById(config.getLinkChannel());
+        MessageChannel linkChannel = jda.getTextChannelById(config.getLinkChannel());
+        if(linkChannel == null){
+            linkChannel = jda.getNewsChannelById(config.getLinkChannel());
+        }
+        if(linkChannel == null){
+            linkChannel = jda.getThreadChannelById(config.getLinkChannel());
+        }
         if(linkChannel == null){
             logger.error("Could not find link channel with id {}", config.getLinkChannel());
             return;
