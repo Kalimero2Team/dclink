@@ -1,8 +1,6 @@
 repositories {
     mavenCentral()
-    maven("https://repo.opencollab.dev/maven-snapshots/"){
-
-    }
+    maven("https://repo.opencollab.dev/maven-snapshots/")
 }
 
 dependencies {
@@ -11,10 +9,10 @@ dependencies {
     implementation(libs.adventure.minimessage)
     implementation(libs.cloud.core)
     implementation(libs.cloud.brigadier)
-    compileOnly(libs.floodgate.api)
     implementation(libs.configurate.hocon)
     implementation(libs.jda) {
         exclude(module= "opus-java")
     }
     implementation(libs.sqlite)
+    compileOnly(libs.floodgate.api)
 }

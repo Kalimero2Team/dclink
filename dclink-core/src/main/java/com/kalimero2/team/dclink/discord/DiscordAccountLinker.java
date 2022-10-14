@@ -9,9 +9,9 @@ import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -68,7 +68,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
     }
 
     private void sendLinkChannelMessage(){
-        MessageChannel linkChannel = jda.getTextChannelById(config.getLinkChannel());
+        GuildMessageChannel linkChannel = jda.getTextChannelById(config.getLinkChannel());
         if(linkChannel == null){
             linkChannel = jda.getNewsChannelById(config.getLinkChannel());
         }
@@ -81,7 +81,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
         }
         boolean found = linkChannel.retrievePinnedMessages().complete().stream().anyMatch(message -> message.getAuthor().getId().equals(jda.getSelfUser().getId()));
         if(!found){
-            Message message = linkChannel.sendMessage(messages.infoChannel).setActionRows(
+            Message message = linkChannel.sendMessage(messages.infoChannel).setComponents(
                     ActionRow.of(Button.primary("add", messages.add).asEnabled())
             ).complete();
             message.pin().queue();
@@ -113,7 +113,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
                 jda.deleteCommandById(commandId).complete();
             }
 
-            event.editMessage("Removed Command").setActionRows().queue();
+            event.editMessage("Removed Command").setComponents().queue();
         }
 
         Guild guild = jda.getGuildById(config.getGuild());
@@ -139,23 +139,23 @@ public class DiscordAccountLinker extends ListenerAdapter {
                         dcLink.linkAccounts(minecraftPlayer, discordAccount);
                         preLinkedPlayers.remove(discordAccount);
                         logger.info(event.getUser().getName() + " accepted the rules");
-                        event.editMessage(messages.rulesAccepted).setActionRows().queue();
+                        event.editMessage(messages.rulesAccepted).setComponents().queue();
                         if (giveRoleWhenLinked) {
                             discordAccount.addRole(dcLink.getDiscordRole(config.getLinkRole()));
                         }
                     } else {
-                        logger.error(event.getUser().getName() + " tried to accept the rules but was not prelinked");
-                        event.editMessage(messages.genericLinkError).setActionRows().queue();
+                        logger.error(event.getUser().getName() + " tried to accept the rules but was not pre-linked");
+                        event.editMessage(messages.genericLinkError).setComponents().queue();
                     }
                     break;
                 case "decline":
                     if (preLinkedPlayers.containsKey(discordAccount)) {
                         preLinkedPlayers.remove(discordAccount);
                         logger.info(event.getUser().getName() + " declined the rules");
-                        event.editMessage(messages.rulesDenied).setActionRows().queue();
+                        event.editMessage(messages.rulesDenied).setComponents().queue();
                     } else {
-                        logger.error(event.getUser().getName() + " tried to decline the rules but was not prelinked");
-                        event.editMessage(messages.genericLinkError).setActionRows().queue();
+                        logger.error(event.getUser().getName() + " tried to decline the rules but was not pre-linked");
+                        event.editMessage(messages.genericLinkError).setComponents().queue();
                     }
                     break;
             }
@@ -200,18 +200,19 @@ public class DiscordAccountLinker extends ListenerAdapter {
                 logger.info("{} is attempting to link {} which is a {} Account", event.getUser().getAsTag(), minecraftPlayer.getName(), isBedrock ? "Bedrock":"Java");
 
                 if(overBedrockLimit && isBedrock) {
-                    logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getUser().getAsTag(), bedrock, bedrockLimit);
+                    logger.info("Link for {} failed because has linked {} Bedrock accounts, which is over the limit of {}", event.getUser().getAsTag(), bedrock, bedrockLimit);
                     event.reply(messages.maxBedrock).setEphemeral(true).queue();
                     return;
-                } else if (overJavaLimit && isJava) {
-                    logger.info("Link for {} failed because has linked {} bedrock accounts, which is over the limit of {}", event.getUser().getAsTag(), java, javaLimit);
+                }
+                if (overJavaLimit && isJava) {
+                    logger.info("Link for {} failed because has linked {} Java accounts, which is over the limit of {}", event.getUser().getAsTag(), java, javaLimit);
                     event.reply(messages.maxJava).setEphemeral(true).queue();
                     return;
                 }
 
                 preLinkedPlayers.put(discordAccount, minecraftPlayer);
 
-                event.reply(messages.rules).setEphemeral(true).addActionRows(ActionRow.of(
+                event.reply(messages.rules).setEphemeral(true).addComponents(ActionRow.of(
                                 Button.success("accept",messages.accept),
                                 Button.danger("decline",messages.decline)
                         )

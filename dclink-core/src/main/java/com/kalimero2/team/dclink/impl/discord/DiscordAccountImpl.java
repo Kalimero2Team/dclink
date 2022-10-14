@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -107,7 +108,11 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
             if(role != null){
                 Member member = guild.getMemberById(this.discordId);
                 if(member == null){
-                    member = guild.retrieveMemberById(this.discordId).complete();
+                    try{
+                        member = guild.retrieveMemberById(this.discordId).complete();
+                    }catch (ErrorResponseException ignored){
+                     return false;
+                    }
                 }
                 guild.removeRoleFromMember(member, role).complete();
                 return true;

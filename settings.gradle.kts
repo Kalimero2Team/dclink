@@ -4,12 +4,12 @@ dependencyResolutionManagement{
             // Core
             plugin("shadow","com.github.johnrengelman.shadow").version("7.1.2")
 
-            version("jda", "5.0.0-alpha.16")
+            version("jda", "5.0.0-alpha.21")
             version("configurate-hocon", "4.1.2")
             version("sqlite","3.39.2.0")
             version("adventure","4.11.0")
             version("floodgate-api","2.0-SNAPSHOT")
-            version("cloud", "1.7.0")
+            version("cloud", "1.7.1")
 
             library("jda","net.dv8tion","JDA").versionRef("jda")
             library("configurate-hocon","org.spongepowered","configurate-hocon").versionRef("configurate-hocon")
@@ -78,7 +78,6 @@ rootProject.name = "dclink"
 
 include("dclink-api")
 include("dclink-core")
-include("dclink-spigot")
 include("dclink-paper")
 include("dclink-velocity")
 include("dclink-fabric")

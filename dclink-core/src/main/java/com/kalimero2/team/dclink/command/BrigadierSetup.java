@@ -4,11 +4,6 @@ import cloud.commandframework.brigadier.BrigadierManagerHolder;
 import cloud.commandframework.brigadier.CloudBrigadierManager;
 
 public final class BrigadierSetup {
-
-    private BrigadierSetup() {
-
-    }
-
     public static void setup(final BrigadierManagerHolder<Commander> manager) {
         final CloudBrigadierManager<Commander, ?> brigManager = manager.brigadierManager();
         if(brigManager != null){

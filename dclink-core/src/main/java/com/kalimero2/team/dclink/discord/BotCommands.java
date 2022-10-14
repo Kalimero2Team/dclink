@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 public class BotCommands extends ListenerAdapter {
 
@@ -103,7 +102,7 @@ public class BotCommands extends ListenerAdapter {
             unLinkCommand(event);
         } else {
             String id = "rmCmd" + event.getCommandId();
-            event.reply("I can't handle that command right now :(").setEphemeral(true).addActionRows(ActionRow.of(Button.danger(id,"Delete Command"))).queue();
+            event.reply("I can't handle that command right now :(").setEphemeral(true).addComponents(ActionRow.of(Button.danger(id,"Delete Command"))).queue();
             logger.error("Unhandled command {}", event.getName());
         }
     }
