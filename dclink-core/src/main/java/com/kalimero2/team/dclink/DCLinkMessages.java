@@ -72,6 +72,7 @@ public class DCLinkMessages {
         public String unLinkCommand = "Unlinked <player>";
         public String linkCodeMessage = "Your Linking Code is: <code>";
         public String kickUnlinked = "You have been kicked because your Discord account is no longer linked.";
+        public String needsArgumentIfExecutedByConsole = "This command needs an argument if executed by console.";
     }
 
     public Component getMinifiedMessage(String message, TagResolver... tagResolvers){

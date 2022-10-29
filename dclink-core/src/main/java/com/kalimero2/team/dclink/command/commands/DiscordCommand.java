@@ -8,9 +8,12 @@ import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import com.kalimero2.team.dclink.command.Commander;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.command.DCLinkCommand;
+import com.kalimero2.team.dclink.command.PlayerCommander;
 import com.kalimero2.team.dclink.command.argument.MinecraftPlayerArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+
+import java.util.Optional;
 
 public class DiscordCommand extends DCLinkCommand {
     public DiscordCommand(Commands commands) {
@@ -21,14 +24,26 @@ public class DiscordCommand extends DCLinkCommand {
     public void register() {
         CommandManager<Commander> commandManager = commands.commandManager();
         commandManager.command(commandManager.commandBuilder("discord","dc")
-                .argument(MinecraftPlayerArgument.of("player"))
+                .argument(MinecraftPlayerArgument.optional("player"))
                 .permission("dclink.command.discord")
                 .handler(this::info));
     }
 
     private void info(CommandContext<Commander> context) {
         DCLinkMessages messages = dcLink.getMessages();
-        MinecraftPlayer minecraftPlayer = context.get("player");
+        Optional<MinecraftPlayer> optionalMinecraftPlayer = context.getOptional("player");
+        MinecraftPlayer minecraftPlayer;
+        if(context.getSender() instanceof PlayerCommander commander){
+            minecraftPlayer = optionalMinecraftPlayer.orElse(commander.player());
+        }else{
+            minecraftPlayer = optionalMinecraftPlayer.orElse(null);
+            if(minecraftPlayer == null){
+                Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().needsArgumentIfExecutedByConsole);
+                context.getSender().sendMessage(message);
+                return;
+            }
+        }
+
         DiscordAccount discordAccount = minecraftPlayer.getDiscordAccount();
         if(discordAccount == null){
             Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().notLinked);
