@@ -49,7 +49,7 @@ dependencyResolutionManagement{
 
 
             // Fabric
-            plugin("fabric-loom","fabric-loom").version("0.12.+")
+            plugin("fabric-loom","fabric-loom").version("1.0-SNAPSHOT")
 
             version("minecraft","1.19.2")
             version("fabric-loader","0.14.9")
@@ -67,10 +67,10 @@ dependencyResolutionManagement{
 
 pluginManagement {
     repositories {
+        maven("https://maven.fabricmc.net/")
         gradlePluginPortal()
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://maven.quiltmc.org/repository/release")
-        maven("https://maven.fabricmc.net/")
     }
 }
 
