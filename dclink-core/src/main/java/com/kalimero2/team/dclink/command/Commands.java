@@ -20,7 +20,7 @@ public class Commands {
     private final CommandManager<Commander> commandManager;
     private final DCLink dcLink;
 
-    public Commands(DCLink dcLink, PlatformCommands platformCommands){
+    public Commands(DCLink dcLink, PlatformCommands platformCommands) {
         this.dcLink = dcLink;
         this.commandManager = platformCommands.createCommandManager();
 
@@ -29,6 +29,10 @@ public class Commands {
             commandContext.store(DCLINK, dcLink);
             commandContext.store(PLATFORMCOMMANDS, platformCommands);
         });
+    }
+
+    private static <T> CloudKey<T> createTypeKey(final Class<T> type) {
+        return SimpleCloudKey.of("dclink-" + type.getName(), TypeToken.get(type));
     }
 
     public void registerCommands() {
@@ -49,9 +53,5 @@ public class Commands {
 
     public DCLink getDCLink() {
         return dcLink;
-    }
-
-    private static <T> CloudKey<T> createTypeKey(final Class<T> type) {
-        return SimpleCloudKey.of("dclink-" + type.getName(), TypeToken.get(type));
     }
 }

@@ -18,11 +18,11 @@ dependencies {
     implementation(project(":dclink-core"))
 }
 
-tasks{
+tasks {
     assemble {
         dependsOn(shadowJar)
     }
-    shadowJar{
+    shadowJar {
         fun reloc(pkg: String) = relocate(pkg, "com.kalimero2.team.dclink.libs.cloud.dependency.$pkg")
         reloc("cloud.commandframework")
         reloc("io.leangen")

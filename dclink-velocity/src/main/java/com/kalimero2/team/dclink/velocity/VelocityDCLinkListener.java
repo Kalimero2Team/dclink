@@ -17,19 +17,19 @@ public class VelocityDCLinkListener {
     }
 
     @Subscribe(order = PostOrder.EARLY)
-    public void onJoin(LoginEvent event){
+    public void onJoin(LoginEvent event) {
         MinecraftPlayer minecraftPlayer = velocityDCLink.getMinecraftPlayer(event.getPlayer().getUniqueId());
         DCLink.JoinResult joinResult = velocityDCLink.onLogin(minecraftPlayer);
-        if(joinResult.success()) {
+        if (joinResult.success()) {
             event.setResult(ResultedEvent.ComponentResult.allowed());
-        }else{
+        } else {
             event.setResult(ResultedEvent.ComponentResult.denied(joinResult.message()));
         }
     }
 
 
     @Subscribe
-    public void onShutdown(ProxyShutdownEvent event){
+    public void onShutdown(ProxyShutdownEvent event) {
         velocityDCLink.shutdown();
     }
 

@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+
 public class DiscordBot {
 
     private final Logger logger = LoggerFactory.getLogger("dclink-discord");
@@ -23,7 +24,7 @@ public class DiscordBot {
         this.dcLink = dcLink;
         this.discordConfiguration = dcLink.getConfig().getDiscordConfiguration();
         String token = discordConfiguration.getToken();
-        if(token.equals("")){
+        if (token.equals("")) {
             logger.error("No token found in config");
             throw new LoginException("No token found in config");
         }
@@ -44,12 +45,13 @@ public class DiscordBot {
         jda.awaitReady();
 
     }
-    public void loadFeatures(){
+
+    public void loadFeatures() {
         new BotCommands(dcLink, jda, discordConfiguration.getGuild());
         new DiscordAccountLinker(dcLink, jda);
     }
 
-    public void shutdown(){
+    public void shutdown() {
         jda.shutdown();
     }
 

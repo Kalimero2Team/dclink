@@ -24,7 +24,7 @@ dependencies {
     bukkitLibrary(libs.jda)
     bukkitLibrary(libs.sqlite)
     implementation(project(":dclink-api"))
-    implementation(project(":dclink-core")){
+    implementation(project(":dclink-core")) {
         exclude("*", "*") // Excludes all dependencies of dclink-core because they are put into the plugin.yml file
     }
 }

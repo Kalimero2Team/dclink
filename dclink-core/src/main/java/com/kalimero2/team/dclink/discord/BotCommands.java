@@ -30,7 +30,7 @@ public class BotCommands extends ListenerAdapter {
     private final DCLink dcLink;
     private final JDA jda;
 
-    protected BotCommands(DCLink dcLink, JDA jda, String guildId){
+    protected BotCommands(DCLink dcLink, JDA jda, String guildId) {
         this.dcLink = dcLink;
         this.jda = jda;
         registerCommands(guildId);
@@ -38,43 +38,43 @@ public class BotCommands extends ListenerAdapter {
     }
 
 
-    private void registerCommands(String guildId){
+    private void registerCommands(String guildId) {
         Guild guild = jda.getGuildById(guildId);
-        if(guild == null){
+        if (guild == null) {
             logger.error("Could not find guild with id {}", guildId);
             return;
         }
         Optional<Command> lookupCommand = guild.retrieveCommands().complete().stream().filter(command -> command.getName().equals("lookup")).findAny();
 
-        if(lookupCommand.isEmpty()){
-            guild.upsertCommand("lookup","Get information about a player").addSubcommands(
-                new SubcommandData("minecraft", "Via Minecraft Username")
-                    .addOption(OptionType.STRING, "minecraft", "Minecraft Username", true),
-                new SubcommandData("discord", "Via Discord User")
-                    .addOption(OptionType.USER, "discorduser", "Discord User", true))
-                .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
-                .queue();
+        if (lookupCommand.isEmpty()) {
+            guild.upsertCommand("lookup", "Get information about a player").addSubcommands(
+                            new SubcommandData("minecraft", "Via Minecraft Username")
+                                    .addOption(OptionType.STRING, "minecraft", "Minecraft Username", true),
+                            new SubcommandData("discord", "Via Discord User")
+                                    .addOption(OptionType.USER, "discorduser", "Discord User", true))
+                    .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
+                    .queue();
         }
 
         Optional<Command> optionalLinkCommand = guild.retrieveCommands().complete().stream().filter(command -> command.getName().equals("link")).findAny();
-        if(optionalLinkCommand.isPresent()) {
+        if (optionalLinkCommand.isPresent()) {
             Command linkCommand = optionalLinkCommand.get();
             if (linkCommand.getOptions().stream().noneMatch(option -> option.getName().equals("discorduser"))) {
                 linkCommand.editCommand()
                         .addOption(OptionType.USER, "discorduser", "Discord Account", true)
                         .addOption(OptionType.STRING, "minecraft", "Minecraft Account", true)
-                .queue();
+                        .queue();
             }
-        }else{
+        } else {
             guild.upsertCommand("link", "Manually link a Discord Account to a Minecraft Account")
                     .addOption(OptionType.USER, "discorduser", "Discord Account", true)
                     .addOption(OptionType.STRING, "minecraft", "Minecraft Account", true)
                     .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
-            .queue();
+                    .queue();
         }
 
         Optional<Command> optionalUnLinkCommand = guild.retrieveCommands().complete().stream().filter(command -> command.getName().equals("unlink")).findAny();
-        if(optionalUnLinkCommand.isPresent()) {
+        if (optionalUnLinkCommand.isPresent()) {
             Command unLinkCommand = optionalUnLinkCommand.get();
             if (unLinkCommand.getOptions().stream().noneMatch(option -> option.getName().equals("discorduser"))) {
                 unLinkCommand.editCommand()
@@ -82,7 +82,7 @@ public class BotCommands extends ListenerAdapter {
                         .addOption(OptionType.STRING, "minecraft", "Minecraft Account", false)
                         .queue();
             }
-        }else{
+        } else {
             guild.upsertCommand("unlink", "Manually removes link between a Discord Account and one/more Minecraft Accounts")
                     .addOption(OptionType.USER, "discorduser", "Discord Account", true)
                     .addOption(OptionType.STRING, "minecraft", "Minecraft Account", false)
@@ -93,8 +93,8 @@ public class BotCommands extends ListenerAdapter {
     }
 
     @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event){
-        if (event.getName().equals("lookup")){
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        if (event.getName().equals("lookup")) {
             lookupCommand(event);
         } else if (event.getName().equals("link")) {
             linkCommand(event);
@@ -102,7 +102,7 @@ public class BotCommands extends ListenerAdapter {
             unLinkCommand(event);
         } else {
             String id = "rmCmd" + event.getCommandId();
-            event.reply("I can't handle that command right now :(").setEphemeral(true).addComponents(ActionRow.of(Button.danger(id,"Delete Command"))).queue();
+            event.reply("I can't handle that command right now :(").setEphemeral(true).addComponents(ActionRow.of(Button.danger(id, "Delete Command"))).queue();
             logger.error("Unhandled command {}", event.getName());
         }
     }
@@ -111,27 +111,27 @@ public class BotCommands extends ListenerAdapter {
         OptionMapping discordOption = event.getOption("discorduser");
         OptionMapping minecraftOption = event.getOption("minecraft");
         String subcommandName = event.getSubcommandName();
-        if(subcommandName == null){
+        if (subcommandName == null) {
             return;
         }
 
-        if(subcommandName.equals("discord") && discordOption != null){
+        if (subcommandName.equals("discord") && discordOption != null) {
             User user = discordOption.getAsUser();
             Collection<MinecraftPlayer> linkedPlayers = dcLink.getDiscordAccount(user.getId()).getLinkedPlayers();
-            if(linkedPlayers.size() > 0){
+            if (linkedPlayers.size() > 0) {
                 StringBuilder message = new StringBuilder("Minecraft accounts linked to " + user.getAsMention() + ": ");
                 linkedPlayers.forEach(minecraftPlayer -> message.append(minecraftPlayer.getName()).append(" "));
                 event.reply(message.toString()).setEphemeral(true).queue();
-            }else{
+            } else {
                 event.reply("No Minecraft accounts linked to " + user.getAsMention()).setEphemeral(true).queue();
             }
         } else if (subcommandName.equals("minecraft") && minecraftOption != null) {
             String name = minecraftOption.getAsString();
             MinecraftPlayer minecraftPlayer = dcLink.getMinecraftPlayer(dcLink.getUUID(name));
-            if(minecraftPlayer != null && minecraftPlayer.getDiscordAccount() != null){
+            if (minecraftPlayer != null && minecraftPlayer.getDiscordAccount() != null) {
                 User discordUser = jda.retrieveUserById(minecraftPlayer.getDiscordAccount().getId()).complete();
                 event.reply("Discord account linked to " + name + ": " + discordUser.getAsMention()).setEphemeral(true).queue();
-            }else{
+            } else {
                 event.reply("No Discord accounts linked to " + name).setEphemeral(true).queue();
             }
         }
@@ -145,22 +145,22 @@ public class BotCommands extends ListenerAdapter {
             DiscordAccount discordAccount = dcLink.getDiscordAccount(user.getId());
 
             UUID minecraftUuid;
-            try{
+            try {
                 minecraftUuid = UUID.fromString(minecraft.getAsString());
-            }catch (IllegalArgumentException ignored){
+            } catch (IllegalArgumentException ignored) {
                 minecraftUuid = dcLink.getUUID(minecraft.getAsString());
             }
 
-            if(minecraftUuid == null){
+            if (minecraftUuid == null) {
                 event.reply("Could not find Minecraft account with name " + minecraft.getAsString()).setEphemeral(true).queue();
-            }else{
+            } else {
                 MinecraftPlayer minecraftPlayer = dcLink.getMinecraftPlayer(minecraftUuid);
-                if(discordAccount.getLinkedPlayers().contains(minecraftPlayer)){
+                if (discordAccount.getLinkedPlayers().contains(minecraftPlayer)) {
                     event.reply("Minecraft account " + minecraftPlayer.getName() + " is already linked to " + user.getAsMention()).setEphemeral(true).queue();
-                }else{
-                    if(dcLink.linkAccounts(minecraftPlayer, discordAccount)){
+                } else {
+                    if (dcLink.linkAccounts(minecraftPlayer, discordAccount)) {
                         event.reply("Linked " + user.getAsMention() + " to " + minecraftPlayer.getName()).setEphemeral(true).queue();
-                    }else{
+                    } else {
                         event.reply("Could not link " + user.getAsMention() + " to " + minecraftPlayer.getName()).setEphemeral(true).queue();
                     }
                 }
@@ -172,12 +172,12 @@ public class BotCommands extends ListenerAdapter {
         OptionMapping discorduser = event.getOption("discorduser");
         OptionMapping minecraft = event.getOption("minecraft");
 
-        if(discorduser != null){
+        if (discorduser != null) {
             DiscordAccount discordAccount = dcLink.getDiscordAccount(discorduser.getAsUser().getId());
             List<MinecraftPlayer> removeLinkList = new ArrayList<>();
-            if(minecraft == null) {
+            if (minecraft == null) {
                 removeLinkList.addAll(discordAccount.getLinkedPlayers());
-            }else{
+            } else {
                 MinecraftPlayer minecraftPlayer = dcLink.getMinecraftPlayer(dcLink.getUUID(minecraft.getAsString()));
                 removeLinkList.add(minecraftPlayer);
             }

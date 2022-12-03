@@ -15,12 +15,12 @@ public class PaperDCLinkListener implements Listener {
     }
 
     @EventHandler
-    public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event){
+    public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
         MinecraftPlayer minecraftPlayer = paperDCLink.getMinecraftPlayer(event.getPlayerProfile().getId());
         DCLink.JoinResult joinResult = paperDCLink.onLogin(minecraftPlayer);
-        if(joinResult.success()) {
+        if (joinResult.success()) {
             event.allow();
-        }else{
+        } else {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, joinResult.message());
         }
     }

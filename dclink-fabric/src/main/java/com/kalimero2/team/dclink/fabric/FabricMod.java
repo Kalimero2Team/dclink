@@ -16,7 +16,7 @@ public class FabricMod implements DedicatedServerModInitializer {
     private FabricDCLink fabricDCLink;
 
     public FabricServerAudiences adventure() {
-        if(this.adventure == null) {
+        if (this.adventure == null) {
             throw new IllegalStateException("Tried to access Adventure without a running server!");
         }
         return adventure;
@@ -30,7 +30,7 @@ public class FabricMod implements DedicatedServerModInitializer {
         ServerPlayConnectionEvents.INIT.register((handler, server) -> {
             MinecraftPlayer minecraftPlayer = fabricDCLink.getMinecraftPlayer(handler.getPlayer().getUUID());
             DCLink.JoinResult joinResult = fabricDCLink.onLogin(minecraftPlayer);
-            if(!joinResult.success()){
+            if (!joinResult.success()) {
                 handler.disconnect(adventure.toNative(joinResult.message()));
             }
         });

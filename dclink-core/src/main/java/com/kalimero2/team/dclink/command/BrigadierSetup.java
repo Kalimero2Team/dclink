@@ -6,7 +6,7 @@ import cloud.commandframework.brigadier.CloudBrigadierManager;
 public final class BrigadierSetup {
     public static void setup(final BrigadierManagerHolder<Commander> manager) {
         final CloudBrigadierManager<Commander, ?> brigManager = manager.brigadierManager();
-        if(brigManager != null){
+        if (brigManager != null) {
             brigManager.setNativeNumberSuggestions(false);
         }
     }

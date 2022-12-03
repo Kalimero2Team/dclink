@@ -8,17 +8,17 @@ public class PaperPlugin extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        if(paperDCLink == null){
+        if (paperDCLink == null) {
             paperDCLink = new PaperDCLink(this);
             paperDCLink.init();
-        }else {
+        } else {
             throw new IllegalStateException("DCLink Already initialized");
         }
     }
 
     @Override
     public void onEnable() {
-        if(paperDCLink.isInitialised()){
+        if (paperDCLink.isInitialised()) {
             paperDCLink.load();
             getServer().getPluginManager().registerEvents(new PaperDCLinkListener(paperDCLink), this);
         }

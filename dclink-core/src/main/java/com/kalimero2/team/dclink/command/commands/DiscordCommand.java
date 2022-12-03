@@ -23,7 +23,7 @@ public class DiscordCommand extends DCLinkCommand {
     @Override
     public void register() {
         CommandManager<Commander> commandManager = commands.commandManager();
-        commandManager.command(commandManager.commandBuilder("discord","dc")
+        commandManager.command(commandManager.commandBuilder("discord", "dc")
                 .argument(MinecraftPlayerArgument.optional("player"))
                 .permission("dclink.command.discord")
                 .handler(this::info));
@@ -33,11 +33,11 @@ public class DiscordCommand extends DCLinkCommand {
         DCLinkMessages messages = dcLink.getMessages();
         Optional<MinecraftPlayer> optionalMinecraftPlayer = context.getOptional("player");
         MinecraftPlayer minecraftPlayer;
-        if(context.getSender() instanceof PlayerCommander commander){
+        if (context.getSender() instanceof PlayerCommander commander) {
             minecraftPlayer = optionalMinecraftPlayer.orElse(commander.player());
-        }else{
+        } else {
             minecraftPlayer = optionalMinecraftPlayer.orElse(null);
-            if(minecraftPlayer == null){
+            if (minecraftPlayer == null) {
                 Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().needsArgumentIfExecutedByConsole);
                 context.getSender().sendMessage(message);
                 return;
@@ -45,12 +45,12 @@ public class DiscordCommand extends DCLinkCommand {
         }
 
         DiscordAccount discordAccount = minecraftPlayer.getDiscordAccount();
-        if(discordAccount == null){
+        if (discordAccount == null) {
             Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().notLinked);
             context.getSender().sendMessage(message);
-        }else{
+        } else {
             String name = discordAccount.getName() + "#" + discordAccount.getDiscriminator();
-            Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().discordCommand, Placeholder.unparsed("discord_id", discordAccount.getId()), Placeholder.unparsed("discord_name",name));
+            Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().discordCommand, Placeholder.unparsed("discord_id", discordAccount.getId()), Placeholder.unparsed("discord_name", name));
             context.getSender().sendMessage(message);
         }
     }

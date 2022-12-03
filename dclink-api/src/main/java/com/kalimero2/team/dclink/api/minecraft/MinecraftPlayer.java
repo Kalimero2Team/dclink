@@ -31,7 +31,6 @@ public interface MinecraftPlayer {
      * Get the linked Discord Account. Returns null if there isn't any account linked
      *
      * @return Discord Account if present. Null if there isn't any account linked.
-     *
      * @see com.kalimero2.team.dclink.api.discord.DiscordAccount
      */
     DiscordAccount getDiscordAccount();

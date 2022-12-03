@@ -18,10 +18,10 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Modal;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import net.dv8tion.jda.api.interactions.modals.Modal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,14 +52,14 @@ public class DiscordAccountLinker extends ListenerAdapter {
             return;
         }
         String linkRoleId = config.getLinkRole();
-        if(linkRoleId == null || linkRoleId.equals("")){
+        if (linkRoleId == null || linkRoleId.equals("")) {
             logger.info("No link role configured");
-        }else{
+        } else {
             Role linkRole = guild.getRoleById(linkRoleId);
-            if(linkRole == null){
+            if (linkRole == null) {
                 logger.error("Could not find role with id {}", linkRoleId);
                 giveRoleWhenLinked = false;
-            }else{
+            } else {
                 giveRoleWhenLinked = true;
             }
         }
@@ -67,20 +67,20 @@ public class DiscordAccountLinker extends ListenerAdapter {
         sendLinkChannelMessage();
     }
 
-    private void sendLinkChannelMessage(){
+    private void sendLinkChannelMessage() {
         GuildMessageChannel linkChannel = jda.getTextChannelById(config.getLinkChannel());
-        if(linkChannel == null){
+        if (linkChannel == null) {
             linkChannel = jda.getNewsChannelById(config.getLinkChannel());
         }
-        if(linkChannel == null){
+        if (linkChannel == null) {
             linkChannel = jda.getThreadChannelById(config.getLinkChannel());
         }
-        if(linkChannel == null){
+        if (linkChannel == null) {
             logger.error("Could not find link channel with id {}", config.getLinkChannel());
             return;
         }
         boolean found = linkChannel.retrievePinnedMessages().complete().stream().anyMatch(message -> message.getAuthor().getId().equals(jda.getSelfUser().getId()));
-        if(!found){
+        if (!found) {
             Message message = linkChannel.sendMessage(messages.infoChannel).setComponents(
                     ActionRow.of(Button.primary("add", messages.add).asEnabled())
             ).complete();
@@ -89,27 +89,27 @@ public class DiscordAccountLinker extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event){
+    public void onMessageReceived(MessageReceivedEvent event) {
         boolean isSelf = event.getAuthor().getId().equals(jda.getSelfUser().getId());
         // Deletes Pin Message
-        if(isSelf && event.getChannel().getId().equals(config.getLinkChannel()) && event.getMessage().getType().equals(MessageType.CHANNEL_PINNED_ADD)){
+        if (isSelf && event.getChannel().getId().equals(config.getLinkChannel()) && event.getMessage().getType().equals(MessageType.CHANNEL_PINNED_ADD)) {
             event.getMessage().delete().queue();
         }
     }
 
     @Override
-    public void onGuildMemberRemove(GuildMemberRemoveEvent event){
+    public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
         dcLink.unLinkAccounts(dcLink.getDiscordAccount(event.getUser().getId()));
     }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String componentId = event.getComponentId();
-        if(componentId.startsWith("rmCmd")){
-            String commandId = componentId.replace("rmCmd","");
-            if(event.getGuild() != null && event.getGuild().retrieveCommandById(commandId).complete() != null){
+        if (componentId.startsWith("rmCmd")) {
+            String commandId = componentId.replace("rmCmd", "");
+            if (event.getGuild() != null && event.getGuild().retrieveCommandById(commandId).complete() != null) {
                 event.getGuild().deleteCommandById(commandId).complete();
-            }else{
+            } else {
                 jda.deleteCommandById(commandId).complete();
             }
 
@@ -122,7 +122,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
             return;
         }
 
-        if(event.getChannel().getId().equals(config.getLinkChannel())){
+        if (event.getChannel().getId().equals(config.getLinkChannel())) {
             DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
             switch (componentId) {
                 case "add":
@@ -163,16 +163,16 @@ public class DiscordAccountLinker extends ListenerAdapter {
     }
 
     @Override
-    public void onModalInteraction(ModalInteractionEvent event){
-        if(event.getModalId().equals("linkModal")){
+    public void onModalInteraction(ModalInteractionEvent event) {
+        if (event.getModalId().equals("linkModal")) {
             String code = Objects.requireNonNull(event.getValue("code")).getAsString();
             logger.info("{} entered {}", event.getUser().getName(), code);
             MinecraftPlayer minecraftPlayer = DCLinkCodes.getPlayer(code);
-            if(minecraftPlayer != null){
+            if (minecraftPlayer != null) {
                 DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
                 Collection<MinecraftPlayer> linkedPlayers = discordAccount.getLinkedPlayers();
 
-                if(linkedPlayers.contains(minecraftPlayer)){
+                if (linkedPlayers.contains(minecraftPlayer)) {
                     event.reply(messages.alreadyLinked).setEphemeral(true).queue();
                     preLinkedPlayers.remove(discordAccount);
                     return;
@@ -181,10 +181,10 @@ public class DiscordAccountLinker extends ListenerAdapter {
                 int java = 0;
                 int bedrock = 0;
 
-                for(MinecraftPlayer linkedPlayer:linkedPlayers){
-                    if(dcLink.isBedrock(linkedPlayer)){
+                for (MinecraftPlayer linkedPlayer : linkedPlayers) {
+                    if (dcLink.isBedrock(linkedPlayer)) {
                         bedrock++;
-                    }else{
+                    } else {
                         java++;
                     }
                 }
@@ -197,9 +197,9 @@ public class DiscordAccountLinker extends ListenerAdapter {
 
                 boolean isBedrock = dcLink.isBedrock(minecraftPlayer);
                 boolean isJava = !isBedrock;
-                logger.info("{} is attempting to link {} which is a {} Account", event.getUser().getAsTag(), minecraftPlayer.getName(), isBedrock ? "Bedrock":"Java");
+                logger.info("{} is attempting to link {} which is a {} Account", event.getUser().getAsTag(), minecraftPlayer.getName(), isBedrock ? "Bedrock" : "Java");
 
-                if(overBedrockLimit && isBedrock) {
+                if (overBedrockLimit && isBedrock) {
                     logger.info("Link for {} failed because has linked {} Bedrock accounts, which is over the limit of {}", event.getUser().getAsTag(), bedrock, bedrockLimit);
                     event.reply(messages.maxBedrock).setEphemeral(true).queue();
                     return;
@@ -213,11 +213,11 @@ public class DiscordAccountLinker extends ListenerAdapter {
                 preLinkedPlayers.put(discordAccount, minecraftPlayer);
 
                 event.reply(messages.rules).setEphemeral(true).addComponents(ActionRow.of(
-                                Button.success("accept",messages.accept),
-                                Button.danger("decline",messages.decline)
+                                Button.success("accept", messages.accept),
+                                Button.danger("decline", messages.decline)
                         )
                 ).queue();
-            }else{
+            } else {
                 event.reply(messages.wrongCode).setEphemeral(true).queue();
             }
         }

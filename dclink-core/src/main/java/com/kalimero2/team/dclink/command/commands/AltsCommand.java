@@ -33,10 +33,10 @@ public class AltsCommand extends DCLinkCommand {
         MinecraftPlayer minecraftPlayer = context.get("player");
         DiscordAccount discordAccount = minecraftPlayer.getDiscordAccount();
 
-        if(discordAccount == null){
+        if (discordAccount == null) {
             Component message = messages.getMinifiedMessage(minecraftMessages.notLinked);
             context.getSender().sendMessage(message);
-        }else{
+        } else {
             StringBuilder alts = new StringBuilder();
             discordAccount.getLinkedPlayers().forEach(linkedPlayer -> alts.append(linkedPlayer.getName()).append(" "));
             Component message = messages.getMinifiedMessage(minecraftMessages.altsCommand, Placeholder.unparsed("alts", alts.toString()));

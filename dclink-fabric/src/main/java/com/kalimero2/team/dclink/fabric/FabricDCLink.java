@@ -18,7 +18,7 @@ public class FabricDCLink extends DCLink {
     private final FabricMod mod;
     private MinecraftServer server;
 
-    public FabricDCLink(FabricMod mod){
+    public FabricDCLink(FabricMod mod) {
         this.mod = mod;
     }
 
@@ -35,9 +35,9 @@ public class FabricDCLink extends DCLink {
 
     @Override
     public UUID getUUID(String username) {
-        if(isLoaded()){
+        if (isLoaded()) {
             Optional<GameProfile> gameProfile = server.getProfileCache().get(username);
-            if(gameProfile.isPresent()){
+            if (gameProfile.isPresent()) {
                 return gameProfile.get().getId();
             }
         }
@@ -47,18 +47,18 @@ public class FabricDCLink extends DCLink {
     @Override
     protected void kickPlayer(MinecraftPlayer minecraftPlayer, Component message) {
         ServerPlayer player = server.getPlayerList().getPlayer(minecraftPlayer.getUuid());
-        if(player != null){
+        if (player != null) {
             player.connection.disconnect(mod.adventure().toNative(message));
         }
     }
 
     @Override
     protected String getUserNameViaPlatformMethods(UUID uuid) {
-        if(isLoaded()){
+        if (isLoaded()) {
             Optional<GameProfile> optionalGameProfile = server.getProfileCache().get(uuid);
-            if(optionalGameProfile.isPresent()){
+            if (optionalGameProfile.isPresent()) {
                 return optionalGameProfile.get().getName();
-            }else {
+            } else {
                 MinecraftSessionService sessionService = server.getSessionService();
                 GameProfile gameProfile = sessionService.fillProfileProperties(new GameProfile(uuid, null), true);
                 return gameProfile.getName();
@@ -69,7 +69,7 @@ public class FabricDCLink extends DCLink {
 
     @Override
     protected String getConfigPath() {
-        return new File(getDataFolder(),"dclink.conf").getAbsolutePath();
+        return new File(getDataFolder(), "dclink.conf").getAbsolutePath();
     }
 
     @Override
@@ -87,11 +87,11 @@ public class FabricDCLink extends DCLink {
         return FabricLoader.getInstance().getConfigDir().toFile();
     }
 
-    public void setServer(MinecraftServer server) {
-        this.server = server;
-    }
-
     public MinecraftServer getServer() {
         return server;
+    }
+
+    public void setServer(MinecraftServer server) {
+        this.server = server;
     }
 }

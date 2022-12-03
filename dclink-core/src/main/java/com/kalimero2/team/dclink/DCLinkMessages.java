@@ -6,8 +6,8 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationOptions;
-import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.io.File;
 
@@ -24,16 +24,16 @@ public class DCLinkMessages {
                 .defaultOptions(ConfigurationOptions.defaults().shouldCopyDefaults(true))
                 .file(config)
                 .build();
-        if(!config.exists()){
+        if (!config.exists()) {
             node = CommentedConfigurationNode.root();
-        }else {
+        } else {
             node = loader.load();
         }
 
         discordBotMessages = node.node("discord").get(DiscordBotMessages.class);
         minecraftMessages = node.node("minecraft").get(MinecraftMessages.class);
 
-        if(!config.exists()){
+        if (!config.exists()) {
             save();
         }
     }
@@ -44,8 +44,20 @@ public class DCLinkMessages {
         loader.save(node);
     }
 
+    public Component getMinifiedMessage(String message, TagResolver... tagResolvers) {
+        return MiniMessage.miniMessage().deserialize(message, tagResolvers);
+    }
+
+    public DiscordBotMessages getDiscordBotMessages() {
+        return discordBotMessages;
+    }
+
+    public MinecraftMessages getMinecraftMessages() {
+        return minecraftMessages;
+    }
+
     @ConfigSerializable
-    public static class DiscordBotMessages{
+    public static class DiscordBotMessages {
         public String add = "Link Account";
         public String accept = "Accept";
         public String decline = "Decline";
@@ -65,7 +77,7 @@ public class DCLinkMessages {
     }
 
     @ConfigSerializable
-    public static class MinecraftMessages{
+    public static class MinecraftMessages {
         public String altsCommand = "Alts: <alts>";
         public String discordCommand = "Name: <hover:show_text:\"ID: <discord_id>\"><discord_name>";
         public String notLinked = "Not Linked";
@@ -73,17 +85,5 @@ public class DCLinkMessages {
         public String linkCodeMessage = "Your Linking Code is: <code>";
         public String kickUnlinked = "You have been kicked because your Discord account is no longer linked.";
         public String needsArgumentIfExecutedByConsole = "This command needs an argument if executed by console.";
-    }
-
-    public Component getMinifiedMessage(String message, TagResolver... tagResolvers){
-        return MiniMessage.miniMessage().deserialize(message, tagResolvers);
-    }
-
-    public DiscordBotMessages getDiscordBotMessages() {
-        return discordBotMessages;
-    }
-
-    public MinecraftMessages getMinecraftMessages() {
-        return minecraftMessages;
     }
 }

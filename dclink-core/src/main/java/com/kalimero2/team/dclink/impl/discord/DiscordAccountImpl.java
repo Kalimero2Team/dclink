@@ -29,11 +29,11 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
 
     @Nullable
     private User getUser() {
-        if(this.discordId == null) {
+        if (this.discordId == null) {
             return null;
         }
         User user = jda.getUserById(this.discordId);
-        if(user == null){
+        if (user == null) {
             user = jda.retrieveUserById(this.discordId).useCache(true).complete();
         }
         return user;
@@ -60,16 +60,16 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
 
     @Override
     public Collection<DiscordRole> getRoles() {
-        if(this.discordId == null) {
+        if (this.discordId == null) {
             return null;
         }
 
         List<DiscordRole> roleList = new ArrayList<>();
-        if(dcLink.getConfig().getDiscordConfiguration() != null){
+        if (dcLink.getConfig().getDiscordConfiguration() != null) {
             Guild guild = jda.getGuildById(dcLink.getConfig().getDiscordConfiguration().getGuild());
-            if(guild != null){
+            if (guild != null) {
                 Member member = guild.retrieveMemberById(this.discordId).complete();
-                if(member != null){
+                if (member != null) {
                     member.getRoles().forEach(role -> roleList.add(new DiscordRoleImpl(jda, role.getId())));
                 }
             }
@@ -79,15 +79,15 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
 
     @Override
     public boolean addRole(DiscordRole apiRole) {
-        if(this.discordId == null) {
+        if (this.discordId == null) {
             return false;
         }
         Guild guild = jda.getGuildById(dcLink.getConfig().getDiscordConfiguration().getGuild());
-        if(guild != null){
+        if (guild != null) {
             Role role = guild.getRoleById(apiRole.getId());
-            if(role != null){
+            if (role != null) {
                 Member member = guild.getMemberById(this.discordId);
-                if(member == null){
+                if (member == null) {
                     member = guild.retrieveMemberById(this.discordId).complete();
                 }
                 guild.addRoleToMember(member, role).complete();
@@ -99,19 +99,19 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
 
     @Override
     public boolean removeRole(DiscordRole apiRole) {
-        if(this.discordId == null) {
+        if (this.discordId == null) {
             return false;
         }
         Guild guild = jda.getGuildById(dcLink.getConfig().getDiscordConfiguration().getGuild());
-        if(guild != null){
+        if (guild != null) {
             Role role = guild.getRoleById(apiRole.getId());
-            if(role != null){
+            if (role != null) {
                 Member member = guild.getMemberById(this.discordId);
-                if(member == null){
-                    try{
+                if (member == null) {
+                    try {
                         member = guild.retrieveMemberById(this.discordId).complete();
-                    }catch (ErrorResponseException ignored){
-                     return false;
+                    } catch (ErrorResponseException ignored) {
+                        return false;
                     }
                 }
                 guild.removeRoleFromMember(member, role).complete();
@@ -123,12 +123,12 @@ public abstract class DiscordAccountImpl implements DiscordAccount {
 
     @Override
     public boolean isMemberOfGuild() {
-        if(this.discordId == null) {
+        if (this.discordId == null) {
             return false;
         }
 
         Guild guild = jda.getGuildById(dcLink.getConfig().getDiscordConfiguration().getGuild());
-        if(guild != null){
+        if (guild != null) {
             Member member = guild.retrieveMemberById(this.discordId).complete();
             return member != null;
         }

@@ -13,8 +13,15 @@ import java.util.Objects;
 public class PaperCommander implements Commander, ForwardingAudience.Single {
     private final CommandSender sender;
 
-    private PaperCommander(CommandSender sender){
+    private PaperCommander(CommandSender sender) {
         this.sender = sender;
+    }
+
+    public static PaperCommander from(final CommandSender sender) {
+        if (sender instanceof org.bukkit.entity.Player player) {
+            return new Player(player);
+        }
+        return new PaperCommander(sender);
     }
 
     @Override
@@ -30,14 +37,6 @@ public class PaperCommander implements Commander, ForwardingAudience.Single {
     public CommandSender sender() {
         return this.sender;
     }
-
-    public static PaperCommander from(final CommandSender sender) {
-        if (sender instanceof org.bukkit.entity.Player player) {
-            return new Player(player);
-        }
-        return new PaperCommander(sender);
-    }
-
 
     public static final class Player extends PaperCommander implements PlayerCommander {
         private Player(final org.bukkit.entity.Player sender) {

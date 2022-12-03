@@ -35,7 +35,7 @@ public class VelocityDCLink extends DCLink {
 
     @Override
     public void load() {
-        if(isInitialised()){
+        if (isInitialised()) {
             try {
                 VelocityCommands paperCommands = new VelocityCommands(this);
                 Commands commands = new Commands(this, paperCommands);

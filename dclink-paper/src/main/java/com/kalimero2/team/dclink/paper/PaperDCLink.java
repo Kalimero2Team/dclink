@@ -19,7 +19,7 @@ public class PaperDCLink extends DCLink {
 
     private final PaperPlugin plugin;
 
-    public PaperDCLink(PaperPlugin plugin){
+    public PaperDCLink(PaperPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -47,14 +47,14 @@ public class PaperDCLink extends DCLink {
 
     @Override
     protected String getUserNameViaPlatformMethods(UUID uuid) {
-        if(isLoaded()){
+        if (isLoaded()) {
             String name = plugin.getServer().getOfflinePlayer(uuid).getName();
-            if(name == null){
+            if (name == null) {
                 MinecraftSessionService sessionService = MinecraftServer.getServer().getSessionService();
-                try{
+                try {
                     GameProfile gameProfile = sessionService.fillProfileProperties(new GameProfile(uuid, null), true);
                     return gameProfile.getName();
-                }catch (IllegalArgumentException ignored){
+                } catch (IllegalArgumentException ignored) {
                 }
             }
             return name;
@@ -81,7 +81,7 @@ public class PaperDCLink extends DCLink {
     protected void kickPlayer(MinecraftPlayer minecraftPlayer, Component message) {
         OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(minecraftPlayer.getUuid());
         if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
-            new BukkitRunnable(){
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     offlinePlayer.getPlayer().kick(message);

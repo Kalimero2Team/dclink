@@ -4,7 +4,7 @@ dependencyResolutionManagement{
             // Core
             plugin("shadow","com.github.johnrengelman.shadow").version("7.1.2")
 
-            version("jda", "5.0.0-alpha.21")
+            version("jda", "5.0.0-beta.1")
             version("configurate-hocon", "4.1.2")
             version("sqlite","3.39.2.0")
             version("adventure","4.11.0")
@@ -52,8 +52,8 @@ dependencyResolutionManagement{
             plugin("fabric-loom","fabric-loom").version("1.0-SNAPSHOT")
 
             version("minecraft","1.19.2")
-            version("fabric-loader","0.14.9")
-            version("fabric-api","0.59.0+1.19.2")
+            version("fabric-loader","0.14.10")
+            version("fabric-api","0.67.0+1.19.2")
             version("adventure-platform-fabric","5.5.0-SNAPSHOT")
 
             library("fabric-loader","net.fabricmc","fabric-loader").versionRef("fabric-loader")

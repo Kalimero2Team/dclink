@@ -21,6 +21,13 @@ public class FabricCommander implements Commander, ForwardingAudience.Single {
         this.stack = stack;
     }
 
+    public static FabricCommander from(final CommandSourceStack stack) {
+        if (((CommandSourceStackAccess) stack).source() instanceof ServerPlayer) {
+            return new Player(stack);
+        }
+        return new FabricCommander(stack);
+    }
+
     @Override
     public Audience audience() {
         return this.stack;
@@ -50,13 +57,6 @@ public class FabricCommander implements Commander, ForwardingAudience.Single {
     @Override
     public int hashCode() {
         return Objects.hash(((CommandSourceStackAccess) this.stack).source());
-    }
-
-    public static FabricCommander from(final CommandSourceStack stack) {
-        if (((CommandSourceStackAccess) stack).source() instanceof ServerPlayer) {
-            return new Player(stack);
-        }
-        return new FabricCommander(stack);
     }
 
     public static final class Player extends FabricCommander implements PlayerCommander {

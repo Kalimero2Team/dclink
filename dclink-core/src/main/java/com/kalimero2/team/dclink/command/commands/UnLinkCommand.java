@@ -30,10 +30,10 @@ public class UnLinkCommand extends DCLinkCommand {
         MinecraftPlayer minecraftPlayer = context.get("player");
         DiscordAccount discordAccount = minecraftPlayer.getDiscordAccount();
 
-        if(discordAccount == null){
+        if (discordAccount == null) {
             Component message = dcLink.getMessages().getMinifiedMessage(dcLink.getMessages().getMinecraftMessages().notLinked);
             context.getSender().sendMessage(message);
-        }else{
+        } else {
             dcLink.unLinkAccount(minecraftPlayer);
             Component message = dcLink.getMessages().getMinifiedMessage(dcLink.getMessages().getMinecraftMessages().unLinkCommand, Placeholder.unparsed("player", minecraftPlayer.getName()));
             context.getSender().sendMessage(message);

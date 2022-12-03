@@ -13,8 +13,15 @@ import java.util.Objects;
 public class VelocityCommander implements Commander, ForwardingAudience.Single {
     private final CommandSource source;
 
-    private VelocityCommander(CommandSource source){
+    private VelocityCommander(CommandSource source) {
         this.source = source;
+    }
+
+    public static VelocityCommander from(final CommandSource sender) {
+        if (sender instanceof com.velocitypowered.api.proxy.Player player) {
+            return new Player(player);
+        }
+        return new VelocityCommander(sender);
     }
 
     @Override
@@ -30,14 +37,6 @@ public class VelocityCommander implements Commander, ForwardingAudience.Single {
     public CommandSource source() {
         return this.source;
     }
-
-    public static VelocityCommander from(final CommandSource sender) {
-        if (sender instanceof com.velocitypowered.api.proxy.Player player) {
-            return new Player(player);
-        }
-        return new VelocityCommander(sender);
-    }
-
 
     public static final class Player extends VelocityCommander implements PlayerCommander {
         private Player(final com.velocitypowered.api.proxy.Player player) {

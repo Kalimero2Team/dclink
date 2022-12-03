@@ -29,28 +29,28 @@ public abstract class DCLink implements DCLinkApi {
     private boolean initialised = false;
     private boolean loaded = false;
 
-    public void init(){
-        if(!initialised){
+    public void init() {
+        if (!initialised) {
             logger.info("Initialising DCLink");
             DCLinkApiHolder.set(this);
 
-            try{
+            try {
                 dcLinkMessages = new DCLinkMessages(getMessagesFile());
-            }catch (ConfigurateException e){
+            } catch (ConfigurateException e) {
                 logger.error("Failed to load messages", e);
                 shutdownServer();
             }
             logger.info("Loaded messages");
-            try{
+            try {
                 dcLinkConfig = new DCLinkConfig(getConfigPath());
-            }catch (ConfigurateException e){
+            } catch (ConfigurateException e) {
                 logger.error("Failed to load config", e);
                 shutdownServer();
             }
             logger.info("Loaded config");
-            if(dcLinkConfig.getDatabaseConfiguration() != null){
+            if (dcLinkConfig.getDatabaseConfiguration() != null) {
                 storage = new Storage(this, new File(getDataFolder(), dcLinkConfig.getDatabaseConfiguration().getSqliteFile()));
-            }else {
+            } else {
                 logger.error("No database configuration found");
                 shutdownServer();
             }
@@ -74,18 +74,18 @@ public abstract class DCLink implements DCLinkApi {
         }
     }
 
-    public void load(){
-        if(!loaded && initialised){
+    public void load() {
+        if (!loaded && initialised) {
             loaded = true;
             discordBot.loadFeatures();
             logger.info("Loaded Discord Bot");
         }
     }
 
-    public void shutdown(){
-        if(loaded && initialised){
+    public void shutdown() {
+        if (loaded && initialised) {
             loaded = false;
-            if(discordBot != null){
+            if (discordBot != null) {
                 discordBot.shutdown();
             }
             storage.close();
@@ -129,8 +129,10 @@ public abstract class DCLink implements DCLinkApi {
 
     @Override
     public void unLinkAccounts(DiscordAccount discordAccount) {
-        DiscordRole linkRole = getDiscordRole(dcLinkConfig.getDiscordConfiguration().getLinkRole());
-        discordAccount.removeRole(linkRole);
+        if (dcLinkConfig.getDiscordConfiguration().getLinkRole() != null) {
+            DiscordRole linkRole = getDiscordRole(dcLinkConfig.getDiscordConfiguration().getLinkRole());
+            discordAccount.removeRole(linkRole);
+        }
         if (getConfig().getLinkingConfiguration().isLinkRequired()) {
             discordAccount.getLinkedPlayers().forEach(minecraftPlayer -> kickPlayer(minecraftPlayer, getMessages().getMinifiedMessage(getMessages().getMinecraftMessages().kickUnlinked)));
         }
@@ -139,19 +141,21 @@ public abstract class DCLink implements DCLinkApi {
 
     @Override
     public void unLinkAccount(MinecraftPlayer minecraftPlayer) {
-        DiscordRole linkRole = getDiscordRole(dcLinkConfig.getDiscordConfiguration().getLinkRole());
-        minecraftPlayer.getDiscordAccount().removeRole(linkRole);
+        if (dcLinkConfig.getDiscordConfiguration().getLinkRole() != null) {
+            DiscordRole linkRole = getDiscordRole(dcLinkConfig.getDiscordConfiguration().getLinkRole());
+            minecraftPlayer.getDiscordAccount().removeRole(linkRole);
+        }
         if (getConfig().getLinkingConfiguration().isLinkRequired()) {
             kickPlayer(minecraftPlayer, getMessages().getMinifiedMessage(getMessages().getMinecraftMessages().kickUnlinked));
         }
         storage.unLinkAccount(minecraftPlayer);
     }
 
-    public boolean isBedrock(MinecraftPlayer minecraftPlayer){
+    public boolean isBedrock(MinecraftPlayer minecraftPlayer) {
         return isBedrock(minecraftPlayer.getUuid());
     }
 
-    public boolean isBedrock(UUID uuid){
+    public boolean isBedrock(UUID uuid) {
         try {
             Class.forName("org.geysermc.floodgate.api.FloodgateApi");
             return org.geysermc.floodgate.api.FloodgateApi.getInstance().isFloodgatePlayer(uuid);
@@ -160,11 +164,11 @@ public abstract class DCLink implements DCLinkApi {
         }
     }
 
-    public JoinResult onLogin(MinecraftPlayer minecraftPlayer){
-        if(!minecraftPlayer.isLinked() && dcLinkConfig.getLinkingConfiguration().isLinkRequired()){
-            Component code = dcLinkMessages.getMinifiedMessage(dcLinkMessages.getMinecraftMessages().linkCodeMessage, Placeholder.unparsed("code",DCLinkCodes.addPlayer(minecraftPlayer)));
+    public JoinResult onLogin(MinecraftPlayer minecraftPlayer) {
+        if (!minecraftPlayer.isLinked() && dcLinkConfig.getLinkingConfiguration().isLinkRequired()) {
+            Component code = dcLinkMessages.getMinifiedMessage(dcLinkMessages.getMinecraftMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(minecraftPlayer)));
             return JoinResult.failure(code);
-        }else {
+        } else {
             return JoinResult.success(null);
         }
     }
@@ -189,23 +193,14 @@ public abstract class DCLink implements DCLinkApi {
         return dcLinkMessages;
     }
 
-    public record JoinResult(Component message, boolean success) {
-        public static JoinResult success(Component message) {
-            return new JoinResult(message, true);
-        }
-        public static JoinResult failure(Component message) {
-            return new JoinResult(message, false);
-        }
-    }
-
-    public String getUsername(UUID uuid){
+    public String getUsername(UUID uuid) {
         String name = getUserNameViaPlatformMethods(uuid);
-        if(name == null){
-            if(isBedrock(uuid)){
+        if (name == null) {
+            if (isBedrock(uuid)) {
                 name = org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(uuid).getJavaUsername();
             }
-            if(name == null){
-                try{
+            if (name == null) {
+                try {
                     name = storage.getLastKnownName(uuid);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -220,9 +215,24 @@ public abstract class DCLink implements DCLinkApi {
     public abstract UUID getUUID(String username);
 
     protected abstract void kickPlayer(MinecraftPlayer minecraftPlayer, Component message);
+
     protected abstract String getUserNameViaPlatformMethods(UUID uuid);
+
     protected abstract String getConfigPath();
+
     protected abstract String getMessagesFile();
+
     protected abstract void shutdownServer();
+
     public abstract File getDataFolder();
+
+    public record JoinResult(Component message, boolean success) {
+        public static JoinResult success(Component message) {
+            return new JoinResult(message, true);
+        }
+
+        public static JoinResult failure(Component message) {
+            return new JoinResult(message, false);
+        }
+    }
 }

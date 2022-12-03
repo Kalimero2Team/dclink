@@ -4,9 +4,9 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationOptions;
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
 import java.io.File;
 
@@ -25,9 +25,9 @@ public class DCLinkConfig {
                 .defaultOptions(ConfigurationOptions.defaults().shouldCopyDefaults(true))
                 .file(config)
                 .build();
-        if(!config.exists()){
+        if (!config.exists()) {
             node = CommentedConfigurationNode.root();
-        }else {
+        } else {
             node = loader.load();
         }
 
@@ -35,7 +35,7 @@ public class DCLinkConfig {
         discordConfiguration = node.node("discord").get(DiscordConfiguration.class);
         linkingConfiguration = node.node("linking").get(LinkingConfiguration.class);
 
-        if(!config.exists()){
+        if (!config.exists()) {
             save();
         }
     }
@@ -47,8 +47,20 @@ public class DCLinkConfig {
         loader.save(node);
     }
 
+    public DatabaseConfiguration getDatabaseConfiguration() {
+        return databaseConfiguration;
+    }
+
+    public DiscordConfiguration getDiscordConfiguration() {
+        return discordConfiguration;
+    }
+
+    public LinkingConfiguration getLinkingConfiguration() {
+        return linkingConfiguration;
+    }
+
     @ConfigSerializable
-    public static class DatabaseConfiguration{
+    public static class DatabaseConfiguration {
         @Comment("The Sqlite database filename")
         private String sqliteFile = "dclink.db";
 
@@ -98,6 +110,7 @@ public class DCLinkConfig {
             this.linkChannel = linkChannel;
         }
 
+        @Nullable
         public String getLinkRole() {
             return linkRole;
         }
@@ -116,7 +129,7 @@ public class DCLinkConfig {
     }
 
     @ConfigSerializable
-    public static class LinkingConfiguration{
+    public static class LinkingConfiguration {
         @Comment("If true, the player needs to be linked before they can join the server")
         private boolean linkRequired = true;
         @Comment("Limit of Java Edition accounts that can be linked to one Discord account")
@@ -147,17 +160,5 @@ public class DCLinkConfig {
         public void setBedrockLimit(int bedrockLimit) {
             this.bedrockLimit = bedrockLimit;
         }
-    }
-
-    public DatabaseConfiguration getDatabaseConfiguration() {
-        return databaseConfiguration;
-    }
-
-    public DiscordConfiguration getDiscordConfiguration() {
-        return discordConfiguration;
-    }
-
-    public LinkingConfiguration getLinkingConfiguration() {
-        return linkingConfiguration;
     }
 }

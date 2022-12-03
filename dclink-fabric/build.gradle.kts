@@ -28,7 +28,7 @@ dependencies {
     include(libs.adventure.minimessage)
     include(libs.configurate.hocon)
     include(libs.jda) {
-        exclude(module= "opus-java")
+        exclude(module = "opus-java")
     }
     include(libs.sqlite)
 }

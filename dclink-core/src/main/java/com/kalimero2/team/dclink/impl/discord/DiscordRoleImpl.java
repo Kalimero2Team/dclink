@@ -11,14 +11,15 @@ public class DiscordRoleImpl implements DiscordRole {
     private final JDA jda;
     private final String discordId;
 
-    public DiscordRoleImpl(JDA jda, String discordId){
+    public DiscordRoleImpl(JDA jda, String discordId) {
         this.jda = jda;
         this.discordId = discordId;
     }
+
     @Override
     public String getName() {
         Role role = jda.getRoleById(this.discordId);
-        if(role != null) {
+        if (role != null) {
             return role.getName();
         }
         return null;
