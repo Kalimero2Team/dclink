@@ -5,7 +5,7 @@ plugins {
 
 allprojects{
     group = "com.kalimero2.team"
-    version = "1.0.4-SNAPSHOT"
+    version = "1.0.5-SNAPSHOT"
     description = "Discord Bot for linking Minecraft Accounts with Discord Accounts"
 }
 

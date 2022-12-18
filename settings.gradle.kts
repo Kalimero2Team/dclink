@@ -4,12 +4,12 @@ dependencyResolutionManagement{
             // Core
             plugin("shadow","com.github.johnrengelman.shadow").version("7.1.2")
 
-            version("jda", "5.0.0-beta.1")
+            version("jda", "5.0.0-beta.2")
             version("configurate-hocon", "4.1.2")
             version("sqlite","3.39.2.0")
-            version("adventure","4.11.0")
+            version("adventure","4.12.0")
             version("floodgate-api","2.0-SNAPSHOT")
-            version("cloud", "1.7.1")
+            version("cloud", "1.8.0")
 
             library("jda","net.dv8tion","JDA").versionRef("jda")
             library("configurate-hocon","org.spongepowered","configurate-hocon").versionRef("configurate-hocon")
@@ -22,8 +22,8 @@ dependencyResolutionManagement{
 
             // Spigot
             plugin("plugin-yml","net.minecrell.plugin-yml.bukkit").version("0.5.2")
-            version("spigot-api","1.19.2-R0.1-SNAPSHOT")
-            version("adventure-platform","4.1.1")
+            version("spigot-api","1.19.3-R0.1-SNAPSHOT")
+            version("adventure-platform","4.2.0")
             version("commodore","2.0")
 
             library("spigot-api","org.spigotmc","spigot-api").versionRef("spigot-api")
@@ -33,10 +33,10 @@ dependencyResolutionManagement{
 
 
             // Paper
-            plugin("paper-userdev","io.papermc.paperweight.userdev").version("1.3.8")
-            plugin("paper-run","xyz.jpenilla.run-paper").version("1.0.6")
+            plugin("paper-userdev","io.papermc.paperweight.userdev").version("1.4.0")
+            plugin("paper-run","xyz.jpenilla.run-paper").version("2.0.1")
 
-            version("paper-api","1.19.2-R0.1-SNAPSHOT")
+            version("paper-api","1.19.3-R0.1-SNAPSHOT")
 
             library("cloud-paper","cloud.commandframework","cloud-paper").versionRef("cloud")
 
@@ -51,10 +51,10 @@ dependencyResolutionManagement{
             // Fabric
             plugin("fabric-loom","fabric-loom").version("1.0-SNAPSHOT")
 
-            version("minecraft","1.19.2")
-            version("fabric-loader","0.14.10")
-            version("fabric-api","0.67.0+1.19.2")
-            version("adventure-platform-fabric","5.5.0-SNAPSHOT")
+            version("minecraft","1.19.3")
+            version("fabric-loader","0.14.11")
+            version("fabric-api","0.69.1+1.19.3")
+            version("adventure-platform-fabric","5.6.0-SNAPSHOT")
 
             library("fabric-loader","net.fabricmc","fabric-loader").versionRef("fabric-loader")
             library("fabric-api","net.fabricmc.fabric-api","fabric-api").versionRef("fabric-api")
