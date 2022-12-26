@@ -34,6 +34,6 @@ jobs:
       with:
         arguments: build
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         path: "**/dclink-*/build/libs/*.jar"
