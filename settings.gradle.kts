@@ -24,7 +24,7 @@ dependencyResolutionManagement{
             plugin("plugin-yml","net.minecrell.plugin-yml.bukkit").version("0.5.2")
             version("spigot-api","1.19.3-R0.1-SNAPSHOT")
             version("adventure-platform","4.2.0")
-            version("commodore","2.0")
+            version("commodore","2.2")
 
             library("spigot-api","org.spigotmc","spigot-api").versionRef("spigot-api")
             library("adventure-bukkit","net.kyori","adventure-platform-bukkit").versionRef("adventure-platform")
