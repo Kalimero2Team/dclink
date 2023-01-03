@@ -12,14 +12,6 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
       - name: "Build and Publish Api to Maven"
         uses: gradle/gradle-build-action@v2
         env:
