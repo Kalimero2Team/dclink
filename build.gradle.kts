@@ -1,11 +1,10 @@
 plugins {
     `java-library`
-    id("com.github.ben-manes.versions") version "0.42.0"
 }
 
 allprojects{
     group = "com.kalimero2.team"
-    version = "1.0.6"
+    version = "1.0.6-SNAPSHOT"
     description = "Discord Bot for linking Minecraft Accounts with Discord Accounts"
 }
 
