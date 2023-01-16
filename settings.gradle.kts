@@ -4,7 +4,7 @@ dependencyResolutionManagement{
             // Core
             plugin("shadow","com.github.johnrengelman.shadow").version("7.1.2")
 
-            version("jda", "5.0.0-beta.2")
+            version("jda", "5.0.0-beta.3")
             version("configurate-hocon", "4.1.2")
             version("sqlite","3.40.0.0")
             version("adventure","4.12.0")
