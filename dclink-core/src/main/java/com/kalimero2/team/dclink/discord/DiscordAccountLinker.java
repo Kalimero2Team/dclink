@@ -125,15 +125,15 @@ public class DiscordAccountLinker extends ListenerAdapter {
         if (event.getChannel().getId().equals(config.getLinkChannel())) {
             DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
             switch (componentId) {
-                case "add":
+                case "add" -> {
                     TextInput code = TextInput.create("code", messages.modalInputDescription, TextInputStyle.SHORT)
                             .setRequiredRange(4, 4)
                             .setRequired(true).
                             build();
                     Modal modal = Modal.create("linkModal", messages.modalTitle).addActionRows(ActionRow.of(code)).build();
                     event.replyModal(modal).queue();
-                    break;
-                case "accept":
+                }
+                case "accept" -> {
                     if (preLinkedPlayers.containsKey(discordAccount)) {
                         MinecraftPlayer minecraftPlayer = preLinkedPlayers.get(discordAccount);
                         dcLink.linkAccounts(minecraftPlayer, discordAccount);
@@ -147,8 +147,8 @@ public class DiscordAccountLinker extends ListenerAdapter {
                         logger.error(event.getUser().getName() + " tried to accept the rules but was not pre-linked");
                         event.editMessage(messages.genericLinkError).setComponents().queue();
                     }
-                    break;
-                case "decline":
+                }
+                case "decline" -> {
                     if (preLinkedPlayers.containsKey(discordAccount)) {
                         preLinkedPlayers.remove(discordAccount);
                         logger.info(event.getUser().getName() + " declined the rules");
@@ -157,7 +157,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
                         logger.error(event.getUser().getName() + " tried to decline the rules but was not pre-linked");
                         event.editMessage(messages.genericLinkError).setComponents().queue();
                     }
-                    break;
+                }
             }
         }
     }
