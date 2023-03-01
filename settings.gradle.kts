@@ -9,7 +9,7 @@ dependencyResolutionManagement{
             version("sqlite","3.41.0.0")
             version("adventure","4.12.0")
             version("floodgate-api","2.0-SNAPSHOT")
-            version("cloud", "1.8.1")
+            version("cloud", "1.8.2")
 
             library("jda","net.dv8tion","JDA").versionRef("jda")
             library("configurate-hocon","org.spongepowered","configurate-hocon").versionRef("configurate-hocon")
