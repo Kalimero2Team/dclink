@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 
 import java.nio.file.Path;
 
-@Plugin(id = "dclink-velocity", name = "DCLink", version = "1.0.2-SNAPSHOT", authors = {"byquanton"})
+@Plugin(id = "dclink-velocity", name = "DCLink", version = "1.0.7-SNAPSHOT", authors = {"byquanton"})
 public class VelocityPlugin {
 
     private final VelocityDCLink dclink;

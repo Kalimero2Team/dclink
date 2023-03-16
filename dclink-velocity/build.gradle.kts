@@ -1,6 +1,6 @@
 plugins {
-    @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
     alias(libs.plugins.shadow)
+    alias(libs.plugins.velocity.run)
 }
 
 repositories {
@@ -22,8 +22,15 @@ tasks {
     assemble {
         dependsOn(shadowJar)
     }
+
+    runVelocity {
+        velocityVersion("3.1.2-SNAPSHOT")
+    }
+
     shadowJar {
-        fun reloc(pkg: String) = relocate(pkg, "com.kalimero2.team.dclink.libs.cloud.dependency.$pkg")
+        archiveClassifier.set("")
+
+        fun reloc(pkg: String) = relocate(pkg, "com.kalimero2.team.dclink.libs.$pkg")
         reloc("cloud.commandframework")
         reloc("io.leangen")
         reloc("net.dv8tion")

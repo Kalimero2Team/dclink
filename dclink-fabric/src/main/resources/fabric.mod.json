@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "dclink",
-  "version": "1.0.2-SNAPSHOT",
+  "version": "1.0.7-SNAPSHOT",
   "name": "DCLink",
   "description": "Discord Bot for linking Minecraft Accounts with Discord Accounts",
   "authors": [

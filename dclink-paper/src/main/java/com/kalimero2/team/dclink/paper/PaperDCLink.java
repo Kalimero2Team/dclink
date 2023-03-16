@@ -1,13 +1,11 @@
 package com.kalimero2.team.dclink.paper;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.paper.command.PaperCommands;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
 import net.kyori.adventure.text.Component;
-import net.minecraft.server.MinecraftServer;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -50,12 +48,9 @@ public class PaperDCLink extends DCLink {
         if (isLoaded()) {
             String name = plugin.getServer().getOfflinePlayer(uuid).getName();
             if (name == null) {
-                MinecraftSessionService sessionService = MinecraftServer.getServer().getSessionService();
-                try {
-                    GameProfile gameProfile = sessionService.fillProfileProperties(new GameProfile(uuid, null), true);
-                    return gameProfile.getName();
-                } catch (IllegalArgumentException ignored) {
-                }
+                PlayerProfile profile = plugin.getServer().createProfile(uuid);
+                profile.complete(false);
+                return profile.getName();
             }
             return name;
         }

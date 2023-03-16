@@ -1,13 +1,8 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
-    @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
-    alias(libs.plugins.paper.userdev)
-    @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
     alias(libs.plugins.paper.run)
-    @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
     alias(libs.plugins.plugin.yml)
-    @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
     alias(libs.plugins.shadow)
 }
 
@@ -18,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    paperDevBundle(libs.versions.paper.api.get())
+    compileOnly(libs.paper.api)
     bukkitLibrary(libs.cloud.paper)
     bukkitLibrary(libs.configurate.hocon)
     bukkitLibrary(libs.jda)
@@ -28,16 +23,26 @@ dependencies {
         exclude("*", "*") // Excludes all dependencies of dclink-core because they are put into the plugin.yml file
     }
 }
+
 tasks {
     assemble {
-        dependsOn(reobfJar)
+        dependsOn(shadowJar)
     }
-}
 
-bukkit {
-    load = BukkitPluginDescription.PluginLoadOrder.STARTUP
-    main = "com.kalimero2.team.dclink.paper.PaperPlugin"
-    apiVersion = "1.19"
-    authors = listOf("byquanton")
-    softDepend = listOf("floodgate")
+    shadowJar {
+        archiveClassifier.set("")
+    }
+
+    runServer {
+        minecraftVersion("1.19.4")
+    }
+
+    bukkit {
+        load = BukkitPluginDescription.PluginLoadOrder.STARTUP
+        main = "com.kalimero2.team.dclink.paper.PaperPlugin"
+        description = project.description
+        apiVersion = "1.19"
+        authors = listOf("byquanton")
+        softDepend = listOf("floodgate")
+    }
 }
