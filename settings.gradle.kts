@@ -21,7 +21,7 @@ dependencyResolutionManagement{
             library("cloud-brigadier","cloud.commandframework","cloud-brigadier").versionRef("cloud")
 
             // Spigot
-            plugin("plugin-yml","net.minecrell.plugin-yml.bukkit").version("0.5.2")
+            plugin("plugin-yml","net.minecrell.plugin-yml.bukkit").version("0.5.3")
             version("spigot-api","1.19.3-R0.1-SNAPSHOT")
             version("adventure-platform","4.2.0")
             version("commodore","2.2")
