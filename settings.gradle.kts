@@ -9,7 +9,7 @@ dependencyResolutionManagement{
             version("sqlite","3.41.0.0")
             version("adventure","4.13.0")
             version("floodgate-api","2.0-SNAPSHOT")
-            version("cloud", "1.8.2")
+            version("cloud", "1.8.3")
             version("runtask", "2.0.1")
 
             library("jda","net.dv8tion","JDA").versionRef("jda")
