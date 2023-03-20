@@ -2,7 +2,7 @@ dependencyResolutionManagement{
     versionCatalogs{
         create("libs"){
             // Core
-            plugin("shadow","com.github.johnrengelman.shadow").version("8.1.0")
+            plugin("shadow","com.github.johnrengelman.shadow").version("8.1.1")
 
             version("jda", "5.0.0-beta.5")
             version("configurate-hocon", "4.1.2")
