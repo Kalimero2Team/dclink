@@ -23,7 +23,7 @@ dependencyResolutionManagement{
 
             // Paper
             plugin("paper-run","xyz.jpenilla.run-paper").versionRef("runtask")
-            plugin("plugin-yml","net.minecrell.plugin-yml.bukkit").version("0.5.3")
+            plugin("plugin-yml","net.minecrell.plugin-yml.bukkit").version("0.6.0")
 
             version("paper-api","1.19.4-R0.1-SNAPSHOT")
 
