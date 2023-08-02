@@ -41,7 +41,7 @@ dependencyResolutionManagement{
 
 
             // Fabric
-            plugin("fabric-loom","fabric-loom").version("1.1-SNAPSHOT")
+            plugin("fabric-loom","fabric-loom").version("1.3.8")
 
             version("minecraft","1.19.4")
             version("fabric-loader","0.14.19")
