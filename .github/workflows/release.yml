@@ -1,0 +1,39 @@
+name: Create Release when tag is pushed
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: "Publish with Gradle in Repository"
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publish
+      - name: "Create Release on Github"
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: "Upload Artifacts to Release"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: "**/dclink-*/build/libs/*.jar"
+          asset_name: dclink.jar
+          asset_content_type: application/java-archive

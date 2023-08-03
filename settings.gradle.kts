@@ -25,7 +25,7 @@ dependencyResolutionManagement{
             plugin("paper-run","xyz.jpenilla.run-paper").versionRef("runtask")
             plugin("plugin-yml","net.minecrell.plugin-yml.bukkit").version("0.6.0")
 
-            version("paper-api","1.19.4-R0.1-SNAPSHOT")
+            version("paper-api","1.20.1-R0.1-SNAPSHOT")
 
             library("paper-api","io.papermc.paper","paper-api").versionRef("paper-api")
             library("cloud-paper","cloud.commandframework","cloud-paper").versionRef("cloud")
@@ -43,7 +43,7 @@ dependencyResolutionManagement{
             // Fabric
             plugin("fabric-loom","fabric-loom").version("1.3.8")
 
-            version("minecraft","1.19.4")
+            version("minecraft","1.20.1")
             version("fabric-loader","0.14.19")
             version("fabric-api","0.86.1+1.20.1")
             version("adventure-platform-fabric","5.9.0")

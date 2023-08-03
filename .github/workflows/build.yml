@@ -1,9 +1,10 @@
 name: Build
-on: [ push ]
+on:
+  push:
+    branches: [main, dev]
 
 jobs:
   build:
-    if: ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -12,18 +13,10 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-      - name: "Build and Publish Api to Maven"
+      - name: "Build with Gradle"
         uses: gradle/gradle-build-action@v2
-        env:
-          REPO_USERNAME: ${{ secrets.BYQUANTON_REPO_USERNAME }}
-          REPO_PASSWORD: ${{ secrets.BYQUANTON_REPO_PASSWORD }}
         with:
-          arguments: publish
-      - name: "Release"
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          path: "**/dclink-*/build/libs/*.jar"
+          arguments: build
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3.1.2
         with:
