@@ -1,20 +1,20 @@
 # DCLink (WIP)
 
-DCLink is a simple plugin/mod for Linking Minecraft Accounts with Discord Accounts.
-
+A simple plugin that provides the process of linking Minecraft and Discord accounts. Utilizing a Discord bot, players can connect their accounts for whitelist access.
 
 ## Setup
 
-TODO: Create Setup Guide
+- [Setup Discord Bot](https://github.com/Kalimero2Team/dclink/wiki/Setup-Discord-Bot)
+- ...
 
 ## Links
-[Wiki](https://github.com/Kalimero2Team/dclink/wiki/)
 
-**Downloads:**\
-~~[Paper Forums (Paper Version)]()~~ (Not yet available) \
-~~[Paper Forums (Velocity Version)]()~~ (Not yet available)\
-[SpigotMC (Spigot Version)](https://www.spigotmc.org/resources/dclink.103585/) \
-~~[Modrinth (Fabric Version)](https://modrinth.com/mod/dclink)~~ (Not yet available)
+- [Wiki](https://github.com/Kalimero2Team/dclink/wiki/)
+
+Downloads:
+- [Modrinth](https://modrinth.com/plugin/dclink)
+
+
 
 ## Libraries Used
 
