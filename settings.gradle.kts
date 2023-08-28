@@ -4,9 +4,9 @@ dependencyResolutionManagement{
             // Core
             plugin("shadow","com.github.johnrengelman.shadow").version("8.1.1")
 
-            version("jda", "5.0.0-beta.12")
+            version("jda", "5.0.0-beta.13")
             version("configurate-hocon", "4.1.2")
-            version("sqlite","3.42.0.0")
+            version("sqlite","3.42.0.1")
             version("adventure","4.14.0")
             version("floodgate-api","2.0-SNAPSHOT")
             version("cloud", "1.8.3")
@@ -34,17 +34,17 @@ dependencyResolutionManagement{
             // Velocity
             plugin("velocity-run","xyz.jpenilla.run-velocity").versionRef("runtask")
 
-            version("velocity-api","3.1.1")
+            version("velocity-api","3.2.0-SNAPSHOT")
 
             library("velocity-api","com.velocitypowered","velocity-api").versionRef("velocity-api")
             library("cloud-velocity","cloud.commandframework","cloud-velocity").versionRef("cloud")
 
 
             // Fabric
-            plugin("fabric-loom","fabric-loom").version("1.3.8")
+            plugin("fabric-loom","fabric-loom").version("1.3.9")
 
             version("minecraft","1.20.1")
-            version("fabric-loader","0.14.19")
+            version("fabric-loader","0.14.22")
             version("fabric-api","0.86.1+1.20.1")
             version("adventure-platform-fabric","5.9.0")
 
