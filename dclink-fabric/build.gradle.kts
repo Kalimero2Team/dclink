@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.fabric.loom)
 }
@@ -11,9 +10,7 @@ repositories {
 
 dependencies {
     minecraft("com.mojang", "minecraft", libs.versions.minecraft.get())
-    mappings(loom.layered {
-        officialMojangMappings()
-    })
+    mappings(loom.officialMojangMappings())
     modImplementation(libs.fabric.loader)
     modImplementation(libs.fabric.api)
     modImplementation(libs.adventure.fabric)
@@ -31,4 +28,16 @@ dependencies {
         exclude(module = "opus-java")
     }
     include(libs.sqlite)
+}
+
+tasks {
+    processResources {
+        filesMatching("fabric.mod.json"){
+            expand(
+                "version" to project.version,
+                "minecraftVersion" to libs.versions.minecraft.get(),
+                "loaderVersion" to libs.versions.fabric.loader.get(),
+            )
+        }
+    }
 }
