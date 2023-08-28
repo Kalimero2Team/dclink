@@ -23,7 +23,7 @@ public class FabricCommands implements PlatformCommands {
     public CommandManager<Commander> createCommandManager() {
         final FabricServerCommandManager<Commander> commandManager = new FabricServerCommandManager<>(
                 CommandExecutionCoordinator.simpleCoordinator(),
-                FabricCommander::from,
+                serverCommandSource -> (Commander) serverCommandSource,
                 commander -> ((FabricCommander) commander).stack()
         );
 

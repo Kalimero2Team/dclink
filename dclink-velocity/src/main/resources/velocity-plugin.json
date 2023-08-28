@@ -1,0 +1,10 @@
+{
+  "id": "dclink-velocity",
+  "name": "DCLink",
+  "version": "${version}",
+  "authors": [
+    "byquanton"
+  ],
+  "dependencies": [],
+  "main": "com.kalimero2.team.dclink.velocity.VelocityPlugin"
+}

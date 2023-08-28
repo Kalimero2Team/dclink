@@ -24,7 +24,7 @@ tasks {
     }
 
     runVelocity {
-        velocityVersion("3.1.2-SNAPSHOT")
+        velocityVersion(libs.versions.velocity.api.get().toString())
     }
 
     shadowJar {
@@ -35,5 +35,13 @@ tasks {
         reloc("io.leangen")
         reloc("net.dv8tion")
         reloc("org.xerial")
+    }
+
+    processResources {
+        filesMatching("velocity-plugin.json"){
+            expand(
+                "version" to project.version,
+            )
+        }
     }
 }

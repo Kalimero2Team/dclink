@@ -36,8 +36,8 @@ public class FabricMod implements DedicatedServerModInitializer {
         });
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             try {
-                FabricCommands paperCommands = new FabricCommands(fabricDCLink);
-                Commands commands = new Commands(fabricDCLink, paperCommands);
+                FabricCommands fabricCommands = new FabricCommands(fabricDCLink);
+                Commands commands = new Commands(fabricDCLink, fabricCommands);
                 commands.registerCommands();
                 fabricDCLink.getLogger().info("Registered Commands");
             } catch (Exception e) {

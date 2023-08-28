@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "dclink",
-  "version": "1.0.7-SNAPSHOT",
+  "version": "${version}",
   "name": "DCLink",
   "description": "Discord Bot for linking Minecraft Accounts with Discord Accounts",
   "authors": [
@@ -22,12 +22,9 @@
     "dclink-fabric.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.6",
+    "fabricloader": ">=${loaderVersion}",
     "fabric": "*",
-    "minecraft": "~1.19",
+    "minecraft": "${minecraftVersion}",
     "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }
