@@ -226,6 +226,10 @@ public abstract class DCLink implements DCLinkApi {
 
     public abstract File getDataFolder();
 
+    protected Storage getStorage() {
+        return storage;
+    }
+
     public record JoinResult(Component message, boolean success) {
         public static JoinResult success(Component message) {
             return new JoinResult(message, true);

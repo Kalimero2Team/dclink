@@ -10,6 +10,7 @@ import net.kyori.adventure.text.Component;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,7 +52,16 @@ public class VelocityDCLink extends DCLink {
     @Override
     public UUID getUUID(String username) {
         Optional<Player> player = server.getPlayer(username);
-        return player.map(Player::getUniqueId).orElse(null);
+        if (player.isPresent()) {
+            return player.get().getUniqueId();
+        }
+        // On Velocity we don't have a way to get the UUID of an offline player, so we get it from the database
+        try {
+            return getStorage().getUUIDByLastKnownName(username);
+        } catch (SQLException e) {
+            return null;
+        }
+
     }
 
     @Override

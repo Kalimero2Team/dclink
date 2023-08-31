@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,18 +23,15 @@ public class DiscordBot {
         this.dcLink = dcLink;
         this.discordConfiguration = dcLink.getConfig().getDiscordConfiguration();
         String token = discordConfiguration.getToken();
-        if (token.equals("")) {
+
+        if (token.isEmpty()) {
             logger.error("No token found in config");
             throw new LoginException("No token found in config");
         }
 
-        JDABuilder builder = JDABuilder.createDefault(token);
-        builder.disableCache(CacheFlag.VOICE_STATE);
+        JDABuilder builder = JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS);
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
-        builder.enableCache(CacheFlag.MEMBER_OVERRIDES);
-        builder.disableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_TYPING);
-        builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS);
         builder.setLargeThreshold(50);
 
         builder.setActivity(Activity.playing(discordConfiguration.getStatusMessage()));
