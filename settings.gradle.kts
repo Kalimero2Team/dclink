@@ -6,7 +6,7 @@ dependencyResolutionManagement{
 
             version("jda", "5.0.0-beta.13")
             version("configurate-hocon", "4.1.2")
-            version("sqlite","3.42.0.1")
+            version("sqlite","3.43.0.0")
             version("adventure","4.14.0")
             version("floodgate-api","2.0-SNAPSHOT")
             version("cloud", "1.8.3")
