@@ -4,7 +4,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import com.kalimero2.team.dclink.command.Commands;
-import com.kalimero2.team.dclink.paper.command.PaperCommands;
+import com.kalimero2.team.dclink.paper.command.PaperCommandHandler;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,8 +28,8 @@ public class PaperDCLink extends DCLink {
     @Override
     public void load() {
         try {
-            PaperCommands paperCommands = new PaperCommands(this);
-            Commands commands = new Commands(this, paperCommands);
+            PaperCommandHandler paperCommandHandler = new PaperCommandHandler(this);
+            Commands commands = new Commands(this, paperCommandHandler);
             commands.registerCommands();
             getLogger().info("Registered Commands");
         } catch (Exception e) {

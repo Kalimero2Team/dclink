@@ -3,7 +3,7 @@ package com.kalimero2.team.dclink.velocity;
 import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import com.kalimero2.team.dclink.command.Commands;
-import com.kalimero2.team.dclink.velocity.command.VelocityCommands;
+import com.kalimero2.team.dclink.velocity.command.VelocityCommandHandler;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.adventure.text.Component;
@@ -38,8 +38,8 @@ public class VelocityDCLink extends DCLink {
     public void load() {
         if (isInitialised()) {
             try {
-                VelocityCommands paperCommands = new VelocityCommands(this);
-                Commands commands = new Commands(this, paperCommands);
+                VelocityCommandHandler velocityCommandHandler = new VelocityCommandHandler(this);
+                Commands commands = new Commands(this, velocityCommandHandler);
                 commands.registerCommands();
                 getLogger().info("Registered Commands");
             } catch (Exception e) {

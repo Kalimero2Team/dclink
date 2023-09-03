@@ -2,40 +2,35 @@ package com.kalimero2.team.dclink.fabric.command;
 
 import com.kalimero2.team.dclink.api.DCLinkApi;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
-import com.kalimero2.team.dclink.command.Commander;
-import com.kalimero2.team.dclink.command.PlayerCommander;
+import com.kalimero2.team.dclink.command.Sender;
+import com.kalimero2.team.dclink.command.PlayerSender;
 import com.kalimero2.team.dclink.fabric.mixin.CommandSourceStackAccess;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.ForwardingAudience;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class FabricCommander implements Commander, ForwardingAudience.Single {
+public class FabricSender implements Sender, ForwardingAudience.Single {
     private final CommandSourceStack stack;
 
-    private FabricCommander(final CommandSourceStack stack) {
+    private FabricSender(final CommandSourceStack stack) {
         this.stack = stack;
     }
 
-    public static FabricCommander from(final CommandSourceStack stack) {
+    public static Sender from(final CommandSourceStack stack) {
         if (((CommandSourceStackAccess) stack).source() instanceof ServerPlayer) {
             return new Player(stack);
         }
-        return new FabricCommander(stack);
+        return new FabricSender(stack);
     }
 
     @Override
-    public Audience audience() {
+    public @NotNull Audience audience() {
         return this.stack;
-    }
-
-    @Override
-    public boolean hasPermission(final String permission) {
-        return Permissions.check(this.stack, permission, this.stack.getServer().getOperatorUserPermissionLevel());
     }
 
     public CommandSourceStack stack() {
@@ -50,7 +45,7 @@ public class FabricCommander implements Commander, ForwardingAudience.Single {
         if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
-        final FabricCommander that = (FabricCommander) o;
+        final FabricSender that = (FabricSender) o;
         return ((CommandSourceStackAccess) this.stack).source().equals(((CommandSourceStackAccess) that.stack).source());
     }
 
@@ -59,7 +54,7 @@ public class FabricCommander implements Commander, ForwardingAudience.Single {
         return Objects.hash(((CommandSourceStackAccess) this.stack).source());
     }
 
-    public static final class Player extends FabricCommander implements PlayerCommander {
+    public static final class Player extends FabricSender implements PlayerSender {
         private Player(final CommandSourceStack stack) {
             super(stack);
         }
@@ -81,7 +76,7 @@ public class FabricCommander implements Commander, ForwardingAudience.Single {
             if (o == null || this.getClass() != o.getClass()) {
                 return false;
             }
-            final FabricCommander.Player that = (FabricCommander.Player) o;
+            final FabricSender.Player that = (FabricSender.Player) o;
             return this.player().equals(that.player());
         }
 

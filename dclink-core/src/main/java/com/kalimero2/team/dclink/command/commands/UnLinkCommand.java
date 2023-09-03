@@ -4,7 +4,7 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.context.CommandContext;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
-import com.kalimero2.team.dclink.command.Commander;
+import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.command.DCLinkCommand;
 import com.kalimero2.team.dclink.command.argument.MinecraftPlayerArgument;
@@ -19,14 +19,14 @@ public class UnLinkCommand extends DCLinkCommand {
 
     @Override
     public void register() {
-        CommandManager<Commander> commandManager = commands.commandManager();
+        CommandManager<Sender> commandManager = commands.commandManager();
         commandManager.command(commandManager.commandBuilder("unlink")
                 .argument(MinecraftPlayerArgument.of("player"))
                 .permission("dclink.command.unlink")
                 .handler(this::unLink));
     }
 
-    private void unLink(CommandContext<Commander> context) {
+    private void unLink(CommandContext<Sender> context) {
         MinecraftPlayer minecraftPlayer = context.get("player");
         DiscordAccount discordAccount = minecraftPlayer.getDiscordAccount();
 

@@ -5,10 +5,10 @@ import cloud.commandframework.context.CommandContext;
 import com.kalimero2.team.dclink.DCLinkMessages;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
-import com.kalimero2.team.dclink.command.Commander;
+import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.command.DCLinkCommand;
-import com.kalimero2.team.dclink.command.PlayerCommander;
+import com.kalimero2.team.dclink.command.PlayerSender;
 import com.kalimero2.team.dclink.command.argument.MinecraftPlayerArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -22,18 +22,18 @@ public class DiscordCommand extends DCLinkCommand {
 
     @Override
     public void register() {
-        CommandManager<Commander> commandManager = commands.commandManager();
+        CommandManager<Sender> commandManager = commands.commandManager();
         commandManager.command(commandManager.commandBuilder("discord", "dc")
                 .argument(MinecraftPlayerArgument.optional("player"))
                 .permission("dclink.command.discord")
                 .handler(this::info));
     }
 
-    private void info(CommandContext<Commander> context) {
+    private void info(CommandContext<Sender> context) {
         DCLinkMessages messages = dcLink.getMessages();
         Optional<MinecraftPlayer> optionalMinecraftPlayer = context.getOptional("player");
         MinecraftPlayer minecraftPlayer;
-        if (context.getSender() instanceof PlayerCommander commander) {
+        if (context.getSender() instanceof PlayerSender commander) {
             minecraftPlayer = optionalMinecraftPlayer.orElse(commander.player());
         } else {
             minecraftPlayer = optionalMinecraftPlayer.orElse(null);

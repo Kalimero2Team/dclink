@@ -5,7 +5,7 @@ import cloud.commandframework.context.CommandContext;
 import com.kalimero2.team.dclink.DCLinkMessages;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
-import com.kalimero2.team.dclink.command.Commander;
+import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.command.DCLinkCommand;
 import com.kalimero2.team.dclink.command.argument.MinecraftPlayerArgument;
@@ -19,14 +19,14 @@ public class AltsCommand extends DCLinkCommand {
 
     @Override
     public void register() {
-        CommandManager<Commander> commandManager = commands.commandManager();
+        CommandManager<Sender> commandManager = commands.commandManager();
         commandManager.command(commandManager.commandBuilder("alts")
                 .argument(MinecraftPlayerArgument.of("player"))
                 .permission("dclink.command.alts")
                 .handler(this::alts));
     }
 
-    private void alts(CommandContext<Commander> context) {
+    private void alts(CommandContext<Sender> context) {
         DCLinkMessages messages = dcLink.getMessages();
         DCLinkMessages.MinecraftMessages minecraftMessages = messages.getMinecraftMessages();
 

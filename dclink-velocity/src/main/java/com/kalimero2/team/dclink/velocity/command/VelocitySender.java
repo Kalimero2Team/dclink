@@ -2,35 +2,31 @@ package com.kalimero2.team.dclink.velocity.command;
 
 import com.kalimero2.team.dclink.api.DCLinkApi;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
-import com.kalimero2.team.dclink.command.Commander;
-import com.kalimero2.team.dclink.command.PlayerCommander;
+import com.kalimero2.team.dclink.command.Sender;
+import com.kalimero2.team.dclink.command.PlayerSender;
 import com.velocitypowered.api.command.CommandSource;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.ForwardingAudience;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class VelocityCommander implements Commander, ForwardingAudience.Single {
+public class VelocitySender implements Sender, ForwardingAudience.Single {
     private final CommandSource source;
 
-    private VelocityCommander(CommandSource source) {
+    private VelocitySender(CommandSource source) {
         this.source = source;
     }
 
-    public static VelocityCommander from(final CommandSource sender) {
+    public static VelocitySender from(final CommandSource sender) {
         if (sender instanceof com.velocitypowered.api.proxy.Player player) {
             return new Player(player);
         }
-        return new VelocityCommander(sender);
+        return new VelocitySender(sender);
     }
 
     @Override
-    public boolean hasPermission(String permission) {
-        return this.source.hasPermission(permission);
-    }
-
-    @Override
-    public Audience audience() {
+    public @NotNull Audience audience() {
         return this.source;
     }
 
@@ -38,7 +34,7 @@ public class VelocityCommander implements Commander, ForwardingAudience.Single {
         return this.source;
     }
 
-    public static final class Player extends VelocityCommander implements PlayerCommander {
+    public static final class Player extends VelocitySender implements PlayerSender {
         private Player(final com.velocitypowered.api.proxy.Player player) {
             super(player);
         }

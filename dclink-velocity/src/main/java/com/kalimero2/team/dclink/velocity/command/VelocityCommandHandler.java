@@ -5,30 +5,30 @@ import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.velocity.VelocityCommandManager;
 import com.kalimero2.team.dclink.command.BrigadierSetup;
-import com.kalimero2.team.dclink.command.Commander;
-import com.kalimero2.team.dclink.command.PlatformCommands;
+import com.kalimero2.team.dclink.command.Sender;
+import com.kalimero2.team.dclink.command.PlatformHandler;
 import com.kalimero2.team.dclink.velocity.VelocityDCLink;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VelocityCommands implements PlatformCommands {
+public class VelocityCommandHandler implements PlatformHandler {
     private final VelocityDCLink dcLink;
 
-    public VelocityCommands(final VelocityDCLink dcLink) {
+    public VelocityCommandHandler(final VelocityDCLink dcLink) {
         this.dcLink = dcLink;
     }
 
     @Override
-    public CommandManager<Commander> createCommandManager() {
-        final VelocityCommandManager<Commander> commandManager;
+    public CommandManager<Sender> createCommandManager() {
+        final VelocityCommandManager<Sender> commandManager;
         try {
             commandManager = new VelocityCommandManager<>(
                     dcLink.getServer().getPluginManager().getPlugin("dclink-velocity").orElse(null),
                     this.dcLink.getServer(),
                     CommandExecutionCoordinator.simpleCoordinator(),
-                    VelocityCommander::from,
-                    commander -> ((VelocityCommander) commander).source()
+                    VelocitySender::from,
+                    sender -> ((VelocitySender) sender).source()
             );
         } catch (final Exception ex) {
             throw new RuntimeException("Failed to initialize command manager", ex);
