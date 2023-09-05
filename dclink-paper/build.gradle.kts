@@ -1,5 +1,4 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
-import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
     alias(libs.plugins.paper.run)
@@ -43,6 +42,7 @@ tasks {
         main = "com.kalimero2.team.dclink.paper.PaperPlugin"
         loader = "com.kalimero2.team.dclink.paper.PaperLibrariesLoader"
         generateLibrariesJson = true
+        foliaSupported = true
         description = project.description
         apiVersion = "1.19"
         authors = listOf("byquanton")
