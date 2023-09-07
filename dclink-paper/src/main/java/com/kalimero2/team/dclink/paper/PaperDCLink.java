@@ -76,12 +76,17 @@ public class PaperDCLink extends DCLink {
     protected void kickPlayer(MinecraftPlayer minecraftPlayer, Component message) {
         OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(minecraftPlayer.getUuid());
         if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    offlinePlayer.getPlayer().kick(message);
-                }
-            }.runTask(plugin);
+            try {
+                // On Paper we can only kick player from the main thread
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        offlinePlayer.getPlayer().kick(message);
+                    }
+                }.runTask(plugin);
+            }catch (UnsupportedOperationException ignored){ // Folia
+                offlinePlayer.getPlayer().kick(message);
+            }
         }
     }
 

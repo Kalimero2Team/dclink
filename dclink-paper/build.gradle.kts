@@ -14,10 +14,10 @@ repositories {
 
 dependencies {
     compileOnly(libs.paper.api)
-    bukkitLibrary(libs.cloud.paper)
-    bukkitLibrary(libs.configurate.hocon)
-    bukkitLibrary(libs.jda)
-    bukkitLibrary(libs.sqlite)
+    paperLibrary(libs.cloud.paper)
+    paperLibrary(libs.configurate.hocon)
+    paperLibrary(libs.jda)
+    paperLibrary(libs.sqlite)
     implementation(project(":dclink-api"))
     implementation(project(":dclink-core")) {
         exclude("*", "*") // Excludes all dependencies of dclink-core because they are put into the plugin.yml file
@@ -37,12 +37,20 @@ tasks {
         minecraftVersion("1.19.4")
     }
 
-    bukkit {
+    paper {
         load = BukkitPluginDescription.PluginLoadOrder.STARTUP
         main = "com.kalimero2.team.dclink.paper.PaperPlugin"
+        loader = "com.kalimero2.team.dclink.paper.PaperLibrariesLoader"
+        generateLibrariesJson = true
+        foliaSupported = true
         description = project.description
         apiVersion = "1.19"
         authors = listOf("byquanton")
-        softDepend = listOf("floodgate")
+
+        serverDependencies {
+            register("floodgate") {
+                required = false
+            }
+        }
     }
 }
