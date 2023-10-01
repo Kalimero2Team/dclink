@@ -17,8 +17,8 @@ jobs:
       - name: "Publish with Gradle in Repository"
         uses: gradle/gradle-build-action@v2
         env:
-          REPO_USERNAME: ${{ secrets.BYQUANTON_REPO_USERNAME }}
-          REPO_PASSWORD: ${{ secrets.BYQUANTON_REPO_PASSWORD }}
+          REPO_USERNAME: ${{ secrets.KALIMERO2_REPO_USERNAME }}
+          REPO_PASSWORD: ${{ secrets.KALIMERO2_REPO_SECRET }}
         with:
           arguments: build publish
       - name: Release
