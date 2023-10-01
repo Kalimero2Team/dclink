@@ -11,11 +11,11 @@ java {
 publishing {
     repositories {
         maven {
-            name = "byquantonRepo"
+            name = "kalimero2Repo"
             url = if(version.toString().endsWith("-SNAPSHOT")) {
-                uri("https://repo.byquanton.eu/snapshots")
+                uri("https://repo.kalimero2.com/snapshots")
             } else {
-                uri("https://repo.byquanton.eu/releases")
+                uri("https://repo.kalimero2.com/releases")
             }
             credentials {
                 username = System.getenv("REPO_USERNAME")
