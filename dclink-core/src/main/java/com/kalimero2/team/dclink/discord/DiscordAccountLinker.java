@@ -211,6 +211,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
                 }
 
                 preLinkedPlayers.put(discordAccount, minecraftPlayer);
+                DCLinkCodes.removePlayer(code);
 
                 event.reply(messages.rules).setEphemeral(true).addComponents(ActionRow.of(
                                 Button.success("accept", messages.accept),

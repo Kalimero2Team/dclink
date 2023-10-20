@@ -10,7 +10,7 @@ public abstract class MinecraftPlayerImpl implements MinecraftPlayer {
 
     private final DCLink dcLink;
     private final UUID uuid;
-    private final String name;
+    private String name;
 
     public MinecraftPlayerImpl(UUID uuid, String name) {
         this.uuid = uuid;
@@ -20,6 +20,10 @@ public abstract class MinecraftPlayerImpl implements MinecraftPlayer {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

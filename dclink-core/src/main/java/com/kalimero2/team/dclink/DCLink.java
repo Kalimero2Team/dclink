@@ -7,6 +7,7 @@ import com.kalimero2.team.dclink.api.discord.DiscordRole;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import com.kalimero2.team.dclink.discord.DiscordBot;
 import com.kalimero2.team.dclink.impl.discord.DiscordRoleImpl;
+import com.kalimero2.team.dclink.impl.minecraft.MinecraftPlayerImpl;
 import com.kalimero2.team.dclink.storage.Storage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -160,6 +161,7 @@ public abstract class DCLink implements DCLinkApi {
             Class.forName("org.geysermc.floodgate.api.FloodgateApi");
             return org.geysermc.floodgate.api.FloodgateApi.getInstance().isFloodgatePlayer(uuid);
         } catch (ClassNotFoundException e) {
+            logger.info("Floodgate not found, Bedrock players won't be detected");
             return false;
         }
     }
@@ -193,30 +195,16 @@ public abstract class DCLink implements DCLinkApi {
         return dcLinkMessages;
     }
 
-    public String getUsername(UUID uuid) {
-        String name = getUserNameViaPlatformMethods(uuid);
-        if (name == null) {
-            if (isBedrock(uuid)) {
-                name = org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(uuid).getJavaUsername();
-            }
-            if (name == null) {
-                try {
-                    name = storage.getLastKnownName(uuid);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
+    public UUID getUUID(String username) {
+        try {
+            return storage.getUUIDByLastKnownName(username);
+        } catch (SQLException e) {
+            getLogger().error("Minecraft account with username: \"" + username + "\" does not exist");
+            return null;
         }
-
-        return name;
     }
 
-    public abstract UUID getUUID(String username);
-
     protected abstract void kickPlayer(MinecraftPlayer minecraftPlayer, Component message);
-
-    protected abstract String getUserNameViaPlatformMethods(UUID uuid);
 
     protected abstract String getConfigPath();
 

@@ -8,6 +8,7 @@ import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.kyori.adventure.platform.fabric.FabricServerAudiences;
+import net.minecraft.server.level.ServerPlayer;
 
 public class FabricMod implements DedicatedServerModInitializer {
 
@@ -33,8 +34,9 @@ public class FabricMod implements DedicatedServerModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> fabricDCLink.setServer(server));
         ServerPlayConnectionEvents.INIT.register((handler, server) -> {
-            MinecraftPlayer minecraftPlayer = fabricDCLink.getMinecraftPlayer(handler.getPlayer().getUUID());
-            DCLink.JoinResult joinResult = fabricDCLink.onLogin(minecraftPlayer);
+            ServerPlayer player = handler.getPlayer();
+            // TODO: Check if GameProfile knows the name already (probably the case)
+            DCLink.JoinResult joinResult = fabricDCLink.onLogin(player.getUUID(), player.getGameProfile().getName());
             if (!joinResult.success()) {
                 handler.disconnect(adventure.toNative(joinResult.message()));
             }

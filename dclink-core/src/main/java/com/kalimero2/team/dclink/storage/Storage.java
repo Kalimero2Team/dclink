@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -101,17 +102,9 @@ public class Storage {
         statement.close();
     }
 
-    private void saveMinecraftPlayer(MinecraftPlayer minecraftPlayer) throws SQLException {
+    public void createMinecraftPlayer(UUID uuid, String name) throws SQLException {
         Statement statement = connection.createStatement();
-        String name = minecraftPlayer.getName();
-        String uuid = minecraftPlayer.getUuid().toString();
-        String discordId;
-        if (minecraftPlayer.getDiscordAccount() != null) {
-            discordId = minecraftPlayer.getDiscordAccount().getId();
-        } else {
-            discordId = null;
-        }
-        statement.executeUpdate("INSERT OR IGNORE INTO MINECRAFT_ACCOUNTS (UUID, DISCORD_ID, LAST_KNOWN_NAME) VALUES ('" + uuid + "', '" + discordId + "', '" + name + "' );");
+        statement.executeUpdate("INSERT OR IGNORE INTO MINECRAFT_ACCOUNTS (UUID, DISCORD_ID, LAST_KNOWN_NAME) VALUES ('" + uuid + "', '" + null + "', '" + name + "' );");
         statement.close();
     }
 
@@ -132,6 +125,14 @@ public class Storage {
         return null;
     }
 
+    public void setLastKnownName(UUID uuid, String name) throws SQLException {
+        PreparedStatement pstmt = connection.prepareStatement("UPDATE MINECRAFT_ACCOUNTS SET LAST_KNOWN_NAME = ? WHERE UUID = ?;");
+        pstmt.setString(1, name);
+        pstmt.setString(2, uuid.toString());
+        pstmt.executeUpdate();
+        pstmt.close();
+    }
+
     public DiscordAccount getDiscordAccount(String discordID) throws SQLException {
         if (discordID == null || discordID.isEmpty() || discordID.equals("null")) {
             return null;
@@ -146,9 +147,9 @@ public class Storage {
             }
         };
 
-        ResultSet resultSet = executeQuery("SELECT UUID FROM MINECRAFT_ACCOUNTS WHERE DISCORD_ID = ?", discordID);
+        ResultSet resultSet = executeQuery("SELECT UUID, LAST_KNOWN_NAME FROM MINECRAFT_ACCOUNTS WHERE DISCORD_ID = ?", discordID);
         while (resultSet.next()) {
-            linkedPlayers.add(new MinecraftPlayerImpl(dcLink, UUID.fromString(resultSet.getString("UUID"))) {
+            linkedPlayers.add(new MinecraftPlayerImpl(UUID.fromString(resultSet.getString("UUID")), resultSet.getString("LAST_KNOWN_NAME")) {
                 @Override
                 public DiscordAccount getDiscordAccount() {
                     return discordAccount;
@@ -173,13 +174,14 @@ public class Storage {
 
 
     public MinecraftPlayer getMinecraftPlayer(UUID uuid) throws SQLException {
-        ResultSet resultSet = executeQuery("SELECT DISCORD_ID FROM MINECRAFT_ACCOUNTS WHERE UUID = ?", uuid.toString());
+        ResultSet resultSet = executeQuery("SELECT LAST_KNOWN_NAME, DISCORD_ID FROM MINECRAFT_ACCOUNTS WHERE UUID = ?", uuid.toString());
         MinecraftPlayerImpl minecraftPlayer = null;
         if (resultSet.next()) {
+            String lastKnownName = resultSet.getString("LAST_KNOWN_NAME");
             String discordID = resultSet.getString("DISCORD_ID");
-            if (discordID != null) {
+            if (discordID != null && lastKnownName != null) {
                 DiscordAccount discordAccount = getDiscordAccount(discordID);
-                minecraftPlayer = new MinecraftPlayerImpl(dcLink, uuid) {
+                minecraftPlayer = new MinecraftPlayerImpl(uuid, lastKnownName) {
                     @Override
                     public DiscordAccount getDiscordAccount() {
                         return discordAccount;
