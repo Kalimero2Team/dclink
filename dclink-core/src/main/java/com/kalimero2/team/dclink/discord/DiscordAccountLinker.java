@@ -197,15 +197,15 @@ public class DiscordAccountLinker extends ListenerAdapter {
 
                 boolean isBedrock = dcLink.isBedrock(minecraftPlayer);
                 boolean isJava = !isBedrock;
-                logger.info("{} is attempting to link {} which is a {} Account", event.getUser().getAsTag(), minecraftPlayer.getName(), isBedrock ? "Bedrock" : "Java");
+                logger.info("{} is attempting to link {} which is a {} Account", event.getUser().getName(), minecraftPlayer.getName(), isBedrock ? "Bedrock" : "Java");
 
                 if (overBedrockLimit && isBedrock) {
-                    logger.info("Link for {} failed because has linked {} Bedrock accounts, which is over the limit of {}", event.getUser().getAsTag(), bedrock, bedrockLimit);
+                    logger.info("Link for {} failed because has linked {} Bedrock accounts, which is over the limit of {}", event.getUser().getName(), bedrock, bedrockLimit);
                     event.reply(messages.maxBedrock).setEphemeral(true).queue();
                     return;
                 }
                 if (overJavaLimit && isJava) {
-                    logger.info("Link for {} failed because has linked {} Java accounts, which is over the limit of {}", event.getUser().getAsTag(), java, javaLimit);
+                    logger.info("Link for {} failed because has linked {} Java accounts, which is over the limit of {}", event.getUser().getName(), java, javaLimit);
                     event.reply(messages.maxJava).setEphemeral(true).queue();
                     return;
                 }
