@@ -1,6 +1,5 @@
 package com.kalimero2.team.dclink.paper;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
 import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import com.kalimero2.team.dclink.command.Commands;
@@ -10,7 +9,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.util.UUID;
 
 
 public class PaperDCLink extends DCLink {
@@ -36,25 +34,6 @@ public class PaperDCLink extends DCLink {
             getLogger().error("Failed to initialize Commands " + e.getMessage());
         }
         super.load();
-    }
-
-    @Override
-    public UUID getUUID(String username) {
-        return plugin.getServer().getOfflinePlayer(username).getUniqueId();
-    }
-
-    @Override
-    protected String getUserNameViaPlatformMethods(UUID uuid) {
-        if (isLoaded()) {
-            String name = plugin.getServer().getOfflinePlayer(uuid).getName();
-            if (name == null) {
-                PlayerProfile profile = plugin.getServer().createProfile(uuid);
-                profile.complete(false);
-                return profile.getName();
-            }
-            return name;
-        }
-        return null;
     }
 
     @Override
@@ -84,7 +63,7 @@ public class PaperDCLink extends DCLink {
                         offlinePlayer.getPlayer().kick(message);
                     }
                 }.runTask(plugin);
-            }catch (UnsupportedOperationException ignored){ // Folia
+            } catch (UnsupportedOperationException ignored) { // Folia
                 offlinePlayer.getPlayer().kick(message);
             }
         }
