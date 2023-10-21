@@ -166,7 +166,33 @@ public abstract class DCLink implements DCLinkApi {
         }
     }
 
-    public JoinResult onLogin(MinecraftPlayer minecraftPlayer) {
+    public JoinResult onLogin(UUID playerUUID, String playerName) {
+        MinecraftPlayer minecraftPlayer = getMinecraftPlayer(playerUUID);
+
+        if (minecraftPlayer == null) {
+            try {
+                storage.createMinecraftPlayer(playerUUID, playerName);
+                minecraftPlayer = new MinecraftPlayerImpl(playerUUID, playerName) {
+                    @Override
+                    public DiscordAccount getDiscordAccount() {
+                        return null;
+                    }
+                };
+            } catch (Exception e) {
+                getLogger().error("Couldn't create MinecraftPlayer Object for (UUID " + playerUUID + ")");
+                return JoinResult.failure(dcLinkMessages.getMinifiedMessage(dcLinkMessages.getMinecraftMessages().dbError));
+            }
+        } else{
+            if(!playerName.equals(minecraftPlayer.getName())){
+                try {
+                    storage.setLastKnownName(minecraftPlayer.getUuid(), playerName);
+                } catch (SQLException e) {
+                    getLogger().error("Couldn't update name for player with UUID " + playerUUID + " (from " + minecraftPlayer.getName() + " to " + playerName + ")");
+                }
+                minecraftPlayer.setName(playerName);
+            }
+        }
+
         if (!minecraftPlayer.isLinked() && dcLinkConfig.getLinkingConfiguration().isLinkRequired()) {
             Component code = dcLinkMessages.getMinifiedMessage(dcLinkMessages.getMinecraftMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(minecraftPlayer)));
             return JoinResult.failure(code);
@@ -214,7 +240,7 @@ public abstract class DCLink implements DCLinkApi {
 
     public abstract File getDataFolder();
 
-    protected Storage getStorage() {
+    public Storage getStorage() {
         return storage;
     }
 

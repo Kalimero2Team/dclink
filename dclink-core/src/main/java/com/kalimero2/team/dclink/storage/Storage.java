@@ -189,16 +189,7 @@ public class Storage {
                 };
             }
         }
-        if (minecraftPlayer == null) {
-            minecraftPlayer = new MinecraftPlayerImpl(dcLink, uuid) {
-                @Override
-                public DiscordAccount getDiscordAccount() {
-                    return null;
-                }
-            };
-        }
         resultSet.close();
-        saveMinecraftPlayer(minecraftPlayer);
         return minecraftPlayer;
     }
 

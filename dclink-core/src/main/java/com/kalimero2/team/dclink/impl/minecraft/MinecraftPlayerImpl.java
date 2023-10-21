@@ -1,6 +1,5 @@
 package com.kalimero2.team.dclink.impl.minecraft;
 
-import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 
 import java.util.Objects;
@@ -8,7 +7,6 @@ import java.util.UUID;
 
 public abstract class MinecraftPlayerImpl implements MinecraftPlayer {
 
-    private final DCLink dcLink;
     private final UUID uuid;
     private String name;
 

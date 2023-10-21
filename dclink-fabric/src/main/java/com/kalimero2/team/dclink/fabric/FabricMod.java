@@ -1,7 +1,6 @@
 package com.kalimero2.team.dclink.fabric;
 
 import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.fabric.command.FabricCommandHandler;
 import net.fabricmc.api.DedicatedServerModInitializer;

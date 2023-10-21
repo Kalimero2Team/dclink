@@ -1,7 +1,6 @@
 package com.kalimero2.team.dclink.paper;
 
 import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -16,8 +15,8 @@ public class PaperDCLinkListener implements Listener {
 
     @EventHandler
     public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
-        MinecraftPlayer minecraftPlayer = paperDCLink.getMinecraftPlayer(event.getPlayerProfile().getId());
-        DCLink.JoinResult joinResult = paperDCLink.onLogin(minecraftPlayer);
+        // TODO: Check if getName isn't null (probably the case)
+        DCLink.JoinResult joinResult = paperDCLink.onLogin(event.getUniqueId(), event.getPlayerProfile().getName());
         if (joinResult.success()) {
             event.allow();
         } else {

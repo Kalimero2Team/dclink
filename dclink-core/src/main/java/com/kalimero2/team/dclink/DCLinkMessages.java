@@ -85,5 +85,6 @@ public class DCLinkMessages {
         public String linkCodeMessage = "Your Linking Code is: <code>";
         public String kickUnlinked = "You have been kicked because your Discord account is no longer linked.";
         public String needsArgumentIfExecutedByConsole = "This command needs an argument if executed by console.";
+        public String dbError = "An error occurred while accessing the database. Please try again later.";
     }
 }
