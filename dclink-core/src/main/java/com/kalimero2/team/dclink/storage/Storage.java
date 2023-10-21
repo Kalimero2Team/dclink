@@ -179,8 +179,13 @@ public class Storage {
         if (resultSet.next()) {
             String lastKnownName = resultSet.getString("LAST_KNOWN_NAME");
             String discordID = resultSet.getString("DISCORD_ID");
-            if (discordID != null && lastKnownName != null) {
-                DiscordAccount discordAccount = getDiscordAccount(discordID);
+            if (lastKnownName != null) {
+                final DiscordAccount discordAccount;
+                if(discordID != null){
+                    discordAccount = getDiscordAccount(discordID);
+                }else {
+                    discordAccount = null;
+                }
                 minecraftPlayer = new MinecraftPlayerImpl(uuid, lastKnownName) {
                     @Override
                     public DiscordAccount getDiscordAccount() {
