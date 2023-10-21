@@ -15,7 +15,6 @@ public class PaperDCLinkListener implements Listener {
 
     @EventHandler
     public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
-        // TODO: Check if getName isn't null (probably the case)
         DCLink.JoinResult joinResult = paperDCLink.onLogin(event.getUniqueId(), event.getPlayerProfile().getName());
         if (joinResult.success()) {
             event.allow();

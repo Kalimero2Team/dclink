@@ -6,7 +6,7 @@ dependencyResolutionManagement{
 
             version("jda", "5.0.0-beta.15")
             version("configurate-hocon", "4.1.2")
-            version("sqlite","3.43.2.0")
+            version("sqlite","3.43.2.1")
             version("adventure","4.14.0")
             version("floodgate-api","2.0-SNAPSHOT")
             version("cloud", "1.8.4")
@@ -25,7 +25,7 @@ dependencyResolutionManagement{
             plugin("paper-run","xyz.jpenilla.run-paper").versionRef("runtask")
             plugin("plugin-yml","net.minecrell.plugin-yml.paper").version("0.6.0")
 
-            version("paper-api","1.20.1-R0.1-SNAPSHOT")
+            version("paper-api","1.20.2-R0.1-SNAPSHOT")
 
             library("paper-api","io.papermc.paper","paper-api").versionRef("paper-api")
             library("cloud-paper","cloud.commandframework","cloud-paper").versionRef("cloud")
@@ -41,16 +41,15 @@ dependencyResolutionManagement{
 
 
             // Fabric
-            plugin("fabric-loom","fabric-loom").version("1.4.1")
+            plugin("fabric-loom","fabric-loom").version("1.4.3")
 
-            version("minecraft","1.20.1")
-            version("fabric-loader","0.14.22")
-            version("fabric-api","0.86.1+1.20.1")
+            version("minecraft","1.20.2")
+            version("fabric-loader","0.14.23")
+            version("fabric-api","0.90.0+1.20.2")
             version("adventure-platform-fabric","5.10.0")
 
             library("fabric-loader","net.fabricmc","fabric-loader").versionRef("fabric-loader")
             library("fabric-api","net.fabricmc.fabric-api","fabric-api").versionRef("fabric-api")
-            library("fabric-api-deprecated","net.fabricmc.fabric-api","fabric-api-deprecated").versionRef("fabric-api")
             library("adventure-fabric","net.kyori","adventure-platform-fabric").versionRef("adventure-platform-fabric")
             library("cloud-fabric","cloud.commandframework","cloud-fabric").versionRef("cloud")
         }

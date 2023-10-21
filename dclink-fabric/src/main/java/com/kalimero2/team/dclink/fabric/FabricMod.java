@@ -34,7 +34,6 @@ public class FabricMod implements DedicatedServerModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> fabricDCLink.setServer(server));
         ServerPlayConnectionEvents.INIT.register((handler, server) -> {
             ServerPlayer player = handler.getPlayer();
-            // TODO: Check if GameProfile knows the name already (probably the case)
             DCLink.JoinResult joinResult = fabricDCLink.onLogin(player.getUUID(), player.getGameProfile().getName());
             if (!joinResult.success()) {
                 handler.disconnect(adventure.toNative(joinResult.message()));
