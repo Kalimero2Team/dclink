@@ -5,8 +5,8 @@ import cloud.commandframework.context.CommandContext;
 
 import java.util.List;
 
-public interface PlatformCommands {
-    CommandManager<Commander> createCommandManager();
+public interface PlatformHandler {
+    CommandManager<Sender> createCommandManager();
 
     <C> List<String> playerArgumentSuggestions(CommandContext<C> commandContext);
 }

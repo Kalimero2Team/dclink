@@ -138,23 +138,23 @@ public class DiscordAccountLinker extends ListenerAdapter {
                         MinecraftPlayer minecraftPlayer = preLinkedPlayers.get(discordAccount);
                         dcLink.linkAccounts(minecraftPlayer, discordAccount);
                         preLinkedPlayers.remove(discordAccount);
-                        logger.info(event.getUser().getName() + " accepted the rules");
+                        logger.info(event.getUser().getAsTag() + " accepted the rules");
                         event.editMessage(messages.rulesAccepted).setComponents().queue();
                         if (giveRoleWhenLinked) {
                             discordAccount.addRole(dcLink.getDiscordRole(config.getLinkRole()));
                         }
                     } else {
-                        logger.error(event.getUser().getName() + " tried to accept the rules but was not pre-linked");
+                        logger.error(event.getUser().getAsTag() + " tried to accept the rules but was not pre-linked");
                         event.editMessage(messages.genericLinkError).setComponents().queue();
                     }
                 }
                 case "decline" -> {
                     if (preLinkedPlayers.containsKey(discordAccount)) {
                         preLinkedPlayers.remove(discordAccount);
-                        logger.info(event.getUser().getName() + " declined the rules");
+                        logger.info(event.getUser().getAsTag() + " declined the rules");
                         event.editMessage(messages.rulesDenied).setComponents().queue();
                     } else {
-                        logger.error(event.getUser().getName() + " tried to decline the rules but was not pre-linked");
+                        logger.error(event.getUser().getAsTag() + " tried to decline the rules but was not pre-linked");
                         event.editMessage(messages.genericLinkError).setComponents().queue();
                     }
                 }
@@ -166,7 +166,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
     public void onModalInteraction(ModalInteractionEvent event) {
         if (event.getModalId().equals("linkModal")) {
             String code = Objects.requireNonNull(event.getValue("code")).getAsString();
-            logger.info("{} entered {}", event.getUser().getName(), code);
+            logger.info("{} entered {}", event.getUser().getAsTag(), code);
             MinecraftPlayer minecraftPlayer = DCLinkCodes.getPlayer(code);
             if (minecraftPlayer != null) {
                 DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
@@ -211,6 +211,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
                 }
 
                 preLinkedPlayers.put(discordAccount, minecraftPlayer);
+                DCLinkCodes.removePlayer(code);
 
                 event.reply(messages.rules).setEphemeral(true).addComponents(ActionRow.of(
                                 Button.success("accept", messages.accept),

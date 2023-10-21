@@ -13,10 +13,11 @@ public class DCLinkCodes {
     private static final Map<String, MinecraftPlayer> codeIdMap = new HashMap<>();
 
     public static String addPlayer(MinecraftPlayer minecraftPlayer) {
+        // remove old code
         Optional<Map.Entry<String, MinecraftPlayer>> optionalEntry = codeIdMap.entrySet().stream().filter(entry -> entry.getValue().equals(minecraftPlayer)).findFirst();
-        if (optionalEntry.isPresent()) {
-            return optionalEntry.get().getKey();
-        }
+        optionalEntry.ifPresent(entry -> removePlayer(entry.getKey()));
+
+        // generate new code
         String code = generateCode();
         codeIdMap.put(code, minecraftPlayer);
         return code;

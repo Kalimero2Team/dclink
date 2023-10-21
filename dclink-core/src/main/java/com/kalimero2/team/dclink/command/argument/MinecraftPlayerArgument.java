@@ -77,7 +77,10 @@ public final class MinecraftPlayerArgument<C> extends CommandArgument<C, Minecra
 
             DCLink dcLink = commandContext.get(Commands.DCLINK);
             UUID uuid = dcLink.getUUID(input);
-            final @Nullable MinecraftPlayer player = dcLink.getMinecraftPlayer(uuid);
+            if (uuid == null) {
+                return failure(new IllegalArgumentException("No such player found"));
+            }
+            MinecraftPlayer player = dcLink.getMinecraftPlayer(uuid);
             if (player == null) {
                 return failure(new IllegalArgumentException("No Such Player"));
             }

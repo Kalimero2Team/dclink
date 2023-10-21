@@ -14,6 +14,13 @@ public interface MinecraftPlayer {
     String getName();
 
     /**
+     * Set the Minecraft player's Name.
+     *
+     * @param name The Minecraft player's Name.
+     */
+    void setName(String name);
+
+    /**
      * Get the Minecraft player's UUID.
      *
      * @return The Minecraft player's UUID.

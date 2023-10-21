@@ -18,6 +18,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -145,16 +146,25 @@ public class BotCommands extends ListenerAdapter {
             DiscordAccount discordAccount = dcLink.getDiscordAccount(user.getId());
 
             UUID minecraftUuid;
+            String playerName = minecraft.getAsString();
             try {
-                minecraftUuid = UUID.fromString(minecraft.getAsString());
+                minecraftUuid = UUID.fromString(playerName);
             } catch (IllegalArgumentException ignored) {
-                minecraftUuid = dcLink.getUUID(minecraft.getAsString());
+                minecraftUuid = dcLink.getUUID(playerName);
             }
 
             if (minecraftUuid == null) {
-                event.reply("Could not find Minecraft account with name " + minecraft.getAsString()).setEphemeral(true).queue();
+                event.reply("Could not find Minecraft account with name " + playerName).setEphemeral(true).queue();
             } else {
                 MinecraftPlayer minecraftPlayer = dcLink.getMinecraftPlayer(minecraftUuid);
+                if(minecraftPlayer == null){
+                    try {
+                        dcLink.getStorage().createMinecraftPlayer(minecraftUuid, playerName);
+                        minecraftPlayer = dcLink.getMinecraftPlayer(minecraftUuid);
+                    } catch (SQLException e) {
+                        logger.error("Couldn't create MinecraftPlayer Object for (UUID " + minecraftUuid + ")");
+                    }
+                }
                 if (discordAccount.getLinkedPlayers().contains(minecraftPlayer)) {
                     event.reply("Minecraft account " + minecraftPlayer.getName() + " is already linked to " + user.getAsMention()).setEphemeral(true).queue();
                 } else {

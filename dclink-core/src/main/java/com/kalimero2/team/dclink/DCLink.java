@@ -7,6 +7,7 @@ import com.kalimero2.team.dclink.api.discord.DiscordRole;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import com.kalimero2.team.dclink.discord.DiscordBot;
 import com.kalimero2.team.dclink.impl.discord.DiscordRoleImpl;
+import com.kalimero2.team.dclink.impl.minecraft.MinecraftPlayerImpl;
 import com.kalimero2.team.dclink.storage.Storage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -160,11 +161,38 @@ public abstract class DCLink implements DCLinkApi {
             Class.forName("org.geysermc.floodgate.api.FloodgateApi");
             return org.geysermc.floodgate.api.FloodgateApi.getInstance().isFloodgatePlayer(uuid);
         } catch (ClassNotFoundException e) {
+            logger.info("Floodgate not found, Bedrock players won't be detected");
             return false;
         }
     }
 
-    public JoinResult onLogin(MinecraftPlayer minecraftPlayer) {
+    public JoinResult onLogin(UUID playerUUID, String playerName) {
+        MinecraftPlayer minecraftPlayer = getMinecraftPlayer(playerUUID);
+
+        if (minecraftPlayer == null) {
+            try {
+                storage.createMinecraftPlayer(playerUUID, playerName);
+                minecraftPlayer = new MinecraftPlayerImpl(playerUUID, playerName) {
+                    @Override
+                    public DiscordAccount getDiscordAccount() {
+                        return null;
+                    }
+                };
+            } catch (Exception e) {
+                getLogger().error("Couldn't create MinecraftPlayer Object for (UUID " + playerUUID + ")");
+                return JoinResult.failure(dcLinkMessages.getMinifiedMessage(dcLinkMessages.getMinecraftMessages().dbError));
+            }
+        } else{
+            if(!playerName.equals(minecraftPlayer.getName())){
+                try {
+                    storage.setLastKnownName(minecraftPlayer.getUuid(), playerName);
+                } catch (SQLException e) {
+                    getLogger().error("Couldn't update name for player with UUID " + playerUUID + " (from " + minecraftPlayer.getName() + " to " + playerName + ")");
+                }
+                minecraftPlayer.setName(playerName);
+            }
+        }
+
         if (!minecraftPlayer.isLinked() && dcLinkConfig.getLinkingConfiguration().isLinkRequired()) {
             Component code = dcLinkMessages.getMinifiedMessage(dcLinkMessages.getMinecraftMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(minecraftPlayer)));
             return JoinResult.failure(code);
@@ -193,30 +221,16 @@ public abstract class DCLink implements DCLinkApi {
         return dcLinkMessages;
     }
 
-    public String getUsername(UUID uuid) {
-        String name = getUserNameViaPlatformMethods(uuid);
-        if (name == null) {
-            if (isBedrock(uuid)) {
-                name = org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(uuid).getJavaUsername();
-            }
-            if (name == null) {
-                try {
-                    name = storage.getLastKnownName(uuid);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
+    public UUID getUUID(String username) {
+        try {
+            return storage.getUUIDByLastKnownName(username);
+        } catch (SQLException e) {
+            getLogger().error("Minecraft account with username: \"" + username + "\" does not exist");
+            return null;
         }
-
-        return name;
     }
 
-    public abstract UUID getUUID(String username);
-
     protected abstract void kickPlayer(MinecraftPlayer minecraftPlayer, Component message);
-
-    protected abstract String getUserNameViaPlatformMethods(UUID uuid);
 
     protected abstract String getConfigPath();
 
@@ -225,6 +239,10 @@ public abstract class DCLink implements DCLinkApi {
     protected abstract void shutdownServer();
 
     public abstract File getDataFolder();
+
+    public Storage getStorage() {
+        return storage;
+    }
 
     public record JoinResult(Component message, boolean success) {
         public static JoinResult success(Component message) {

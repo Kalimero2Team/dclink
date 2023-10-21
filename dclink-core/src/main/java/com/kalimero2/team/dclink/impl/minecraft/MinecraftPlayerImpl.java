@@ -1,6 +1,5 @@
 package com.kalimero2.team.dclink.impl.minecraft;
 
-import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 
 import java.util.Objects;
@@ -8,17 +7,21 @@ import java.util.UUID;
 
 public abstract class MinecraftPlayerImpl implements MinecraftPlayer {
 
-    private final DCLink dcLink;
     private final UUID uuid;
+    private String name;
 
-    public MinecraftPlayerImpl(DCLink dcLink, UUID uuid) {
-        this.dcLink = dcLink;
+    public MinecraftPlayerImpl(UUID uuid, String name) {
         this.uuid = uuid;
+        this.name = name;
     }
 
     @Override
     public String getName() {
-        return dcLink.getUsername(this.uuid);
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -35,6 +38,7 @@ public abstract class MinecraftPlayerImpl implements MinecraftPlayer {
     public String toString() {
         return "MinecraftPlayerImpl{" +
                 "uuid=" + uuid +
+                ", name=" + name +
                 '}';
     }
 

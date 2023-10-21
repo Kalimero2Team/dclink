@@ -2,7 +2,7 @@ package com.kalimero2.team.dclink.command;
 
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 
-public interface PlayerCommander extends Commander {
+public interface PlayerSender extends Sender {
 
     MinecraftPlayer player();
 

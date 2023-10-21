@@ -16,16 +16,16 @@ import java.util.List;
 public class Commands {
 
     public static final CloudKey<DCLink> DCLINK = createTypeKey(DCLink.class);
-    public static final CloudKey<PlatformCommands> PLATFORMCOMMANDS = createTypeKey(PlatformCommands.class);
-    private final CommandManager<Commander> commandManager;
+    public static final CloudKey<PlatformHandler> PLATFORMCOMMANDS = createTypeKey(PlatformHandler.class);
+    private final CommandManager<Sender> commandManager;
     private final DCLink dcLink;
 
-    public Commands(DCLink dcLink, PlatformCommands platformCommands) {
+    public Commands(DCLink dcLink, PlatformHandler platformCommands) {
         this.dcLink = dcLink;
         this.commandManager = platformCommands.createCommandManager();
 
         this.commandManager.registerCommandPreProcessor(preprocessContext -> {
-            final CommandContext<Commander> commandContext = preprocessContext.getCommandContext();
+            final CommandContext<Sender> commandContext = preprocessContext.getCommandContext();
             commandContext.store(DCLINK, dcLink);
             commandContext.store(PLATFORMCOMMANDS, platformCommands);
         });
@@ -47,7 +47,7 @@ public class Commands {
 
     }
 
-    public CommandManager<Commander> commandManager() {
+    public CommandManager<Sender> commandManager() {
         return this.commandManager;
     }
 

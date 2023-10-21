@@ -1,16 +1,14 @@
 package com.kalimero2.team.dclink.paper;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
 import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
 import com.kalimero2.team.dclink.command.Commands;
-import com.kalimero2.team.dclink.paper.command.PaperCommands;
+import com.kalimero2.team.dclink.paper.command.PaperCommandHandler;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.util.UUID;
 
 
 public class PaperDCLink extends DCLink {
@@ -28,33 +26,14 @@ public class PaperDCLink extends DCLink {
     @Override
     public void load() {
         try {
-            PaperCommands paperCommands = new PaperCommands(this);
-            Commands commands = new Commands(this, paperCommands);
+            PaperCommandHandler paperCommandHandler = new PaperCommandHandler(this);
+            Commands commands = new Commands(this, paperCommandHandler);
             commands.registerCommands();
             getLogger().info("Registered Commands");
         } catch (Exception e) {
             getLogger().error("Failed to initialize Commands " + e.getMessage());
         }
         super.load();
-    }
-
-    @Override
-    public UUID getUUID(String username) {
-        return plugin.getServer().getOfflinePlayer(username).getUniqueId();
-    }
-
-    @Override
-    protected String getUserNameViaPlatformMethods(UUID uuid) {
-        if (isLoaded()) {
-            String name = plugin.getServer().getOfflinePlayer(uuid).getName();
-            if (name == null) {
-                PlayerProfile profile = plugin.getServer().createProfile(uuid);
-                profile.complete(false);
-                return profile.getName();
-            }
-            return name;
-        }
-        return null;
     }
 
     @Override
@@ -76,12 +55,17 @@ public class PaperDCLink extends DCLink {
     protected void kickPlayer(MinecraftPlayer minecraftPlayer, Component message) {
         OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(minecraftPlayer.getUuid());
         if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    offlinePlayer.getPlayer().kick(message);
-                }
-            }.runTask(plugin);
+            try {
+                // On Paper we can only kick player from the main thread
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        offlinePlayer.getPlayer().kick(message);
+                    }
+                }.runTask(plugin);
+            } catch (UnsupportedOperationException ignored) { // Folia
+                offlinePlayer.getPlayer().kick(message);
+            }
         }
     }
 

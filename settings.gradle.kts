@@ -4,13 +4,13 @@ dependencyResolutionManagement{
             // Core
             plugin("shadow","com.github.johnrengelman.shadow").version("8.1.1")
 
-            version("jda", "5.0.0-beta.13")
+            version("jda", "5.0.0-beta.15")
             version("configurate-hocon", "4.1.2")
-            version("sqlite","3.42.0.1")
+            version("sqlite","3.43.2.1")
             version("adventure","4.14.0")
             version("floodgate-api","2.0-SNAPSHOT")
-            version("cloud", "1.8.3")
-            version("runtask", "2.1.0")
+            version("cloud", "1.8.4")
+            version("runtask", "2.2.0")
 
             library("jda","net.dv8tion","JDA").versionRef("jda")
             library("configurate-hocon","org.spongepowered","configurate-hocon").versionRef("configurate-hocon")
@@ -23,9 +23,9 @@ dependencyResolutionManagement{
 
             // Paper
             plugin("paper-run","xyz.jpenilla.run-paper").versionRef("runtask")
-            plugin("plugin-yml","net.minecrell.plugin-yml.bukkit").version("0.6.0")
+            plugin("plugin-yml","net.minecrell.plugin-yml.paper").version("0.6.0")
 
-            version("paper-api","1.20.1-R0.1-SNAPSHOT")
+            version("paper-api","1.20.2-R0.1-SNAPSHOT")
 
             library("paper-api","io.papermc.paper","paper-api").versionRef("paper-api")
             library("cloud-paper","cloud.commandframework","cloud-paper").versionRef("cloud")
@@ -41,16 +41,15 @@ dependencyResolutionManagement{
 
 
             // Fabric
-            plugin("fabric-loom","fabric-loom").version("1.3.9")
+            plugin("fabric-loom","fabric-loom").version("1.4.3")
 
-            version("minecraft","1.20.1")
-            version("fabric-loader","0.14.22")
-            version("fabric-api","0.86.1+1.20.1")
-            version("adventure-platform-fabric","5.9.0")
+            version("minecraft","1.20.2")
+            version("fabric-loader","0.14.23")
+            version("fabric-api","0.90.0+1.20.2")
+            version("adventure-platform-fabric","5.10.0")
 
             library("fabric-loader","net.fabricmc","fabric-loader").versionRef("fabric-loader")
             library("fabric-api","net.fabricmc.fabric-api","fabric-api").versionRef("fabric-api")
-            library("fabric-api-deprecated","net.fabricmc.fabric-api","fabric-api-deprecated").versionRef("fabric-api")
             library("adventure-fabric","net.kyori","adventure-platform-fabric").versionRef("adventure-platform-fabric")
             library("cloud-fabric","cloud.commandframework","cloud-fabric").versionRef("cloud")
         }
