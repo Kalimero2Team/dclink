@@ -119,7 +119,7 @@ public class BotCommands extends ListenerAdapter {
         if (subcommandName.equals("discord") && discordOption != null) {
             User user = discordOption.getAsUser();
             Collection<MinecraftPlayer> linkedPlayers = dcLink.getDiscordAccount(user.getId()).getLinkedPlayers();
-            if (linkedPlayers.size() > 0) {
+            if (!linkedPlayers.isEmpty()) {
                 StringBuilder message = new StringBuilder("Minecraft accounts linked to " + user.getAsMention() + ": ");
                 linkedPlayers.forEach(minecraftPlayer -> message.append(minecraftPlayer.getName()).append(" "));
                 event.reply(message.toString()).setEphemeral(true).queue();
@@ -128,7 +128,12 @@ public class BotCommands extends ListenerAdapter {
             }
         } else if (subcommandName.equals("minecraft") && minecraftOption != null) {
             String name = minecraftOption.getAsString();
-            MinecraftPlayer minecraftPlayer = dcLink.getMinecraftPlayer(dcLink.getUUID(name));
+            UUID uuid = dcLink.getUUID(name);
+            if (uuid == null) {
+                event.reply("Could not find a minecraft account named " + name).setEphemeral(true).queue();
+                return;
+            }
+            MinecraftPlayer minecraftPlayer = dcLink.getMinecraftPlayer(uuid);
             if (minecraftPlayer != null && minecraftPlayer.getDiscordAccount() != null) {
                 User discordUser = jda.retrieveUserById(minecraftPlayer.getDiscordAccount().getId()).complete();
                 event.reply("Discord account linked to " + name + ": " + discordUser.getAsMention()).setEphemeral(true).queue();
@@ -157,7 +162,7 @@ public class BotCommands extends ListenerAdapter {
                 event.reply("Could not find Minecraft account with name " + playerName).setEphemeral(true).queue();
             } else {
                 MinecraftPlayer minecraftPlayer = dcLink.getMinecraftPlayer(minecraftUuid);
-                if(minecraftPlayer == null){
+                if (minecraftPlayer == null) {
                     try {
                         dcLink.getStorage().createMinecraftPlayer(minecraftUuid, playerName);
                         minecraftPlayer = dcLink.getMinecraftPlayer(minecraftUuid);
@@ -165,6 +170,7 @@ public class BotCommands extends ListenerAdapter {
                         logger.error("Couldn't create MinecraftPlayer Object for (UUID " + minecraftUuid + ")");
                     }
                 }
+
                 if (discordAccount.getLinkedPlayers().contains(minecraftPlayer)) {
                     event.reply("Minecraft account " + minecraftPlayer.getName() + " is already linked to " + user.getAsMention()).setEphemeral(true).queue();
                 } else {
