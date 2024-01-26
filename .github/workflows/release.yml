@@ -15,7 +15,7 @@ jobs:
           java-version: 17
           distribution: 'temurin'
       - name: "Publish with Gradle in Repository"
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         env:
           REPO_USERNAME: ${{ secrets.KALIMERO2_REPO_USERNAME }}
           REPO_PASSWORD: ${{ secrets.KALIMERO2_REPO_SECRET }}
