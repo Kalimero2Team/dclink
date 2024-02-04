@@ -10,7 +10,7 @@ dependencyResolutionManagement{
             version("adventure","4.15.0")
             version("floodgate-api","2.0-SNAPSHOT")
             version("cloud", "1.8.4")
-            version("runtask", "2.2.2")
+            version("runtask", "2.2.3")
 
             library("jda","net.dv8tion","JDA").versionRef("jda")
             library("configurate-hocon","org.spongepowered","configurate-hocon").versionRef("configurate-hocon")
