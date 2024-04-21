@@ -46,7 +46,7 @@ dependencyResolutionManagement{
             version("minecraft","1.20.2")
             version("fabric-loader","0.15.10")
             version("fabric-api","0.90.0+1.20.2")
-            version("adventure-platform-fabric","5.11.0")
+            version("adventure-platform-fabric","5.12.0")
 
             library("fabric-loader","net.fabricmc","fabric-loader").versionRef("fabric-loader")
             library("fabric-api","net.fabricmc.fabric-api","fabric-api").versionRef("fabric-api")
