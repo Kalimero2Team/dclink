@@ -1,15 +1,14 @@
 package com.kalimero2.team.dclink.command;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.keys.CloudKey;
-import cloud.commandframework.keys.SimpleCloudKey;
 import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.command.commands.AltsCommand;
 import com.kalimero2.team.dclink.command.commands.DiscordCommand;
 import com.kalimero2.team.dclink.command.commands.LinkCommand;
 import com.kalimero2.team.dclink.command.commands.UnLinkCommand;
 import io.leangen.geantyref.TypeToken;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.key.CloudKey;
 
 import java.util.List;
 
@@ -25,14 +24,14 @@ public class Commands {
         this.commandManager = platformCommands.createCommandManager();
 
         this.commandManager.registerCommandPreProcessor(preprocessContext -> {
-            final CommandContext<Sender> commandContext = preprocessContext.getCommandContext();
+            final CommandContext<Sender> commandContext = preprocessContext.commandContext();
             commandContext.store(DCLINK, dcLink);
             commandContext.store(PLATFORMCOMMANDS, platformCommands);
         });
     }
 
     private static <T> CloudKey<T> createTypeKey(final Class<T> type) {
-        return SimpleCloudKey.of("dclink-" + type.getName(), TypeToken.get(type));
+        return CloudKey.of("dclink-" + type.getName(), TypeToken.get(type));
     }
 
     public void registerCommands() {

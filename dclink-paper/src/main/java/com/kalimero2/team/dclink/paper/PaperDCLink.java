@@ -73,4 +73,13 @@ public class PaperDCLink extends DCLink {
     public File getDataFolder() {
         return plugin.getDataFolder();
     }
+
+    public boolean isFolia() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 }

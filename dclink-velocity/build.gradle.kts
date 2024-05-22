@@ -9,6 +9,11 @@ repositories {
     maven("https://repo.opencollab.dev/maven-snapshots/")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 dependencies {
     compileOnly(libs.velocity.api)
     annotationProcessor(libs.velocity.api)
@@ -24,7 +29,7 @@ tasks {
     }
 
     runVelocity {
-        velocityVersion(libs.versions.velocity.api.get().toString())
+        velocityVersion(libs.versions.velocity.api.get())
     }
 
     shadowJar {
