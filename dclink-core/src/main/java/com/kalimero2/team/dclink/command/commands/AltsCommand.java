@@ -1,16 +1,17 @@
 package com.kalimero2.team.dclink.command.commands;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.context.CommandContext;
 import com.kalimero2.team.dclink.DCLinkMessages;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
-import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.command.DCLinkCommand;
-import com.kalimero2.team.dclink.command.argument.MinecraftPlayerArgument;
+import com.kalimero2.team.dclink.command.Sender;
+import com.kalimero2.team.dclink.command.argument.MinecraftPlayerComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.component.CommandComponent;
+import org.incendo.cloud.context.CommandContext;
 
 public class AltsCommand extends DCLinkCommand {
     public AltsCommand(Commands commands) {
@@ -21,7 +22,7 @@ public class AltsCommand extends DCLinkCommand {
     public void register() {
         CommandManager<Sender> commandManager = commands.commandManager();
         commandManager.command(commandManager.commandBuilder("alts")
-                .argument(MinecraftPlayerArgument.of("player"))
+                .required(MinecraftPlayerComponent.of("player"))
                 .permission("dclink.command.alts")
                 .handler(this::alts));
     }
@@ -35,12 +36,12 @@ public class AltsCommand extends DCLinkCommand {
 
         if (discordAccount == null) {
             Component message = messages.getMinifiedMessage(minecraftMessages.notLinked);
-            context.getSender().sendMessage(message);
+            context.sender().sendMessage(message);
         } else {
             StringBuilder alts = new StringBuilder();
             discordAccount.getLinkedPlayers().forEach(linkedPlayer -> alts.append(linkedPlayer.getName()).append(" "));
             Component message = messages.getMinifiedMessage(minecraftMessages.altsCommand, Placeholder.unparsed("alts", alts.toString()));
-            context.getSender().sendMessage(message);
+            context.sender().sendMessage(message);
         }
     }
 }

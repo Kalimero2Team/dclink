@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import java.time.Duration;
 
 public class DiscordBot {
 
@@ -48,7 +49,15 @@ public class DiscordBot {
     }
 
     public void shutdown() {
-        jda.shutdown();
+        jda.shutdownNow();
+        try {
+            boolean awaited = jda.awaitShutdown(Duration.ofSeconds(5));
+            if (!awaited) {
+                logger.error("Failed to shutdown discord bot in 5 seconds, forcing shutdown");
+            }
+        } catch (InterruptedException e) {
+            logger.error("Failed to shutdown discord bot", e);
+        }
     }
 
     public JDA getJda() {

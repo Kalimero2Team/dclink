@@ -40,26 +40,33 @@ public abstract class DCLink implements DCLinkApi {
             } catch (ConfigurateException e) {
                 logger.error("Failed to load messages", e);
                 shutdownServer();
+                return;
             }
+
             logger.info("Loaded messages");
             try {
                 dcLinkConfig = new DCLinkConfig(getConfigPath());
             } catch (ConfigurateException e) {
-                logger.error("Failed to load config", e);
+                logger.error("Failed to load config. Please check the config file and try again.");
+                logger.error(e.getMessage());
                 shutdownServer();
+                return;
             }
+
             logger.info("Loaded config");
             if (dcLinkConfig.getDatabaseConfiguration() != null) {
                 storage = new Storage(this, new File(getDataFolder(), dcLinkConfig.getDatabaseConfiguration().getSqliteFile()));
             } else {
-                logger.error("No database configuration found");
+                logger.error("Database Configuration missing");
                 shutdownServer();
+                return;
             }
+
             logger.info("Initialised storage");
             try {
                 discordBot = new DiscordBot(this);
             } catch (LoginException | InterruptedException e) {
-                logger.error("Failed to load discord bot", e);
+                logger.error("Failed to load discord bot" + e.getMessage());
                 shutdownServer();
                 return;
             }
@@ -182,8 +189,8 @@ public abstract class DCLink implements DCLinkApi {
                 getLogger().error("Couldn't create MinecraftPlayer Object for (UUID " + playerUUID + ")");
                 return JoinResult.failure(dcLinkMessages.getMinifiedMessage(dcLinkMessages.getMinecraftMessages().dbError));
             }
-        } else{
-            if(!playerName.equals(minecraftPlayer.getName())){
+        } else {
+            if (!playerName.equals(minecraftPlayer.getName())) {
                 try {
                     storage.setLastKnownName(minecraftPlayer.getUuid(), playerName);
                 } catch (SQLException e) {

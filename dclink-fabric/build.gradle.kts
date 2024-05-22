@@ -8,6 +8,11 @@ repositories {
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
 dependencies {
     minecraft("com.mojang", "minecraft", libs.versions.minecraft.get())
     mappings(loom.officialMojangMappings())
@@ -32,7 +37,7 @@ dependencies {
 
 tasks {
     processResources {
-        filesMatching("fabric.mod.json"){
+        filesMatching("fabric.mod.json") {
             expand(
                 "version" to project.version,
                 "minecraftVersion" to libs.versions.minecraft.get(),

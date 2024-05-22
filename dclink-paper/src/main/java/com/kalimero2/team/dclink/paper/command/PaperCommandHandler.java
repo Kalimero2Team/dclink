@@ -1,13 +1,14 @@
 package com.kalimero2.team.dclink.paper.command;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.paper.PaperCommandManager;
 import com.kalimero2.team.dclink.command.BrigadierSetup;
 import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.PlatformHandler;
 import com.kalimero2.team.dclink.paper.PaperDCLink;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.SenderMapper;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.paper.PaperCommandManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +26,8 @@ public class PaperCommandHandler implements PlatformHandler {
         try {
             commandManager = new PaperCommandManager<>(
                     this.dcLink.getPlugin(),
-                    CommandExecutionCoordinator.simpleCoordinator(),
-                    PaperSender::from,
-                    sender -> ((PaperSender) sender).sender()
+                    ExecutionCoordinator.simpleCoordinator(),
+                    SenderMapper.create(PaperSender::from, sender -> ((PaperSender) sender).sender())
             );
         } catch (final Exception ex) {
             throw new RuntimeException("Failed to initialize command manager", ex);
@@ -35,7 +35,6 @@ public class PaperCommandHandler implements PlatformHandler {
 
         commandManager.registerBrigadier();
         BrigadierSetup.setup(commandManager);
-        commandManager.registerAsynchronousCompletions();
 
         return commandManager;
     }

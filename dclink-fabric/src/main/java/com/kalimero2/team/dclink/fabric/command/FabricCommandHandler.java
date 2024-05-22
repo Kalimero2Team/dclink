@@ -1,13 +1,14 @@
 package com.kalimero2.team.dclink.fabric.command;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.fabric.FabricServerCommandManager;
 import com.kalimero2.team.dclink.command.BrigadierSetup;
-import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.PlatformHandler;
+import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.fabric.FabricDCLink;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.SenderMapper;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.fabric.FabricServerCommandManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,9 @@ public class FabricCommandHandler implements PlatformHandler {
     @Override
     public CommandManager<Sender> createCommandManager() {
         final FabricServerCommandManager<Sender> commandManager = new FabricServerCommandManager<>(
-                CommandExecutionCoordinator.simpleCoordinator(),
-                FabricSender::from,
-                sender -> ((FabricSender) sender).stack()
+                ExecutionCoordinator.simpleCoordinator(),
+                SenderMapper.create(FabricSender::from,
+                        sender -> ((FabricSender) sender).stack())
         );
 
         BrigadierSetup.setup(commandManager);

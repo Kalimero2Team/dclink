@@ -3,6 +3,11 @@ repositories {
     maven("https://repo.opencollab.dev/maven-snapshots/")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 dependencies {
     implementation(project(":dclink-api"))
     implementation(libs.adventure.api)
