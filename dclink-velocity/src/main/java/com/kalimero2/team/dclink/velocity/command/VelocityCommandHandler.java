@@ -1,13 +1,14 @@
 package com.kalimero2.team.dclink.velocity.command;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.velocity.VelocityCommandManager;
 import com.kalimero2.team.dclink.command.BrigadierSetup;
-import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.PlatformHandler;
+import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.velocity.VelocityDCLink;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.SenderMapper;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.velocity.VelocityCommandManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +27,8 @@ public class VelocityCommandHandler implements PlatformHandler {
             commandManager = new VelocityCommandManager<>(
                     dcLink.getServer().getPluginManager().getPlugin("dclink-velocity").orElse(null),
                     this.dcLink.getServer(),
-                    CommandExecutionCoordinator.simpleCoordinator(),
-                    VelocitySender::from,
-                    sender -> ((VelocitySender) sender).source()
+                    ExecutionCoordinator.simpleCoordinator(),
+                    SenderMapper.create(VelocitySender::from, sender -> ((VelocitySender) sender).source())
             );
         } catch (final Exception ex) {
             throw new RuntimeException("Failed to initialize command manager", ex);

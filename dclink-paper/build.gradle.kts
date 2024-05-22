@@ -12,6 +12,11 @@ repositories {
     maven("https://repo.opencollab.dev/maven-snapshots/")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
 dependencies {
     compileOnly(libs.paper.api)
     paperLibrary(libs.cloud.paper)
@@ -34,7 +39,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.19.4")
+        minecraftVersion(libs.versions.minecraft.get())
     }
 
     paper {
@@ -44,7 +49,7 @@ tasks {
         generateLibrariesJson = true
         foliaSupported = true
         description = project.description
-        apiVersion = "1.19"
+        apiVersion = "1.20.5"
         authors = listOf("byquanton")
 
         serverDependencies {

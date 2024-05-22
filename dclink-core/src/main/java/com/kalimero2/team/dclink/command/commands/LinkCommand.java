@@ -1,7 +1,5 @@
 package com.kalimero2.team.dclink.command.commands;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.context.CommandContext;
 import com.kalimero2.team.dclink.DCLinkCodes;
 import com.kalimero2.team.dclink.DCLinkMessages;
 import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
@@ -11,6 +9,8 @@ import com.kalimero2.team.dclink.command.DCLinkCommand;
 import com.kalimero2.team.dclink.command.PlayerSender;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.context.CommandContext;
 
 public class LinkCommand extends DCLinkCommand {
     public LinkCommand(Commands commands) {
@@ -28,7 +28,7 @@ public class LinkCommand extends DCLinkCommand {
     }
 
     private void linkSelf(CommandContext<Sender> context) {
-        if (context.getSender() instanceof PlayerSender player) {
+        if (context.sender() instanceof PlayerSender player) {
             MinecraftPlayer minecraftPlayer = player.player();
             DCLinkMessages messages = commands.getDCLink().getMessages();
             Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(minecraftPlayer)));
