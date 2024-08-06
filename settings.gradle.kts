@@ -29,7 +29,7 @@ dependencyResolutionManagement {
             version("paper-api", "1.20.6-R0.1-SNAPSHOT")
 
             library("paper-api", "io.papermc.paper", "paper-api").versionRef("paper-api")
-            library("cloud-paper", "org.incendo", "cloud-paper").version("2.0.0-beta.7") // beta.7 is required for 1.20.5+
+            library("cloud-paper", "org.incendo", "cloud-paper").version("2.0.0-SNAPSHOT") // beta.7 is required for 1.20.5+
 
 
             // Velocity
