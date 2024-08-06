@@ -2,7 +2,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             // Core
-            plugin("shadow", "io.github.goooler.shadow").version("8.1.7") // Fork is required for Java 21
+            plugin("shadow", "io.github.goooler.shadow").version("8.1.8") // Fork is required for Java 21
 
             version("jda", "5.0.2")
             version("configurate-hocon", "4.1.2")
