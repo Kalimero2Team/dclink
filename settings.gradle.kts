@@ -10,7 +10,7 @@ dependencyResolutionManagement {
             version("adventure", "4.17.0")
             version("floodgate-api", "2.0-SNAPSHOT")
             version("cloud", "2.0.0-SNAPSHOT")
-            version("runtask", "2.3.0")
+            version("runtask", "2.3.1")
             version("minecraft", "1.20.6")
 
             library("jda", "net.dv8tion", "JDA").versionRef("jda")
