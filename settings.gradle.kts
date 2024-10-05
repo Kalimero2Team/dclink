@@ -4,7 +4,7 @@ dependencyResolutionManagement {
             // Core
             plugin("shadow", "io.github.goooler.shadow").version("8.1.8") // Fork is required for Java 21
 
-            version("jda", "5.0.2")
+            version("jda", "5.1.2")
             version("configurate-hocon", "4.1.2")
             version("sqlite", "3.46.0.1")
             version("adventure", "4.17.0")
