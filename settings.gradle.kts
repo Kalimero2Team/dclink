@@ -9,7 +9,7 @@ dependencyResolutionManagement {
             version("sqlite", "3.48.0.0")
             version("adventure", "4.17.0")
             version("floodgate-api", "2.0-SNAPSHOT")
-            version("cloud", "2.0.0-SNAPSHOT")
+            version("cloud", "2.0.0")
             version("runtask", "2.3.1")
             version("minecraft", "1.20.6")
 
