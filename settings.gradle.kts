@@ -5,7 +5,7 @@ dependencyResolutionManagement {
             plugin("shadow", "io.github.goooler.shadow").version("8.1.8") // Fork is required for Java 21
 
             version("jda", "5.3.0")
-            version("configurate-hocon", "4.1.2")
+            version("configurate-hocon", "4.2.0")
             version("sqlite", "3.48.0.0")
             version("adventure", "4.17.0")
             version("floodgate-api", "2.0-SNAPSHOT")
