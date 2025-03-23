@@ -42,7 +42,7 @@ dependencyResolutionManagement {
 
 
             // Fabric
-            plugin("fabric-loom", "fabric-loom").version("1.8.6")
+            plugin("fabric-loom", "fabric-loom").version("1.10.5")
             version("fabric-loader", "0.15.10")
             version("fabric-api", "0.99.0+1.20.6")
             version("adventure-platform-fabric", "5.13.0")
