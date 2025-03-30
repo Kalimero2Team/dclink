@@ -8,7 +8,7 @@ import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.SenderMapper;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.execution.ExecutionCoordinator;
-import org.incendo.cloud.paper.PaperCommandManager;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,9 @@ public class PaperCommandHandler implements PlatformHandler {
 
     @Override
     public CommandManager<Sender> createCommandManager() {
-        final PaperCommandManager<Sender> commandManager;
+        final LegacyPaperCommandManager<Sender> commandManager;
         try {
-            commandManager = new PaperCommandManager<>(
+            commandManager = new LegacyPaperCommandManager<>(
                     this.dcLink.getPlugin(),
                     ExecutionCoordinator.simpleCoordinator(),
                     SenderMapper.create(PaperSender::from, sender -> ((PaperSender) sender).sender())

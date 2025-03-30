@@ -130,7 +130,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
                             .setRequiredRange(4, 4)
                             .setRequired(true).
                             build();
-                    Modal modal = Modal.create("linkModal", messages.modalTitle).addActionRows(ActionRow.of(code)).build();
+                    Modal modal = Modal.create("linkModal", messages.modalTitle).addComponents(ActionRow.of(code)).build();
                     event.replyModal(modal).queue();
                 }
                 case "accept" -> {
