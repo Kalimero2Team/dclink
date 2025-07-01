@@ -1,7 +1,7 @@
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            plugin("shadow", "com.gradleup.shadow").version("8.3.6")
+            plugin("shadow", "com.gradleup.shadow").version("8.3.8")
 
             version("jda", "5.3.1")
             version("configurate-hocon", "4.2.0")
