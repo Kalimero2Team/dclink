@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8.4",
+  "package": "com.kalimero2.team.dclink.neoforge.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CommandSourceStackAccess"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

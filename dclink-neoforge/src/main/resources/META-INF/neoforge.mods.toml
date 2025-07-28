@@ -1,0 +1,12 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+
+[[mods]]
+modId = "dclink_neoforge"
+version = "1.3.0-SNAPSHOT"
+displayName = "DCLink"
+description = '''My Description'''
+
+[[mixins]]
+config = "dclink-neoforge.mixins.json"
