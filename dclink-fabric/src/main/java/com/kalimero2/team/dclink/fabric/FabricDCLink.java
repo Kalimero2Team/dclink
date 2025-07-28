@@ -32,7 +32,7 @@ public class FabricDCLink extends DCLink {
     protected void kickPlayer(MinecraftPlayer minecraftPlayer, Component message) {
         ServerPlayer player = server.getPlayerList().getPlayer(minecraftPlayer.getUuid());
         if (player != null) {
-            player.connection.disconnect(mod.adventure().toNative(message));
+            player.connection.disconnect(mod.adventure().asNative(message));
         }
     }
 

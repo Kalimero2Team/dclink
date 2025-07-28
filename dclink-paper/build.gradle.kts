@@ -7,7 +7,6 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.opencollab.dev/maven-snapshots/")
 }
@@ -39,6 +38,15 @@ tasks {
     }
 
     runServer {
+        downloadPlugins {
+            // ViaVersion
+            modrinth("viaversion","5.4.2")
+            // Geyser (in this case Thermalquelle)
+            github("Kalimero2Team", "Thermalquelle","latest-dev", "Geyser-Spigot.jar")
+            // Floodgate
+            url("https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot")
+        }
+
         minecraftVersion(libs.versions.minecraft.get())
     }
 

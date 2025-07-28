@@ -197,6 +197,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
 
                 boolean isBedrock = dcLink.isBedrock(minecraftPlayer);
                 boolean isJava = !isBedrock;
+
                 logger.info("{} is attempting to link {} which is a {} Account", event.getUser().getAsTag(), minecraftPlayer.getName(), isBedrock ? "Bedrock" : "Java");
 
                 if (overBedrockLimit && isBedrock) {

@@ -6,15 +6,15 @@ import com.kalimero2.team.dclink.fabric.command.FabricCommandHandler;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.kyori.adventure.platform.fabric.FabricServerAudiences;
+import net.kyori.adventure.platform.modcommon.MinecraftServerAudiences;
 import net.minecraft.server.level.ServerPlayer;
 
 public class FabricMod implements DedicatedServerModInitializer {
 
-    private FabricServerAudiences adventure;
+    private MinecraftServerAudiences adventure;
     private FabricDCLink fabricDCLink;
 
-    public FabricServerAudiences adventure() {
+    public MinecraftServerAudiences adventure() {
         if (this.adventure == null) {
             throw new IllegalStateException("Tried to access Adventure without a running server!");
         }
@@ -36,10 +36,10 @@ public class FabricMod implements DedicatedServerModInitializer {
             ServerPlayer player = handler.getPlayer();
             DCLink.JoinResult joinResult = fabricDCLink.onLogin(player.getUUID(), player.getGameProfile().getName());
             if (!joinResult.success()) {
-                handler.disconnect(adventure.toNative(joinResult.message()));
+                handler.disconnect(adventure.asNative(joinResult.message()));
             }
         });
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> this.adventure = FabricServerAudiences.of(server));
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> this.adventure = MinecraftServerAudiences.of(server));
         ServerLifecycleEvents.SERVER_STARTED.register(server -> fabricDCLink.load());
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> fabricDCLink.shutdown());
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> this.adventure = null);
