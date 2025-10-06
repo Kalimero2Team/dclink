@@ -56,7 +56,7 @@ dependencyResolutionManagement {
             // NeoForge
             plugin("neoforge-moddev", "net.neoforged.moddev").version("2.0.105")
             version("neoforge", "21.8.17")
-            version("adventure-platform-neoforge", "6.5.1")
+            version("adventure-platform-neoforge", "6.7.0")
 
             library("cloud-neoforge", "org.incendo", "cloud-neoforge").versionRef("cloud-modded")
             library("adventure-neoforge", "net.kyori", "adventure-platform-neoforge").versionRef("adventure-platform-neoforge")
