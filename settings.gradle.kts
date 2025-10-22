@@ -9,7 +9,7 @@ dependencyResolutionManagement {
             version("adventure", "4.19.0")
             version("floodgate-api", "2.0-SNAPSHOT")
             version("cloud-core", "2.0.0-beta.11")
-            version("cloud-modded", "2.0.0-beta.12")
+            version("cloud-modded", "2.0.0-SNAPSHOT")
             version("runtask", "2.3.1")
             version("minecraft", "1.21.8")
 
