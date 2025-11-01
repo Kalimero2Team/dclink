@@ -1,3 +1,7 @@
+plugins {
+    java
+}
+
 repositories {
     mavenCentral()
     maven("https://repo.opencollab.dev/maven-snapshots/")

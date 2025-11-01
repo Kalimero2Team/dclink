@@ -9,6 +9,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -41,16 +42,16 @@ public class NeoForgeMod {
 
         neoForgeDCLink.getLogger().info("Registered Commands");
 
-        modEventBus.addListener((ServerStartingEvent e) -> this.adventure = MinecraftServerAudiences.of(e.getServer()));
-        modEventBus.addListener((ServerStartedEvent e) -> neoForgeDCLink.load());
-        modEventBus.addListener((ServerStoppingEvent e) -> neoForgeDCLink.shutdown());
-        modEventBus.addListener((ServerStoppedEvent e) -> this.adventure = null);
+        NeoForge.EVENT_BUS.addListener((ServerStartingEvent e) -> this.adventure = MinecraftServerAudiences.of(e.getServer()));
+        NeoForge.EVENT_BUS.addListener((ServerStartedEvent e) -> neoForgeDCLink.load());
+        NeoForge.EVENT_BUS.addListener((ServerStoppingEvent e) -> neoForgeDCLink.shutdown());
+        NeoForge.EVENT_BUS.addListener((ServerStoppedEvent e) -> this.adventure = null);
     }
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            DCLink.JoinResult joinResult = neoForgeDCLink.onLogin(player.getUUID(), player.getGameProfile().getName());
+            DCLink.JoinResult joinResult = neoForgeDCLink.onLogin(player.getUUID(), player.getGameProfile()./*? <=1.21.8 {*//*getName*//*?} else {*/name/*?}*/());
             if (!joinResult.success()) {
                 player.connection.disconnect(adventure.asNative(joinResult.message()));
             }

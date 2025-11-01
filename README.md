@@ -14,7 +14,10 @@ A simple plugin that provides the process of linking Minecraft and Discord accou
 Downloads:
 - [Modrinth](https://modrinth.com/plugin/dclink)
 
+## TODO
 
+- [ ] Add support for more databases and migration between them
+- [ ] Make message more configurable
 
 ## Libraries Used
 

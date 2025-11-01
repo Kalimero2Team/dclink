@@ -1,6 +1,6 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
-
 plugins {
+    java
     alias(libs.plugins.paper.run)
     alias(libs.plugins.plugin.yml)
     alias(libs.plugins.shadow)

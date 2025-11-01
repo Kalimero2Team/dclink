@@ -14,12 +14,12 @@ java {
 }
 
 dependencies {
-    minecraft("com.mojang", "minecraft", libs.versions.minecraft.get())
+    minecraft("com.mojang", "minecraft", stonecutter.current.version)
     mappings(loom.officialMojangMappings())
     modImplementation(libs.fabric.loader)
-    modImplementation(libs.fabric.api)
-    modImplementation(libs.adventure.fabric)
-    modImplementation(libs.cloud.fabric)
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
+    modImplementation("net.kyori:adventure-platform-fabric:${property("deps.adventure-platform-fabric")}")
+    modImplementation("org.incendo:cloud-fabric:${property("deps.cloud-fabric")}")
 
     implementation(project(":dclink-core"))
     include(project(":dclink-core"))
@@ -35,12 +35,18 @@ dependencies {
     include(libs.sqlite)
 }
 
+loom {
+    runConfigs.all {
+        ideConfigGenerated(true)
+    }
+}
+
 tasks {
     processResources {
         filesMatching("fabric.mod.json") {
             expand(
                 "version" to project.version,
-                "minecraftVersion" to libs.versions.minecraft.get(),
+                "minecraftVersion" to stonecutter.current.version,
                 "loaderVersion" to libs.versions.fabric.loader.get(),
             )
         }

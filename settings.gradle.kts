@@ -1,7 +1,7 @@
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            plugin("shadow", "com.gradleup.shadow").version("8.3.8")
+            plugin("shadow", "com.gradleup.shadow").version("9.2.2")
 
             version("jda", "5.3.1")
             version("configurate-hocon", "4.2.0")
@@ -43,23 +43,12 @@ dependencyResolutionManagement {
 
             // Fabric
             plugin("fabric-loom", "fabric-loom").version("1.11.4")
+            plugin("stonecutter", "dev.kikugie.stonecutter").version("0.7.10")
             version("fabric-loader", "0.16.10")
-            version("fabric-api", "0.130.0+1.21.8")
-            version("adventure-platform-fabric", "6.5.1")
 
             library("fabric-loader", "net.fabricmc", "fabric-loader").versionRef("fabric-loader")
-            library("fabric-api", "net.fabricmc.fabric-api", "fabric-api").versionRef("fabric-api")
-            library("adventure-fabric", "net.kyori", "adventure-platform-fabric").versionRef("adventure-platform-fabric")
-            library("cloud-fabric", "org.incendo", "cloud-fabric").versionRef("cloud-modded")
-
-
             // NeoForge
-            plugin("neoforge-moddev", "net.neoforged.moddev").version("2.0.105")
-            version("neoforge", "21.8.17")
-            version("adventure-platform-neoforge", "6.5.1")
-
-            library("cloud-neoforge", "org.incendo", "cloud-neoforge").versionRef("cloud-modded")
-            library("adventure-neoforge", "net.kyori", "adventure-platform-neoforge").versionRef("adventure-platform-neoforge")
+            plugin("neoforge-moddev", "net.neoforged.moddev").version("2.0.116")
         }
     }
 }
@@ -72,11 +61,26 @@ pluginManagement {
     }
 }
 
+plugins {
+    id("dev.kikugie.stonecutter") version "0.7.10"
+}
+
 rootProject.name = "dclink"
 
 include("dclink-api")
 include("dclink-core")
 include("dclink-paper")
 include("dclink-velocity")
-include("dclink-fabric")
 include("dclink-neoforge")
+include("dclink-fabric")
+
+stonecutter{
+    create(project(":dclink-fabric")) {
+        versions("1.21.8", "1.21.10")
+        vcsVersion = "1.21.10"
+    }
+    create(project(":dclink-neoforge")) {
+        versions("1.21.8", "1.21.10")
+        vcsVersion = "1.21.10"
+    }
+}

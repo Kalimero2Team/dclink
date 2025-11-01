@@ -29,10 +29,10 @@ dependencies {
     implementation(project(":dclink-api"))
     jarJar(project(":dclink-api"))
 
-    implementation(libs.adventure.neoforge)
-    jarJar(libs.adventure.neoforge)
-    implementation(libs.cloud.neoforge)
-    jarJar(libs.cloud.neoforge)
+    implementation("net.kyori:adventure-platform-neoforge:${property("deps.adventure-platform-neoforge")}")
+    jarJar("net.kyori:adventure-platform-neoforge:${property("deps.adventure-platform-neoforge")}")
+    implementation("org.incendo:cloud-neoforge:${property("deps.cloud-neoforge")}")
+    jarJar("org.incendo:cloud-neoforge:${property("deps.cloud-neoforge")}")
 
     implementation(libs.adventure.api)
     jarJar(libs.adventure.api)
@@ -40,6 +40,7 @@ dependencies {
     jarJar(libs.adventure.minimessage)
     implementation(libs.configurate.hocon)
     jarJar(libs.configurate.hocon)
+
     implementation(libs.jda) {
         exclude(module = "opus-java")
     }
@@ -50,7 +51,7 @@ dependencies {
 
 
 neoForge {
-    version = libs.versions.neoforge.get()
+    version = property("deps.neoforge").toString()
 
     mods {
         create("dclink_neoforge") {
@@ -73,8 +74,7 @@ tasks {
         filesMatching("neoforge.mods.toml") {
             expand(
                 "version" to project.version,
-                "minecraftVersion" to libs.versions.minecraft.get(),
-                "loaderVersion" to libs.versions.fabric.loader.get(),
+                "minecraftVersion" to stonecutter.current.version
             )
         }
     }
