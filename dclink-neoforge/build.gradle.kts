@@ -17,9 +17,9 @@ java {
 
 configurations.all {
     resolutionStrategy {
-        force("com.fasterxml.jackson.core:jackson-core:2.13.4")
-        force("com.fasterxml.jackson.core:jackson-databind:2.13.4")
-        force("com.fasterxml.jackson.core:jackson-annotations:2.13.4")
+        force("com.fasterxml.jackson.core:jackson-core:2.20.1")
+        force("com.fasterxml.jackson.core:jackson-databind:2.20.1")
+        force("com.fasterxml.jackson.core:jackson-annotations:2.20")
     }
 }
 
