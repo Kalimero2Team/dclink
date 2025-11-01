@@ -3,7 +3,7 @@ dependencyResolutionManagement {
         create("libs") {
             plugin("shadow", "com.gradleup.shadow").version("9.2.2")
 
-            version("jda", "5.3.1")
+            version("jda", "5.6.1")
             version("configurate-hocon", "4.2.0")
             version("sqlite", "3.50.3.0")
             version("adventure", "4.19.0")
