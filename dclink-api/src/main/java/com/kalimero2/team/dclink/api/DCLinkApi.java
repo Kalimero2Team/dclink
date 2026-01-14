@@ -2,7 +2,7 @@ package com.kalimero2.team.dclink.api;
 
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.discord.DiscordRole;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 
 import java.util.UUID;
 
@@ -17,7 +17,7 @@ public interface DCLinkApi {
      *
      * @return MinecraftPlayer with the given UUID.
      */
-    MinecraftPlayer getMinecraftPlayer(UUID uuid);
+    GamePlayer getGamePlayer(UUID uuid);
 
     /**
      * Get the DiscordAccount with the given ID.
@@ -33,10 +33,10 @@ public interface DCLinkApi {
      */
     DiscordRole getDiscordRole(String id);
 
-    boolean linkAccounts(MinecraftPlayer minecraftPlayer, DiscordAccount discordAccount);
+    boolean linkAccounts(GamePlayer gamePlayer, DiscordAccount discordAccount);
 
     void unLinkAccounts(DiscordAccount discordAccount);
 
-    void unLinkAccount(MinecraftPlayer minecraftPlayer);
+    void unLinkAccount(GamePlayer gamePlayer);
 
 }

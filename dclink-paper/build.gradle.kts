@@ -26,6 +26,7 @@ dependencies {
     implementation(project(":dclink-core")) {
         exclude("*", "*") // Excludes all dependencies of dclink-core because they are put into the plugin.yml file
     }
+    implementation(project(":dclink-minecraft"))
 }
 
 tasks {

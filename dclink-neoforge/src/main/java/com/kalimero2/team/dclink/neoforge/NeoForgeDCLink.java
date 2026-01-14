@@ -1,7 +1,7 @@
 package com.kalimero2.team.dclink.neoforge;
 
 import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,8 +28,8 @@ public class NeoForgeDCLink extends DCLink {
     }
 
     @Override
-    protected void kickPlayer(MinecraftPlayer minecraftPlayer, Component message) {
-        ServerPlayer player = server.getPlayerList().getPlayer(minecraftPlayer.getUuid());
+    protected void kickPlayer(GamePlayer gamePlayer, Component message) {
+        ServerPlayer player = server.getPlayerList().getPlayer(gamePlayer.getUuid());
         if (player != null) {
             player.connection.disconnect(mod.adventure().asNative(message));
         }

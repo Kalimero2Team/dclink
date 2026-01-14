@@ -1,7 +1,7 @@
 package com.kalimero2.team.dclink.fabric.command;
 
 import com.kalimero2.team.dclink.api.DCLinkApi;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import com.kalimero2.team.dclink.command.PlayerSender;
 import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.fabric.mixin.CommandSourceStackAccess;
@@ -60,9 +60,9 @@ public class FabricSender implements Sender, ForwardingAudience.Single {
         }
 
         @Override
-        public MinecraftPlayer player() {
+        public GamePlayer player() {
             try {
-                return DCLinkApi.getApi().getMinecraftPlayer(this.stack().getPlayerOrException().getUUID());
+                return DCLinkApi.getApi().getGamePlayer(this.stack().getPlayerOrException().getUUID());
             } catch (CommandSyntaxException e) {
                 throw new RuntimeException(e);
             }

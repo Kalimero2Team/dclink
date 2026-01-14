@@ -2,15 +2,14 @@ package com.kalimero2.team.dclink.command.commands;
 
 import com.kalimero2.team.dclink.DCLinkMessages;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.command.DCLinkCommand;
 import com.kalimero2.team.dclink.command.Sender;
-import com.kalimero2.team.dclink.command.argument.MinecraftPlayerComponent;
+import com.kalimero2.team.dclink.command.argument.GamePlayerComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.incendo.cloud.CommandManager;
-import org.incendo.cloud.component.CommandComponent;
 import org.incendo.cloud.context.CommandContext;
 
 public class AltsCommand extends DCLinkCommand {
@@ -22,7 +21,7 @@ public class AltsCommand extends DCLinkCommand {
     public void register() {
         CommandManager<Sender> commandManager = commands.commandManager();
         commandManager.command(commandManager.commandBuilder("alts")
-                .required(MinecraftPlayerComponent.of("player"))
+                .required(GamePlayerComponent.of("player"))
                 .permission("dclink.command.alts")
                 .handler(this::alts));
     }
@@ -31,8 +30,8 @@ public class AltsCommand extends DCLinkCommand {
         DCLinkMessages messages = dcLink.getMessages();
         DCLinkMessages.MinecraftMessages minecraftMessages = messages.getMinecraftMessages();
 
-        MinecraftPlayer minecraftPlayer = context.get("player");
-        DiscordAccount discordAccount = minecraftPlayer.getDiscordAccount();
+        GamePlayer gamePlayer = context.get("player");
+        DiscordAccount discordAccount = gamePlayer.getDiscordAccount();
 
         if (discordAccount == null) {
             Component message = messages.getMinifiedMessage(minecraftMessages.notLinked);

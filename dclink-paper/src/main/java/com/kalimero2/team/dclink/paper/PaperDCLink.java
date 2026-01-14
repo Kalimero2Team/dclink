@@ -1,7 +1,7 @@
 package com.kalimero2.team.dclink.paper;
 
 import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.paper.command.PaperCommandHandler;
 import net.kyori.adventure.text.Component;
@@ -52,8 +52,8 @@ public class PaperDCLink extends DCLink {
     }
 
     @Override
-    protected void kickPlayer(MinecraftPlayer minecraftPlayer, Component message) {
-        OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(minecraftPlayer.getUuid());
+    protected void kickPlayer(GamePlayer gamePlayer, Component message) {
+        OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(gamePlayer.getUuid());
         if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
             try {
                 // On Paper we can only kick player from the main thread

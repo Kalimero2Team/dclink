@@ -1,6 +1,6 @@
 package com.kalimero2.team.dclink;
 
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -10,21 +10,21 @@ import java.util.Random;
 
 public class DCLinkCodes {
 
-    private static final Map<String, MinecraftPlayer> codeIdMap = new HashMap<>();
+    private static final Map<String, GamePlayer> codeIdMap = new HashMap<>();
 
-    public static String addPlayer(MinecraftPlayer minecraftPlayer) {
+    public static String addPlayer(GamePlayer gamePlayer) {
         // remove old code
-        Optional<Map.Entry<String, MinecraftPlayer>> optionalEntry = codeIdMap.entrySet().stream().filter(entry -> entry.getValue().equals(minecraftPlayer)).findFirst();
+        Optional<Map.Entry<String, GamePlayer>> optionalEntry = codeIdMap.entrySet().stream().filter(entry -> entry.getValue().equals(gamePlayer)).findFirst();
         optionalEntry.ifPresent(entry -> removePlayer(entry.getKey()));
 
         // generate new code
         String code = generateCode();
-        codeIdMap.put(code, minecraftPlayer);
+        codeIdMap.put(code, gamePlayer);
         return code;
     }
 
     @Nullable
-    public static MinecraftPlayer getPlayer(String code) {
+    public static GamePlayer getPlayer(String code) {
         return codeIdMap.get(code);
     }
 

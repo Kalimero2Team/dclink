@@ -2,7 +2,7 @@ package com.kalimero2.team.dclink.command.commands;
 
 import com.kalimero2.team.dclink.DCLinkCodes;
 import com.kalimero2.team.dclink.DCLinkMessages;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.command.DCLinkCommand;
@@ -29,9 +29,9 @@ public class LinkCommand extends DCLinkCommand {
 
     private void linkSelf(CommandContext<Sender> context) {
         if (context.sender() instanceof PlayerSender player) {
-            MinecraftPlayer minecraftPlayer = player.player();
+            GamePlayer gamePlayer = player.player();
             DCLinkMessages messages = commands.getDCLink().getMessages();
-            Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(minecraftPlayer)));
+            Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(gamePlayer)));
             player.sendMessage(message);
         }
     }

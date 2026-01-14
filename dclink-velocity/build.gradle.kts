@@ -22,6 +22,7 @@ dependencies {
     implementation(libs.cloud.velocity)
     implementation(project(":dclink-api"))
     implementation(project(":dclink-core"))
+    implementation(project(":dclink-minecraft"))
 }
 
 tasks {

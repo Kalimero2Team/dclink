@@ -4,7 +4,7 @@ import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 
 import java.util.UUID;
 
-public interface MinecraftPlayer {
+public interface GamePlayer {
 
     /**
      * Get the Minecraft player's Name.

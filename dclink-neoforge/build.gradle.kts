@@ -15,19 +15,13 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-configurations.all {
-    resolutionStrategy {
-        force("com.fasterxml.jackson.core:jackson-core:2.13.4")
-        force("com.fasterxml.jackson.core:jackson-databind:2.13.4")
-        force("com.fasterxml.jackson.core:jackson-annotations:2.13.4")
-    }
-}
-
 dependencies {
     implementation(project(":dclink-core"))
     jarJar(project(":dclink-core"))
     implementation(project(":dclink-api"))
     jarJar(project(":dclink-api"))
+    implementation(project(":dclink-minecraft"))
+    jarJar(project(":dclink-minecraft"))
 
     implementation("net.kyori:adventure-platform-neoforge:${property("deps.adventure-platform-neoforge")}")
     jarJar("net.kyori:adventure-platform-neoforge:${property("deps.adventure-platform-neoforge")}")
@@ -43,6 +37,7 @@ dependencies {
 
     implementation(libs.jda) {
         exclude(module = "opus-java")
+        exclude(module = "slf4j-api")
     }
     jarJar(libs.jda)
     implementation(libs.sqlite)

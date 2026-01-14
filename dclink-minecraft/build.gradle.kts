@@ -15,13 +15,7 @@ java {
 
 dependencies {
     implementation(project(":dclink-api"))
-    implementation(libs.adventure.api)
-    implementation(libs.adventure.minimessage)
-    implementation(libs.cloud.core)
-    implementation(libs.configurate.hocon)
-    implementation(libs.jda) {
-        exclude(module= "opus-java")
-    }
-    implementation(libs.sqlite)
-    compileOnly(libs.floodgate.api)
+    implementation(project(":dclink-core"))
+    implementation(libs.cloud.brigadier)
+    implementation(libs.brigadier)
 }

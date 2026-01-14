@@ -1,7 +1,7 @@
 package com.kalimero2.team.dclink.velocity;
 
 import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.velocity.command.VelocityCommandHandler;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -46,8 +46,8 @@ public class VelocityDCLink extends DCLink {
     }
 
     @Override
-    protected void kickPlayer(MinecraftPlayer minecraftPlayer, Component message) {
-        server.getPlayer(minecraftPlayer.getUuid()).ifPresent(player -> player.disconnect(message));
+    protected void kickPlayer(GamePlayer gamePlayer, Component message) {
+        server.getPlayer(gamePlayer.getUuid()).ifPresent(player -> player.disconnect(message));
     }
 
     @Override

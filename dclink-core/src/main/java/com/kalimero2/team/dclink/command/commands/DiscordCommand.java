@@ -2,12 +2,12 @@ package com.kalimero2.team.dclink.command.commands;
 
 import com.kalimero2.team.dclink.DCLinkMessages;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.command.DCLinkCommand;
 import com.kalimero2.team.dclink.command.PlayerSender;
-import com.kalimero2.team.dclink.command.argument.MinecraftPlayerComponent;
+import com.kalimero2.team.dclink.command.argument.GamePlayerComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.incendo.cloud.CommandManager;
@@ -24,27 +24,27 @@ public class DiscordCommand extends DCLinkCommand {
     public void register() {
         CommandManager<Sender> commandManager = commands.commandManager();
         commandManager.command(commandManager.commandBuilder("discord", "dc")
-                .optional(MinecraftPlayerComponent.of("player"))
+                .optional(GamePlayerComponent.of("player"))
                 .permission("dclink.command.discord")
                 .handler(this::info));
     }
 
     private void info(CommandContext<Sender> context) {
         DCLinkMessages messages = dcLink.getMessages();
-        Optional<MinecraftPlayer> optionalMinecraftPlayer = context.optional("player");
-        MinecraftPlayer minecraftPlayer;
+        Optional<GamePlayer> optionalMinecraftPlayer = context.optional("player");
+        GamePlayer gamePlayer;
         if (context.sender() instanceof PlayerSender commander) {
-            minecraftPlayer = optionalMinecraftPlayer.orElse(commander.player());
+            gamePlayer = optionalMinecraftPlayer.orElse(commander.player());
         } else {
-            minecraftPlayer = optionalMinecraftPlayer.orElse(null);
-            if (minecraftPlayer == null) {
+            gamePlayer = optionalMinecraftPlayer.orElse(null);
+            if (gamePlayer == null) {
                 Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().needsArgumentIfExecutedByConsole);
                 context.sender().sendMessage(message);
                 return;
             }
         }
 
-        DiscordAccount discordAccount = minecraftPlayer.getDiscordAccount();
+        DiscordAccount discordAccount = gamePlayer.getDiscordAccount();
         if (discordAccount == null) {
             Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().notLinked);
             context.sender().sendMessage(message);

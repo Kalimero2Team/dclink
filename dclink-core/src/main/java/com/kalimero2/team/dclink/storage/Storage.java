@@ -2,9 +2,9 @@ package com.kalimero2.team.dclink.storage;
 
 import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import com.kalimero2.team.dclink.impl.discord.DiscordAccountImpl;
-import com.kalimero2.team.dclink.impl.minecraft.MinecraftPlayerImpl;
+import com.kalimero2.team.dclink.impl.minecraft.GamePlayerImpl;
 import org.intellij.lang.annotations.Language;
 
 import java.io.File;
@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -102,7 +101,7 @@ public class Storage {
         statement.close();
     }
 
-    public void createMinecraftPlayer(UUID uuid, String name) throws SQLException {
+    public void createGamePlayer(UUID uuid, String name) throws SQLException {
         Statement statement = connection.createStatement();
         statement.executeUpdate("INSERT OR IGNORE INTO MINECRAFT_ACCOUNTS (UUID, DISCORD_ID, LAST_KNOWN_NAME) VALUES ('" + uuid + "', '" + null + "', '" + name + "' );");
         statement.close();
@@ -138,18 +137,18 @@ public class Storage {
             return null;
         }
 
-        List<MinecraftPlayer> linkedPlayers = new ArrayList<>();
+        List<GamePlayer> linkedPlayers = new ArrayList<>();
 
         DiscordAccountImpl discordAccount = new DiscordAccountImpl(dcLink, discordID) {
             @Override
-            public Collection<MinecraftPlayer> getLinkedPlayers() {
+            public Collection<GamePlayer> getLinkedPlayers() {
                 return linkedPlayers.stream().toList();
             }
         };
 
         ResultSet resultSet = executeQuery("SELECT UUID, LAST_KNOWN_NAME FROM MINECRAFT_ACCOUNTS WHERE DISCORD_ID = ?", discordID);
         while (resultSet.next()) {
-            linkedPlayers.add(new MinecraftPlayerImpl(UUID.fromString(resultSet.getString("UUID")), resultSet.getString("LAST_KNOWN_NAME")) {
+            linkedPlayers.add(new GamePlayerImpl(UUID.fromString(resultSet.getString("UUID")), resultSet.getString("LAST_KNOWN_NAME")) {
                 @Override
                 public DiscordAccount getDiscordAccount() {
                     return discordAccount;
@@ -173,9 +172,9 @@ public class Storage {
     }
 
 
-    public MinecraftPlayer getMinecraftPlayer(UUID uuid) throws SQLException {
+    public GamePlayer getMinecraftPlayer(UUID uuid) throws SQLException {
         ResultSet resultSet = executeQuery("SELECT LAST_KNOWN_NAME, DISCORD_ID FROM MINECRAFT_ACCOUNTS WHERE UUID = ?", uuid.toString());
-        MinecraftPlayerImpl minecraftPlayer = null;
+        GamePlayerImpl minecraftPlayer = null;
         if (resultSet.next()) {
             String lastKnownName = resultSet.getString("LAST_KNOWN_NAME");
             String discordID = resultSet.getString("DISCORD_ID");
@@ -186,7 +185,7 @@ public class Storage {
                 }else {
                     discordAccount = null;
                 }
-                minecraftPlayer = new MinecraftPlayerImpl(uuid, lastKnownName) {
+                minecraftPlayer = new GamePlayerImpl(uuid, lastKnownName) {
                     @Override
                     public DiscordAccount getDiscordAccount() {
                         return discordAccount;
@@ -198,11 +197,11 @@ public class Storage {
         return minecraftPlayer;
     }
 
-    public boolean linkAccounts(MinecraftPlayer minecraftPlayer, DiscordAccount discordAccount) {
+    public boolean linkAccounts(GamePlayer gamePlayer, DiscordAccount discordAccount) {
         try {
             PreparedStatement pstmt = connection.prepareStatement("UPDATE MINECRAFT_ACCOUNTS SET DISCORD_ID = ? WHERE UUID = ?;");
             pstmt.setString(1, discordAccount.getId());
-            pstmt.setString(2, minecraftPlayer.getUuid().toString());
+            pstmt.setString(2, gamePlayer.getUuid().toString());
             pstmt.executeUpdate();
             pstmt.close();
             return true;
@@ -223,10 +222,10 @@ public class Storage {
         }
     }
 
-    public void unLinkAccount(MinecraftPlayer minecraftPlayer) {
+    public void unLinkAccount(GamePlayer gamePlayer) {
         try {
             PreparedStatement pstmt = connection.prepareStatement("UPDATE MINECRAFT_ACCOUNTS SET DISCORD_ID = NULL WHERE UUID = ?;");
-            pstmt.setString(1, minecraftPlayer.getUuid().toString());
+            pstmt.setString(1, gamePlayer.getUuid().toString());
             pstmt.executeUpdate();
             pstmt.close();
         } catch (SQLException e) {

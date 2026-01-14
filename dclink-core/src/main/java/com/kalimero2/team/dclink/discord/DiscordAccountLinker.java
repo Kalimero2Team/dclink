@@ -5,7 +5,7 @@ import com.kalimero2.team.dclink.DCLinkCodes;
 import com.kalimero2.team.dclink.DCLinkConfig;
 import com.kalimero2.team.dclink.DCLinkMessages;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -36,7 +36,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
     private final JDA jda;
     private final DCLinkConfig.DiscordConfiguration config;
     private final DCLinkMessages.DiscordBotMessages messages;
-    private final Map<DiscordAccount, MinecraftPlayer> preLinkedPlayers;
+    private final Map<DiscordAccount, GamePlayer> preLinkedPlayers;
     private boolean giveRoleWhenLinked = false;
 
     protected DiscordAccountLinker(DCLink dcLink, JDA jda) {
@@ -135,8 +135,8 @@ public class DiscordAccountLinker extends ListenerAdapter {
                 }
                 case "accept" -> {
                     if (preLinkedPlayers.containsKey(discordAccount)) {
-                        MinecraftPlayer minecraftPlayer = preLinkedPlayers.get(discordAccount);
-                        dcLink.linkAccounts(minecraftPlayer, discordAccount);
+                        GamePlayer gamePlayer = preLinkedPlayers.get(discordAccount);
+                        dcLink.linkAccounts(gamePlayer, discordAccount);
                         preLinkedPlayers.remove(discordAccount);
                         logger.info(event.getUser().getAsTag() + " accepted the rules");
                         event.editMessage(messages.rulesAccepted).setComponents().queue();
@@ -167,12 +167,12 @@ public class DiscordAccountLinker extends ListenerAdapter {
         if (event.getModalId().equals("linkModal")) {
             String code = Objects.requireNonNull(event.getValue("code")).getAsString();
             logger.info("{} entered {}", event.getUser().getAsTag(), code);
-            MinecraftPlayer minecraftPlayer = DCLinkCodes.getPlayer(code);
-            if (minecraftPlayer != null) {
+            GamePlayer gamePlayer = DCLinkCodes.getPlayer(code);
+            if (gamePlayer != null) {
                 DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
-                Collection<MinecraftPlayer> linkedPlayers = discordAccount.getLinkedPlayers();
+                Collection<GamePlayer> linkedPlayers = discordAccount.getLinkedPlayers();
 
-                if (linkedPlayers.contains(minecraftPlayer)) {
+                if (linkedPlayers.contains(gamePlayer)) {
                     event.reply(messages.alreadyLinked).setEphemeral(true).queue();
                     preLinkedPlayers.remove(discordAccount);
                     return;
@@ -181,7 +181,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
                 int java = 0;
                 int bedrock = 0;
 
-                for (MinecraftPlayer linkedPlayer : linkedPlayers) {
+                for (GamePlayer linkedPlayer : linkedPlayers) {
                     if (dcLink.isBedrock(linkedPlayer)) {
                         bedrock++;
                     } else {
@@ -195,10 +195,10 @@ public class DiscordAccountLinker extends ListenerAdapter {
                 boolean overBedrockLimit = bedrock >= bedrockLimit;
                 boolean overJavaLimit = java >= javaLimit;
 
-                boolean isBedrock = dcLink.isBedrock(minecraftPlayer);
+                boolean isBedrock = dcLink.isBedrock(gamePlayer);
                 boolean isJava = !isBedrock;
 
-                logger.info("{} is attempting to link {} which is a {} Account", event.getUser().getAsTag(), minecraftPlayer.getName(), isBedrock ? "Bedrock" : "Java");
+                logger.info("{} is attempting to link {} which is a {} Account", event.getUser().getAsTag(), gamePlayer.getName(), isBedrock ? "Bedrock" : "Java");
 
                 if (overBedrockLimit && isBedrock) {
                     logger.info("Link for {} failed because has linked {} Bedrock accounts, which is over the limit of {}", event.getUser().getAsTag(), bedrock, bedrockLimit);
@@ -211,7 +211,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
                     return;
                 }
 
-                preLinkedPlayers.put(discordAccount, minecraftPlayer);
+                preLinkedPlayers.put(discordAccount, gamePlayer);
                 DCLinkCodes.removePlayer(code);
 
                 event.reply(messages.rules).setEphemeral(true).addComponents(ActionRow.of(

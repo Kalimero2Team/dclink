@@ -1,7 +1,7 @@
 package com.kalimero2.team.dclink.velocity.command;
 
 import com.kalimero2.team.dclink.api.DCLinkApi;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.PlayerSender;
 import com.velocitypowered.api.command.CommandSource;
@@ -44,8 +44,8 @@ public class VelocitySender implements Sender, ForwardingAudience.Single {
         }
 
         @Override
-        public MinecraftPlayer player() {
-            return DCLinkApi.getApi().getMinecraftPlayer(velocity().getUniqueId());
+        public GamePlayer player() {
+            return DCLinkApi.getApi().getGamePlayer(velocity().getUniqueId());
         }
 
         @Override

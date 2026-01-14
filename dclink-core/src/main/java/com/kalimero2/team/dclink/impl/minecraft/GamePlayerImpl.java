@@ -1,16 +1,16 @@
 package com.kalimero2.team.dclink.impl.minecraft;
 
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 
 import java.util.Objects;
 import java.util.UUID;
 
-public abstract class MinecraftPlayerImpl implements MinecraftPlayer {
+public abstract class GamePlayerImpl implements GamePlayer {
 
     private final UUID uuid;
     private String name;
 
-    public MinecraftPlayerImpl(UUID uuid, String name) {
+    public GamePlayerImpl(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
     }
@@ -46,7 +46,7 @@ public abstract class MinecraftPlayerImpl implements MinecraftPlayer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MinecraftPlayerImpl that = (MinecraftPlayerImpl) o;
+        GamePlayerImpl that = (GamePlayerImpl) o;
         return Objects.equals(uuid, that.uuid);
     }
 

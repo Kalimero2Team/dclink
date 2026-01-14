@@ -1,6 +1,6 @@
 package com.kalimero2.team.dclink.api.discord;
 
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 
 import java.util.Collection;
 
@@ -59,7 +59,7 @@ public interface DiscordAccount {
      * Get the Minecraft Players linked to the account.
      *
      * @return The Minecraft Players linked to the account.
-     * @see com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer
+     * @see GamePlayer
      */
-    Collection<MinecraftPlayer> getLinkedPlayers();
+    Collection<GamePlayer> getLinkedPlayers();
 }

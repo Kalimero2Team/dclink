@@ -4,10 +4,10 @@ import com.kalimero2.team.dclink.api.DCLinkApi;
 import com.kalimero2.team.dclink.api.DCLinkApiHolder;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.discord.DiscordRole;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import com.kalimero2.team.dclink.discord.DiscordBot;
 import com.kalimero2.team.dclink.impl.discord.DiscordRoleImpl;
-import com.kalimero2.team.dclink.impl.minecraft.MinecraftPlayerImpl;
+import com.kalimero2.team.dclink.impl.minecraft.GamePlayerImpl;
 import com.kalimero2.team.dclink.storage.Storage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -106,11 +106,11 @@ public abstract class DCLink implements DCLinkApi {
     }
 
     @Override
-    public MinecraftPlayer getMinecraftPlayer(UUID uuid) {
+    public GamePlayer getGamePlayer(UUID uuid) {
         try {
             return storage.getMinecraftPlayer(uuid);
         } catch (SQLException e) {
-            logger.error("Error while getting MinecraftPlayer", e);
+            logger.error("Error while getting GamePlayer", e);
             return null;
         }
     }
@@ -131,8 +131,8 @@ public abstract class DCLink implements DCLinkApi {
     }
 
     @Override
-    public boolean linkAccounts(MinecraftPlayer minecraftPlayer, DiscordAccount discordAccount) {
-        return storage.linkAccounts(minecraftPlayer, discordAccount);
+    public boolean linkAccounts(GamePlayer gamePlayer, DiscordAccount discordAccount) {
+        return storage.linkAccounts(gamePlayer, discordAccount);
     }
 
     @Override
@@ -148,19 +148,19 @@ public abstract class DCLink implements DCLinkApi {
     }
 
     @Override
-    public void unLinkAccount(MinecraftPlayer minecraftPlayer) {
+    public void unLinkAccount(GamePlayer gamePlayer) {
         if (dcLinkConfig.getDiscordConfiguration().getLinkRole() != null) {
             DiscordRole linkRole = getDiscordRole(dcLinkConfig.getDiscordConfiguration().getLinkRole());
-            minecraftPlayer.getDiscordAccount().removeRole(linkRole);
+            gamePlayer.getDiscordAccount().removeRole(linkRole);
         }
         if (getConfig().getLinkingConfiguration().isLinkRequired()) {
-            kickPlayer(minecraftPlayer, getMessages().getMinifiedMessage(getMessages().getMinecraftMessages().kickUnlinked));
+            kickPlayer(gamePlayer, getMessages().getMinifiedMessage(getMessages().getMinecraftMessages().kickUnlinked));
         }
-        storage.unLinkAccount(minecraftPlayer);
+        storage.unLinkAccount(gamePlayer);
     }
 
-    public boolean isBedrock(MinecraftPlayer minecraftPlayer) {
-        return isBedrock(minecraftPlayer.getUuid());
+    public boolean isBedrock(GamePlayer gamePlayer) {
+        return isBedrock(gamePlayer.getUuid());
     }
 
     public boolean isBedrock(UUID uuid) {
@@ -174,34 +174,34 @@ public abstract class DCLink implements DCLinkApi {
     }
 
     public JoinResult onLogin(UUID playerUUID, String playerName) {
-        MinecraftPlayer minecraftPlayer = getMinecraftPlayer(playerUUID);
+        GamePlayer gamePlayer = getGamePlayer(playerUUID);
 
-        if (minecraftPlayer == null) {
+        if (gamePlayer == null) {
             try {
-                storage.createMinecraftPlayer(playerUUID, playerName);
-                minecraftPlayer = new MinecraftPlayerImpl(playerUUID, playerName) {
+                storage.createGamePlayer(playerUUID, playerName);
+                gamePlayer = new GamePlayerImpl(playerUUID, playerName) {
                     @Override
                     public DiscordAccount getDiscordAccount() {
                         return null;
                     }
                 };
             } catch (Exception e) {
-                getLogger().error("Couldn't create MinecraftPlayer Object for (UUID " + playerUUID + ")");
+                getLogger().error("Couldn't create GamePlayer Object for (UUID " + playerUUID + ")");
                 return JoinResult.failure(dcLinkMessages.getMinifiedMessage(dcLinkMessages.getMinecraftMessages().dbError));
             }
         } else {
-            if (!playerName.equals(minecraftPlayer.getName())) {
+            if (!playerName.equals(gamePlayer.getName())) {
                 try {
-                    storage.setLastKnownName(minecraftPlayer.getUuid(), playerName);
+                    storage.setLastKnownName(gamePlayer.getUuid(), playerName);
                 } catch (SQLException e) {
-                    getLogger().error("Couldn't update name for player with UUID " + playerUUID + " (from " + minecraftPlayer.getName() + " to " + playerName + ")");
+                    getLogger().error("Couldn't update name for player with UUID " + playerUUID + " (from " + gamePlayer.getName() + " to " + playerName + ")");
                 }
-                minecraftPlayer.setName(playerName);
+                gamePlayer.setName(playerName);
             }
         }
 
-        if (!minecraftPlayer.isLinked() && dcLinkConfig.getLinkingConfiguration().isLinkRequired()) {
-            Component code = dcLinkMessages.getMinifiedMessage(dcLinkMessages.getMinecraftMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(minecraftPlayer)));
+        if (!gamePlayer.isLinked() && dcLinkConfig.getLinkingConfiguration().isLinkRequired()) {
+            Component code = dcLinkMessages.getMinifiedMessage(dcLinkMessages.getMinecraftMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(gamePlayer)));
             return JoinResult.failure(code);
         } else {
             return JoinResult.success(null);
@@ -237,7 +237,7 @@ public abstract class DCLink implements DCLinkApi {
         }
     }
 
-    protected abstract void kickPlayer(MinecraftPlayer minecraftPlayer, Component message);
+    protected abstract void kickPlayer(GamePlayer gamePlayer, Component message);
 
     protected abstract String getConfigPath();
 

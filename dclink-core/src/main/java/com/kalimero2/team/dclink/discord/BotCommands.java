@@ -2,7 +2,7 @@ package com.kalimero2.team.dclink.discord;
 
 import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
-import com.kalimero2.team.dclink.api.minecraft.MinecraftPlayer;
+import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
@@ -118,7 +118,7 @@ public class BotCommands extends ListenerAdapter {
 
         if (subcommandName.equals("discord") && discordOption != null) {
             User user = discordOption.getAsUser();
-            Collection<MinecraftPlayer> linkedPlayers = dcLink.getDiscordAccount(user.getId()).getLinkedPlayers();
+            Collection<GamePlayer> linkedPlayers = dcLink.getDiscordAccount(user.getId()).getLinkedPlayers();
             if (!linkedPlayers.isEmpty()) {
                 StringBuilder message = new StringBuilder("Minecraft accounts linked to " + user.getAsMention() + ": ");
                 linkedPlayers.forEach(minecraftPlayer -> message.append(minecraftPlayer.getName()).append(" "));
@@ -133,9 +133,9 @@ public class BotCommands extends ListenerAdapter {
                 event.reply("Could not find Minecraft account with name " + name).setEphemeral(true).queue();
                 return;
             }
-            MinecraftPlayer minecraftPlayer = dcLink.getMinecraftPlayer(uuid);
-            if (minecraftPlayer != null && minecraftPlayer.getDiscordAccount() != null) {
-                User discordUser = jda.retrieveUserById(minecraftPlayer.getDiscordAccount().getId()).complete();
+            GamePlayer gamePlayer = dcLink.getGamePlayer(uuid);
+            if (gamePlayer != null && gamePlayer.getDiscordAccount() != null) {
+                User discordUser = jda.retrieveUserById(gamePlayer.getDiscordAccount().getId()).complete();
                 event.reply("Discord account linked to " + name + ": " + discordUser.getAsMention()).setEphemeral(true).queue();
             } else {
                 event.reply("No Discord accounts linked to " + name).setEphemeral(true).queue();
@@ -159,25 +159,25 @@ public class BotCommands extends ListenerAdapter {
             }
 
             if (minecraftUuid == null) {
-                event.reply("Could not find Minecraft account with name " + playerName).setEphemeral(true).queue();
+                event.reply("Could not find Account with name " + playerName).setEphemeral(true).queue();
             } else {
-                MinecraftPlayer minecraftPlayer = dcLink.getMinecraftPlayer(minecraftUuid);
-                if (minecraftPlayer == null) {
+                GamePlayer gamePlayer = dcLink.getGamePlayer(minecraftUuid);
+                if (gamePlayer == null) {
                     try {
-                        dcLink.getStorage().createMinecraftPlayer(minecraftUuid, playerName);
-                        minecraftPlayer = dcLink.getMinecraftPlayer(minecraftUuid);
+                        dcLink.getStorage().createGamePlayer(minecraftUuid, playerName);
+                        gamePlayer = dcLink.getGamePlayer(minecraftUuid);
                     } catch (SQLException e) {
-                        logger.error("Couldn't create MinecraftPlayer Object for (UUID " + minecraftUuid + ")");
+                        logger.error("Couldn't create GamePlayer Object for (UUID " + minecraftUuid + ")");
                     }
                 }
 
-                if (discordAccount.getLinkedPlayers().contains(minecraftPlayer)) {
-                    event.reply("Minecraft account " + minecraftPlayer.getName() + " is already linked to " + user.getAsMention()).setEphemeral(true).queue();
+                if (discordAccount.getLinkedPlayers().contains(gamePlayer)) {
+                    event.reply("Game account " + gamePlayer.getName() + " is already linked to " + user.getAsMention()).setEphemeral(true).queue();
                 } else {
-                    if (dcLink.linkAccounts(minecraftPlayer, discordAccount)) {
-                        event.reply("Linked " + user.getAsMention() + " to " + minecraftPlayer.getName()).setEphemeral(true).queue();
+                    if (dcLink.linkAccounts(gamePlayer, discordAccount)) {
+                        event.reply("Linked " + user.getAsMention() + " to " + gamePlayer.getName()).setEphemeral(true).queue();
                     } else {
-                        event.reply("Could not link " + user.getAsMention() + " to " + minecraftPlayer.getName()).setEphemeral(true).queue();
+                        event.reply("Could not link " + user.getAsMention() + " to " + gamePlayer.getName()).setEphemeral(true).queue();
                     }
                 }
             }
@@ -190,12 +190,12 @@ public class BotCommands extends ListenerAdapter {
 
         if (discorduser != null) {
             DiscordAccount discordAccount = dcLink.getDiscordAccount(discorduser.getAsUser().getId());
-            List<MinecraftPlayer> removeLinkList = new ArrayList<>();
+            List<GamePlayer> removeLinkList = new ArrayList<>();
             if (minecraft == null) {
                 removeLinkList.addAll(discordAccount.getLinkedPlayers());
             } else {
-                MinecraftPlayer minecraftPlayer = dcLink.getMinecraftPlayer(dcLink.getUUID(minecraft.getAsString()));
-                removeLinkList.add(minecraftPlayer);
+                GamePlayer gamePlayer = dcLink.getGamePlayer(dcLink.getUUID(minecraft.getAsString()));
+                removeLinkList.add(gamePlayer);
             }
             StringBuilder message = new StringBuilder("Unlinked " + discorduser.getAsUser().getAsMention() + " from ");
             removeLinkList.forEach(minecraftPlayer -> message.append(minecraftPlayer.getName()).append(" "));
