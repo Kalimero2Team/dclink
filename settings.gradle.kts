@@ -6,7 +6,7 @@ dependencyResolutionManagement {
             version("jda", "5.6.1")
             version("configurate-hocon", "4.2.0")
             version("sqlite", "3.50.3.0")
-            version("adventure", "4.25.0")
+            version("adventure", "4.26.1")
             version("floodgate-api", "2.0-SNAPSHOT")
             version("runtask", "3.0.2")
             version("minecraft", "1.21.8")
