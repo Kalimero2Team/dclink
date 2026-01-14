@@ -1,6 +1,6 @@
 package com.kalimero2.team.dclink.impl.minecraft;
 
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 
 import java.util.Objects;
 import java.util.UUID;

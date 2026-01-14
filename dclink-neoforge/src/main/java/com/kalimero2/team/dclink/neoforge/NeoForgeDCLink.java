@@ -1,7 +1,7 @@
 package com.kalimero2.team.dclink.neoforge;
 
-import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.MinecraftDCLink;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -9,7 +9,7 @@ import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.File;
 
-public class NeoForgeDCLink extends DCLink {
+public class NeoForgeDCLink extends MinecraftDCLink {
 
     private final NeoForgeMod mod;
     private MinecraftServer server;

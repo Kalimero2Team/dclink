@@ -2,7 +2,7 @@ package com.kalimero2.team.dclink.command.commands;
 
 import com.kalimero2.team.dclink.DCLinkMessages;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.command.DCLinkCommand;
@@ -31,12 +31,12 @@ public class DiscordCommand extends DCLinkCommand {
 
     private void info(CommandContext<Sender> context) {
         DCLinkMessages messages = dcLink.getMessages();
-        Optional<GamePlayer> optionalMinecraftPlayer = context.optional("player");
+        Optional<GamePlayer> optionalGamePlayer = context.optional("player");
         GamePlayer gamePlayer;
         if (context.sender() instanceof PlayerSender commander) {
-            gamePlayer = optionalMinecraftPlayer.orElse(commander.player());
+            gamePlayer = optionalGamePlayer.orElse(commander.player());
         } else {
-            gamePlayer = optionalMinecraftPlayer.orElse(null);
+            gamePlayer = optionalGamePlayer.orElse(null);
             if (gamePlayer == null) {
                 Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().needsArgumentIfExecutedByConsole);
                 context.sender().sendMessage(message);

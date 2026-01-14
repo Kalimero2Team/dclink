@@ -22,21 +22,18 @@ public class VelocityCommandHandler implements PlatformHandler {
 
     @Override
     public CommandManager<Sender> createCommandManager() {
-        final VelocityCommandManager<Sender> commandManager;
         try {
-            commandManager = new VelocityCommandManager<>(
+            final VelocityCommandManager<Sender> commandManager = new VelocityCommandManager<>(
                     dcLink.getServer().getPluginManager().getPlugin("dclink-velocity").orElse(null),
                     this.dcLink.getServer(),
                     ExecutionCoordinator.simpleCoordinator(),
                     SenderMapper.create(VelocitySender::from, sender -> ((VelocitySender) sender).source())
             );
+            BrigadierSetup.setup(commandManager);
+            return commandManager;
         } catch (final Exception ex) {
             throw new RuntimeException("Failed to initialize command manager", ex);
         }
-
-        BrigadierSetup.setup(commandManager);
-
-        return commandManager;
     }
 
     @Override

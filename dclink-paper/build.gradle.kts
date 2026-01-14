@@ -12,8 +12,9 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }
 
 dependencies {
@@ -26,7 +27,9 @@ dependencies {
     implementation(project(":dclink-core")) {
         exclude("*", "*") // Excludes all dependencies of dclink-core because they are put into the plugin.yml file
     }
-    implementation(project(":dclink-minecraft"))
+    implementation(project(":dclink-minecraft")) {
+        exclude("*", "*")
+    }
 }
 
 tasks {
@@ -40,8 +43,6 @@ tasks {
 
     runServer {
         downloadPlugins {
-            // ViaVersion
-            modrinth("viaversion","5.4.2")
             // Geyser (in this case Thermalquelle)
             github("Kalimero2Team", "Thermalquelle","latest-dev", "Geyser-Spigot.jar")
             // Floodgate

@@ -1,7 +1,7 @@
 package com.kalimero2.team.dclink.velocity;
 
-import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.MinecraftDCLink;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.velocity.command.VelocityCommandHandler;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -10,7 +10,7 @@ import net.kyori.adventure.text.Component;
 import java.io.File;
 import java.nio.file.Path;
 
-public class VelocityDCLink extends DCLink {
+public class VelocityDCLink extends MinecraftDCLink {
 
     private final VelocityPlugin plugin;
     private final ProxyServer server;

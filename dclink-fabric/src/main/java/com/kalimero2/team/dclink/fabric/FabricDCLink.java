@@ -1,7 +1,7 @@
 package com.kalimero2.team.dclink.fabric;
 
-import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.MinecraftDCLink;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.MinecraftServer;
@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.io.File;
 
-public class FabricDCLink extends DCLink {
+public class FabricDCLink extends MinecraftDCLink {
 
     private final FabricMod mod;
     private MinecraftServer server;

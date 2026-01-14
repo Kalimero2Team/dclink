@@ -20,8 +20,12 @@ dependencies {
     jarJar(project(":dclink-core"))
     implementation(project(":dclink-api"))
     jarJar(project(":dclink-api"))
-    implementation(project(":dclink-minecraft"))
-    jarJar(project(":dclink-minecraft"))
+    implementation(project(":dclink-minecraft")){
+        exclude("*", "*")
+    }
+    jarJar(project(":dclink-minecraft")){
+        exclude("*", "*")
+    }
 
     implementation("net.kyori:adventure-platform-neoforge:${property("deps.adventure-platform-neoforge")}")
     jarJar("net.kyori:adventure-platform-neoforge:${property("deps.adventure-platform-neoforge")}")

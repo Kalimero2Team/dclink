@@ -2,7 +2,7 @@ package com.kalimero2.team.dclink.command.commands;
 
 import com.kalimero2.team.dclink.DCLinkCodes;
 import com.kalimero2.team.dclink.DCLinkMessages;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.command.DCLinkCommand;

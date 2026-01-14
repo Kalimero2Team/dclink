@@ -4,7 +4,7 @@ import com.kalimero2.team.dclink.api.DCLinkApi;
 import com.kalimero2.team.dclink.api.DCLinkApiHolder;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.discord.DiscordRole;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 import com.kalimero2.team.dclink.discord.DiscordBot;
 import com.kalimero2.team.dclink.impl.discord.DiscordRoleImpl;
 import com.kalimero2.team.dclink.impl.minecraft.GamePlayerImpl;

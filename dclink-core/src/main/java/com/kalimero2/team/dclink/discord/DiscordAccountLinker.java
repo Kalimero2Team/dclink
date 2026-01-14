@@ -5,8 +5,14 @@ import com.kalimero2.team.dclink.DCLinkCodes;
 import com.kalimero2.team.dclink.DCLinkConfig;
 import com.kalimero2.team.dclink.DCLinkMessages;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GameType;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.label.Label;
+import net.dv8tion.jda.api.components.textinput.TextInput;
+import net.dv8tion.jda.api.components.textinput.TextInputStyle;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageType;
@@ -17,11 +23,7 @@ import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.text.TextInput;
-import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
-import net.dv8tion.jda.api.interactions.modals.Modal;
+import net.dv8tion.jda.api.modals.Modal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +81,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
             logger.error("Could not find link channel with id {}", config.getLinkChannel());
             return;
         }
-        boolean found = linkChannel.retrievePinnedMessages().complete().stream().anyMatch(message -> message.getAuthor().getId().equals(jda.getSelfUser().getId()));
+        boolean found = linkChannel.retrievePinnedMessages().complete().stream().anyMatch(message -> message.getMessage().getAuthor().getId().equals(jda.getSelfUser().getId()));
         if (!found) {
             Message message = linkChannel.sendMessage(messages.infoChannel).setComponents(
                     ActionRow.of(Button.primary("add", messages.add).asEnabled())
@@ -126,11 +128,10 @@ public class DiscordAccountLinker extends ListenerAdapter {
             DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
             switch (componentId) {
                 case "add" -> {
-                    TextInput code = TextInput.create("code", messages.modalInputDescription, TextInputStyle.SHORT)
+                    TextInput code = TextInput.create("code", TextInputStyle.SHORT)
                             .setRequiredRange(4, 4)
-                            .setRequired(true).
-                            build();
-                    Modal modal = Modal.create("linkModal", messages.modalTitle).addComponents(ActionRow.of(code)).build();
+                            .setRequired(true).build();
+                    Modal modal = Modal.create("linkModal", messages.modalTitle).addComponents(Label.of(messages.modalInputDescription, code)).build();
                     event.replyModal(modal).queue();
                 }
                 case "accept" -> {
@@ -182,7 +183,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
                 int bedrock = 0;
 
                 for (GamePlayer linkedPlayer : linkedPlayers) {
-                    if (dcLink.isBedrock(linkedPlayer)) {
+                    if (dcLink.getGameType().equals(GameType.MINECRAFT) && dcLink.isBedrock(linkedPlayer)) {
                         bedrock++;
                     } else {
                         java++;

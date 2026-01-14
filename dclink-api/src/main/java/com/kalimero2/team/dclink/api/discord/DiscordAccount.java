@@ -1,6 +1,6 @@
 package com.kalimero2.team.dclink.api.discord;
 
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 
 import java.util.Collection;
 

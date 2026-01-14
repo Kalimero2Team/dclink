@@ -2,7 +2,7 @@ package com.kalimero2.team.dclink.storage;
 
 import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 import com.kalimero2.team.dclink.impl.discord.DiscordAccountImpl;
 import com.kalimero2.team.dclink.impl.minecraft.GamePlayerImpl;
 import org.intellij.lang.annotations.Language;

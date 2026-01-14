@@ -1,4 +1,4 @@
-package com.kalimero2.team.dclink.api.minecraft;
+package com.kalimero2.team.dclink.api.game;
 
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 

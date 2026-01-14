@@ -2,8 +2,11 @@ package com.kalimero2.team.dclink.discord;
 
 import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GameType;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -13,8 +16,6 @@ import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,12 +46,14 @@ public class BotCommands extends ListenerAdapter {
             logger.error("Could not find guild with id {}", guildId);
             return;
         }
+        String gameName = dcLink.getGameType().equals(GameType.MINECRAFT) ? "minecraft" : "hytale";
+
         Optional<Command> lookupCommand = guild.retrieveCommands().complete().stream().filter(command -> command.getName().equals("lookup")).findAny();
 
         if (lookupCommand.isEmpty()) {
             guild.upsertCommand("lookup", "Get information about a player").addSubcommands(
-                            new SubcommandData("minecraft", "Via Minecraft Username")
-                                    .addOption(OptionType.STRING, "minecraft", "Minecraft Username", true),
+                            new SubcommandData(gameName, "Via ingame Username")
+                                    .addOption(OptionType.STRING, gameName, "Ingame Username", true),
                             new SubcommandData("discord", "Via Discord User")
                                     .addOption(OptionType.USER, "discorduser", "Discord User", true))
                     .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
@@ -63,13 +66,13 @@ public class BotCommands extends ListenerAdapter {
             if (linkCommand.getOptions().stream().noneMatch(option -> option.getName().equals("discorduser"))) {
                 linkCommand.editCommand()
                         .addOption(OptionType.USER, "discorduser", "Discord Account", true)
-                        .addOption(OptionType.STRING, "minecraft", "Minecraft Account", true)
+                        .addOption(OptionType.STRING, gameName, "Game Account", true)
                         .queue();
             }
         } else {
-            guild.upsertCommand("link", "Manually link a Discord Account to a Minecraft Account")
+            guild.upsertCommand("link", "Manually link a Discord Account to a Game Account")
                     .addOption(OptionType.USER, "discorduser", "Discord Account", true)
-                    .addOption(OptionType.STRING, "minecraft", "Minecraft Account", true)
+                    .addOption(OptionType.STRING, gameName, "Game Account", true)
                     .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
                     .queue();
         }
@@ -80,13 +83,13 @@ public class BotCommands extends ListenerAdapter {
             if (unLinkCommand.getOptions().stream().noneMatch(option -> option.getName().equals("discorduser"))) {
                 unLinkCommand.editCommand()
                         .addOption(OptionType.USER, "discorduser", "Discord Account", true)
-                        .addOption(OptionType.STRING, "minecraft", "Minecraft Account", false)
+                        .addOption(OptionType.STRING, gameName, "Game Account", false)
                         .queue();
             }
         } else {
-            guild.upsertCommand("unlink", "Manually removes link between a Discord Account and one/more Minecraft Accounts")
+            guild.upsertCommand("unlink", "Manually removes link between a Discord Account and one/more Game Accounts")
                     .addOption(OptionType.USER, "discorduser", "Discord Account", true)
-                    .addOption(OptionType.STRING, "minecraft", "Minecraft Account", false)
+                    .addOption(OptionType.STRING, gameName, "Game Account", false)
                     .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
                     .queue();
         }
@@ -110,7 +113,8 @@ public class BotCommands extends ListenerAdapter {
 
     private void lookupCommand(SlashCommandInteractionEvent event) {
         OptionMapping discordOption = event.getOption("discorduser");
-        OptionMapping minecraftOption = event.getOption("minecraft");
+        String gameName = dcLink.getGameType().equals(GameType.MINECRAFT) ? "minecraft" : "hytale";
+        OptionMapping gameOption = event.getOption(gameName);
         String subcommandName = event.getSubcommandName();
         if (subcommandName == null) {
             return;
@@ -120,17 +124,17 @@ public class BotCommands extends ListenerAdapter {
             User user = discordOption.getAsUser();
             Collection<GamePlayer> linkedPlayers = dcLink.getDiscordAccount(user.getId()).getLinkedPlayers();
             if (!linkedPlayers.isEmpty()) {
-                StringBuilder message = new StringBuilder("Minecraft accounts linked to " + user.getAsMention() + ": ");
+                StringBuilder message = new StringBuilder("Game accounts linked to " + user.getAsMention() + ": ");
                 linkedPlayers.forEach(minecraftPlayer -> message.append(minecraftPlayer.getName()).append(" "));
                 event.reply(message.toString()).setEphemeral(true).queue();
             } else {
-                event.reply("No Minecraft accounts linked to " + user.getAsMention()).setEphemeral(true).queue();
+                event.reply("No Game accounts linked to " + user.getAsMention()).setEphemeral(true).queue();
             }
-        } else if (subcommandName.equals("minecraft") && minecraftOption != null) {
-            String name = minecraftOption.getAsString();
+        } else if (subcommandName.equals(gameName) && gameOption != null) {
+            String name = gameOption.getAsString();
             UUID uuid = dcLink.getUUID(name);
             if (uuid == null) {
-                event.reply("Could not find Minecraft account with name " + name).setEphemeral(true).queue();
+                event.reply("Could not find Game account with name " + name).setEphemeral(true).queue();
                 return;
             }
             GamePlayer gamePlayer = dcLink.getGamePlayer(uuid);
@@ -145,29 +149,30 @@ public class BotCommands extends ListenerAdapter {
 
     private void linkCommand(SlashCommandInteractionEvent event) {
         OptionMapping discorduser = event.getOption("discorduser");
-        OptionMapping minecraft = event.getOption("minecraft");
-        if (discorduser != null && minecraft != null) {
+        String gameName = dcLink.getGameType().equals(GameType.MINECRAFT) ? "minecraft" : "hytale";
+        OptionMapping gameOption = event.getOption(gameName);
+        if (discorduser != null && gameOption != null) {
             User user = discorduser.getAsUser();
             DiscordAccount discordAccount = dcLink.getDiscordAccount(user.getId());
 
-            UUID minecraftUuid;
-            String playerName = minecraft.getAsString();
+            UUID playerUUID;
+            String playerName = gameOption.getAsString();
             try {
-                minecraftUuid = UUID.fromString(playerName);
+                playerUUID = UUID.fromString(playerName);
             } catch (IllegalArgumentException ignored) {
-                minecraftUuid = dcLink.getUUID(playerName);
+                playerUUID = dcLink.getUUID(playerName);
             }
 
-            if (minecraftUuid == null) {
+            if (playerUUID == null) {
                 event.reply("Could not find Account with name " + playerName).setEphemeral(true).queue();
             } else {
-                GamePlayer gamePlayer = dcLink.getGamePlayer(minecraftUuid);
+                GamePlayer gamePlayer = dcLink.getGamePlayer(playerUUID);
                 if (gamePlayer == null) {
                     try {
-                        dcLink.getStorage().createGamePlayer(minecraftUuid, playerName);
-                        gamePlayer = dcLink.getGamePlayer(minecraftUuid);
+                        dcLink.getStorage().createGamePlayer(playerUUID, playerName);
+                        gamePlayer = dcLink.getGamePlayer(playerUUID);
                     } catch (SQLException e) {
-                        logger.error("Couldn't create GamePlayer Object for (UUID " + minecraftUuid + ")");
+                        logger.error("Couldn't create GamePlayer Object for (UUID " + playerUUID + ")");
                     }
                 }
 
@@ -186,19 +191,20 @@ public class BotCommands extends ListenerAdapter {
 
     private void unLinkCommand(SlashCommandInteractionEvent event) {
         OptionMapping discorduser = event.getOption("discorduser");
-        OptionMapping minecraft = event.getOption("minecraft");
+        String gameName = dcLink.getGameType().equals(GameType.MINECRAFT) ? "minecraft" : "hytale";
+        OptionMapping gameOption = event.getOption(gameName);
 
         if (discorduser != null) {
             DiscordAccount discordAccount = dcLink.getDiscordAccount(discorduser.getAsUser().getId());
             List<GamePlayer> removeLinkList = new ArrayList<>();
-            if (minecraft == null) {
+            if (gameOption == null) {
                 removeLinkList.addAll(discordAccount.getLinkedPlayers());
             } else {
-                GamePlayer gamePlayer = dcLink.getGamePlayer(dcLink.getUUID(minecraft.getAsString()));
+                GamePlayer gamePlayer = dcLink.getGamePlayer(dcLink.getUUID(gameOption.getAsString()));
                 removeLinkList.add(gamePlayer);
             }
             StringBuilder message = new StringBuilder("Unlinked " + discorduser.getAsUser().getAsMention() + " from ");
-            removeLinkList.forEach(minecraftPlayer -> message.append(minecraftPlayer.getName()).append(" "));
+            removeLinkList.forEach(gamePlayer -> message.append(gamePlayer.getName()).append(" "));
             removeLinkList.forEach(dcLink::unLinkAccount);
             event.reply(message.toString()).setEphemeral(true).queue();
         }

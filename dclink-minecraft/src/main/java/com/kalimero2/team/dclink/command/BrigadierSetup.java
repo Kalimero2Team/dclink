@@ -1,6 +1,5 @@
 package com.kalimero2.team.dclink.command;
 
-import com.kalimero2.team.dclink.command.Sender;
 import org.incendo.cloud.brigadier.BrigadierManagerHolder;
 import org.incendo.cloud.brigadier.CloudBrigadierManager;
 

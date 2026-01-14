@@ -1,46 +1,51 @@
 package com.kalimero2.team.dclink.paper.command;
 
 import com.kalimero2.team.dclink.api.DCLinkApi;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.command.PlayerSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.ForwardingAudience;
-import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public class PaperSender implements Sender, ForwardingAudience.Single {
-    private final CommandSender sender;
+    private final CommandSourceStack commandSourceStack;
 
-    private PaperSender(CommandSender sender) {
-        this.sender = sender;
+    private PaperSender(CommandSourceStack commandSourceStack) {
+        this.commandSourceStack = commandSourceStack;
     }
 
-    public static PaperSender from(final CommandSender sender) {
-        if (sender instanceof org.bukkit.entity.Player player) {
-            return new Player(player);
+    public static PaperSender from(final CommandSourceStack commandSourceStack) {
+        if (commandSourceStack.getSender() instanceof org.bukkit.entity.Player player) {
+            return new PaperPlayer(commandSourceStack, player);
         }
-        return new PaperSender(sender);
+        return new PaperSender(commandSourceStack);
     }
 
     @Override
     public @NotNull Audience audience() {
-        return this.sender;
+        return this.commandSourceStack.getSender();
     }
 
-    public CommandSender sender() {
-        return this.sender;
+    public CommandSourceStack sender() {
+        return this.commandSourceStack;
     }
 
-    public static final class Player extends PaperSender implements PlayerSender {
-        private Player(final org.bukkit.entity.Player sender) {
-            super(sender);
+    public static final class PaperPlayer extends PaperSender implements PlayerSender {
+
+        private final Player player;
+
+        private PaperPlayer(CommandSourceStack commandSourceStack, final Player player) {
+            super(commandSourceStack);
+            this.player = player;
         }
 
-        public org.bukkit.entity.Player bukkit() {
-            return (org.bukkit.entity.Player) this.sender();
+        public Player bukkit() {
+            return player;
         }
 
         @Override
@@ -56,7 +61,7 @@ public class PaperSender implements Sender, ForwardingAudience.Single {
             if (o == null || this.getClass() != o.getClass()) {
                 return false;
             }
-            final PaperSender.Player that = (PaperSender.Player) o;
+            final PaperPlayer that = (PaperPlayer) o;
             return this.sender().equals(that.sender());
         }
 

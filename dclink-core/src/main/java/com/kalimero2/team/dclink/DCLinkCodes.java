@@ -1,6 +1,6 @@
 package com.kalimero2.team.dclink;
 
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

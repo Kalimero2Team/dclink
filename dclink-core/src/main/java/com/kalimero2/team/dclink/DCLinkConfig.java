@@ -83,7 +83,7 @@ public class DCLinkConfig {
         private String linkChannel = "";
         @Comment("Role ID of the role that the bot will give to the linked players (If left blank, the bot will not give any roles)")
         private @Nullable String linkRole = "";
-        @Comment("Message to show on the bot's status")
+        @Comment("Message to show on the bot's status (Examples: Hytale, Minecraft)")
         private String statusMessage = "Minecraft";
 
         public String getToken() {
@@ -132,9 +132,9 @@ public class DCLinkConfig {
     public static class LinkingConfiguration {
         @Comment("If true, the player needs to be linked before they can join the server")
         private boolean linkRequired = true;
-        @Comment("Limit of Java Edition accounts that can be linked to one Discord account")
+        @Comment("Limit of Minecraft Java Edition or Hytale accounts that can be linked to one Discord account")
         private int javaLimit = 1;
-        @Comment("Limit of Bedrock Edition accounts that can be linked to one Discord account. Requires Floodgate to be installed")
+        @Comment("(Minecraft ONLY) Limit of Bedrock Edition accounts that can be linked to one Discord account. Requires Floodgate to be installed")
         private int bedrockLimit = 1;
 
         public boolean isLinkRequired() {

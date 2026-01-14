@@ -1,15 +1,15 @@
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            plugin("shadow", "com.gradleup.shadow").version("9.2.2")
+            plugin("shadow", "com.gradleup.shadow").version("9.3.1")
 
-            version("jda", "5.6.1")
+            version("jda", "6.3.0")
             version("configurate-hocon", "4.2.0")
-            version("sqlite", "3.50.3.0")
-            version("adventure", "4.25.0")
+            version("sqlite", "3.51.1.0")
+            version("adventure", "4.26.1")
             version("floodgate-api", "2.0-SNAPSHOT")
             version("runtask", "3.0.2")
-            version("minecraft", "1.21.8")
+            version("minecraft", "1.21.11")
 
             library("jda", "net.dv8tion", "JDA").versionRef("jda")
             library("configurate-hocon", "org.spongepowered", "configurate-hocon").versionRef("configurate-hocon")
@@ -41,20 +41,20 @@ dependencyResolutionManagement {
 
 
             // Fabric
-            plugin("fabric-loom", "fabric-loom").version("1.11.4")
-            plugin("stonecutter", "dev.kikugie.stonecutter").version("0.7.10")
+            plugin("fabric-loom", "fabric-loom").version("1.12.7")
+            plugin("stonecutter", "dev.kikugie.stonecutter").version("0.8.2")
             version("fabric-loader", "0.16.10")
 
             library("fabric-loader", "net.fabricmc", "fabric-loader").versionRef("fabric-loader")
 
 
             // NeoForge
-            plugin("neoforge-moddev", "net.neoforged.moddev").version("2.0.116")
+            plugin("neoforge-moddev", "net.neoforged.moddev").version("2.0.139")
 
 
             // Hytale
+            library("hytale", "com.hypixel", "Server").version("2026.01.13-50e69c385")
             library("slf4j-api", "org.slf4j", "slf4j-api").version("2.0.17")
-            library("slf4j-simple", "org.slf4j", "slf4j-simple").version("2.0.17")
         }
     }
 }

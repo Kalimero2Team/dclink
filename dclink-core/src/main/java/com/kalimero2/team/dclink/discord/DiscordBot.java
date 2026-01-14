@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.internal.utils.JDALogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,7 @@ public class DiscordBot {
     public DiscordBot(DCLink dcLink) throws LoginException, InterruptedException {
         this.dcLink = dcLink;
         this.discordConfiguration = dcLink.getConfig().getDiscordConfiguration();
+        JDALogger.setFallbackLoggerEnabled(false);
         String token = discordConfiguration.getToken();
 
         if (token.isEmpty()) {

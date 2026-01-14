@@ -1,7 +1,7 @@
 package com.kalimero2.team.dclink.fabric.command;
 
 import com.kalimero2.team.dclink.api.DCLinkApi;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 import com.kalimero2.team.dclink.command.PlayerSender;
 import com.kalimero2.team.dclink.command.Sender;
 import com.kalimero2.team.dclink.fabric.mixin.CommandSourceStackAccess;

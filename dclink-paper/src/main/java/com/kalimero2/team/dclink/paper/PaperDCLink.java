@@ -1,7 +1,7 @@
 package com.kalimero2.team.dclink.paper;
 
-import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.MinecraftDCLink;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.paper.command.PaperCommandHandler;
 import net.kyori.adventure.text.Component;
@@ -10,8 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 
-
-public class PaperDCLink extends DCLink {
+public class PaperDCLink extends MinecraftDCLink {
 
     private final PaperPlugin plugin;
 

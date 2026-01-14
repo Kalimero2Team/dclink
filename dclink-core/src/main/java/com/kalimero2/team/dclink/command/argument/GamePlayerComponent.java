@@ -3,7 +3,7 @@ package com.kalimero2.team.dclink.command.argument;
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 
 import com.kalimero2.team.dclink.DCLink;
-import com.kalimero2.team.dclink.api.minecraft.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GamePlayer;
 import com.kalimero2.team.dclink.command.Commands;
 import com.kalimero2.team.dclink.command.Sender;
 import org.incendo.cloud.component.CommandComponent;

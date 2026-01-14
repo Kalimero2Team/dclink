@@ -21,6 +21,7 @@ dependencies {
     implementation(libs.configurate.hocon)
     implementation(libs.jda) {
         exclude(module= "opus-java")
+        exclude(module= "tink")
     }
     implementation(libs.sqlite)
     compileOnly(libs.floodgate.api)

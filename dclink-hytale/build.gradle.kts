@@ -5,6 +5,18 @@ plugins {
 
 repositories {
     mavenCentral()
+
+    if(System.getenv("REPO_PASSWORD") != null){
+        maven {
+            name = "kalimero2Repo"
+            url = uri("https://repo.kalimero2.com/private")
+
+            credentials {
+                username = System.getenv("REPO_USERNAME")
+                password = System.getenv("REPO_PASSWORD")
+            }
+        }
+    }
 }
 
 java {
@@ -13,9 +25,13 @@ java {
 }
 
 dependencies {
-    compileOnly(files("libs/HytaleServer.jar"))
+    if(System.getenv("REPO_PASSWORD") != null){
+        compileOnly("com.hypixel:Server:2026.01.13-50e69c385")
+    }else {
+        compileOnly(files("libs/HytaleServer.jar"))
+    }
+
     implementation(libs.slf4j.api)
-    implementation(libs.slf4j.simple)
     implementation(libs.cloud.core)
     implementation(libs.adventure.minimessage)
     implementation("net.kyori:adventure-text-serializer-plain:4.17.0")

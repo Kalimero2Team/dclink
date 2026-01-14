@@ -25,8 +25,12 @@ dependencies {
     include(project(":dclink-core"))
     implementation(project(":dclink-api"))
     include(project(":dclink-core"))
-    implementation(project(":dclink-minecraft"))
-    include(project(":dclink-minecraft"))
+    implementation(project(":dclink-minecraft")){
+        exclude("*", "*")
+    }
+    include(project(":dclink-minecraft")){
+        exclude("*", "*")
+    }
 
     include(libs.adventure.api)
     include(libs.adventure.minimessage)
