@@ -1,6 +1,7 @@
 package com.kalimero2.team.dclink.hytale;
 
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerSetupConnectEvent;
 import com.kalimero2.team.dclink.DCLink;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
@@ -12,15 +13,16 @@ public class HytaleListener {
     }
 
     public void register() {
-        dcLink.getPlugin().getEventRegistry().register(PlayerConnectEvent.class, this::onPlayerConnect);
+        dcLink.getPlugin().getEventRegistry().register(PlayerSetupConnectEvent.class, this::onPlayerConnect);
     }
 
     @SuppressWarnings("removal")
-    public void onPlayerConnect(PlayerConnectEvent event) {
-        DCLink.JoinResult joinResult = dcLink.onLogin(event.getPlayer().getUuid(), event.getPlayer().getDisplayName());
+    public void onPlayerConnect(PlayerSetupConnectEvent event) {
+        DCLink.JoinResult joinResult = dcLink.onLogin(event.getUuid(), event.getUsername());
         if (!joinResult.success()) {
             String plain = PlainTextComponentSerializer.plainText().serialize(joinResult.message());
-            event.getPlayer().getPlayerRef().getPacketHandler().disconnect(plain);
+            event.setReason(plain);
+            event.setCancelled(true);
         }
     }
 }
