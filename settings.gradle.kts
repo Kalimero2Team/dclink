@@ -43,7 +43,7 @@ dependencyResolutionManagement {
             // Fabric
             plugin("fabric-loom", "fabric-loom").version("1.13.3")
             plugin("stonecutter", "dev.kikugie.stonecutter").version("0.8.2")
-            version("fabric-loader", "0.16.10")
+            version("fabric-loader", "0.18.4")
 
             library("fabric-loader", "net.fabricmc", "fabric-loader").versionRef("fabric-loader")
 
