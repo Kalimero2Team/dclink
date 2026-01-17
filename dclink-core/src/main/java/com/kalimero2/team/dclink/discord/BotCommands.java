@@ -200,8 +200,15 @@ public class BotCommands extends ListenerAdapter {
             if (gameOption == null) {
                 removeLinkList.addAll(discordAccount.getLinkedPlayers());
             } else {
-                GamePlayer gamePlayer = dcLink.getGamePlayer(dcLink.getUUID(gameOption.getAsString()));
+                UUID uuid = dcLink.getUUID(gameOption.getAsString());
+                if (uuid == null) {
+                    event.reply("Could not find Account with name " + gameOption.getAsString()).setEphemeral(true).queue();
+                }
+                GamePlayer gamePlayer = dcLink.getGamePlayer(uuid);
                 removeLinkList.add(gamePlayer);
+            }
+            if(removeLinkList.isEmpty()){
+                event.reply("No Game accounts linked to " + discorduser.getAsUser().getAsMention()).setEphemeral(true).queue();
             }
             StringBuilder message = new StringBuilder("Unlinked " + discorduser.getAsUser().getAsMention() + " from ");
             removeLinkList.forEach(gamePlayer -> message.append(gamePlayer.getName()).append(" "));
