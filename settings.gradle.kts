@@ -41,7 +41,7 @@ dependencyResolutionManagement {
 
 
             // Fabric
-            plugin("fabric-loom", "fabric-loom").version("1.12.7")
+            plugin("fabric-loom", "fabric-loom").version("1.13.3")
             plugin("stonecutter", "dev.kikugie.stonecutter").version("0.8.2")
             version("fabric-loader", "0.16.10")
 
@@ -68,7 +68,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.7.10"
+    id("dev.kikugie.stonecutter") version "0.8.2"
 }
 
 rootProject.name = "dclink"
@@ -83,12 +83,12 @@ include("dclink-hytale")
 
 stonecutter {
     create(project(":dclink-fabric")) {
-        versions("1.21.8", "1.21.10")
-        vcsVersion = "1.21.10"
+        versions("1.21.8", "1.21.10", "1.21.11")
+        vcsVersion = "1.21.11"
     }
     create(project(":dclink-neoforge")) {
-        versions("1.21.8", "1.21.10")
-        vcsVersion = "1.21.10"
+        versions("1.21.8", "1.21.10", "1.21.11")
+        vcsVersion = "1.21.11"
     }
 }
 
