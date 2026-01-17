@@ -3,6 +3,10 @@ plugins {
     alias(libs.plugins.neoforge.moddev)
 }
 
+base {
+    archivesName.set("dclink-neoforge-${stonecutter.current.version}")
+}
+
 repositories {
     mavenCentral()
     maven("https://maven.neoforged.net/releases")
@@ -70,7 +74,7 @@ neoForge {
 
 tasks {
     processResources {
-        filesMatching("neoforge.mods.toml") {
+        filesMatching("META-INF/neoforge.mods.toml") {
             expand(
                 "version" to project.version,
                 "minecraftVersion" to stonecutter.current.version

@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.fabric.loom)
 }
 
+base {
+    archivesName.set("dclink-fabric-${stonecutter.current.version}")
+}
+
 repositories {
     mavenCentral()
     maven("https://oss.sonatype.org/content/repositories/snapshots")

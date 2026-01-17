@@ -24,4 +24,9 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          files: "**/dclink-*/build/libs/*.jar"
+          files: |
+            dclink-hytale/build/libs/*.jar
+            dclink-paper/build/libs/*.jar
+            dclink-velocity/build/libs/*.jar
+            dclink-fabric/versions/*/build/libs/*.jar
+            dclink-neoforge/versions/*/build/libs/*.jar
