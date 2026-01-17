@@ -34,7 +34,7 @@ dependencies {
     implementation(libs.slf4j.api)
     implementation(libs.cloud.core)
     implementation(libs.adventure.minimessage)
-    implementation("net.kyori:adventure-text-serializer-plain:4.17.0")
+    implementation("net.kyori:adventure-text-serializer-plain:4.26.1")
     implementation(project(":dclink-api"))
     implementation(project(":dclink-core")) {
         exclude(
