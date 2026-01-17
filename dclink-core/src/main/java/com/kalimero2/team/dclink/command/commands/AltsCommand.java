@@ -28,18 +28,18 @@ public class AltsCommand extends DCLinkCommand {
 
     private void alts(CommandContext<Sender> context) {
         DCLinkMessages messages = dcLink.getMessages();
-        DCLinkMessages.MinecraftMessages minecraftMessages = messages.getMinecraftMessages();
+        DCLinkMessages.GameMessages gameMessages = messages.getGameMessages();
 
         GamePlayer gamePlayer = context.get("player");
         DiscordAccount discordAccount = gamePlayer.getDiscordAccount();
 
         if (discordAccount == null) {
-            Component message = messages.getMinifiedMessage(minecraftMessages.notLinked);
+            Component message = messages.getMinifiedMessage(gameMessages.notLinked);
             context.sender().sendMessage(message);
         } else {
             StringBuilder alts = new StringBuilder();
             discordAccount.getLinkedPlayers().forEach(linkedPlayer -> alts.append(linkedPlayer.getName()).append(" "));
-            Component message = messages.getMinifiedMessage(minecraftMessages.altsCommand, Placeholder.unparsed("alts", alts.toString()));
+            Component message = messages.getMinifiedMessage(gameMessages.altsCommand, Placeholder.unparsed("alts", alts.toString()));
             context.sender().sendMessage(message);
         }
     }

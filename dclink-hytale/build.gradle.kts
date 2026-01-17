@@ -26,7 +26,7 @@ java {
 
 dependencies {
     if(System.getenv("REPO_PASSWORD") != null){
-        compileOnly("com.hypixel:Server:2026.01.13-50e69c385")
+        compileOnly("com.hypixel:hytale:2026.01.17-4b0f30090")
     }else {
         compileOnly(files("libs/HytaleServer.jar"))
     }
@@ -57,5 +57,13 @@ tasks {
         reloc("io.leangen")
         reloc("net.dv8tion")
         reloc("org.xerial")
+    }
+
+    processResources {
+        filesMatching("manifest.json"){
+            expand(
+                "version" to project.version,
+            )
+        }
     }
 }

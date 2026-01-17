@@ -1,5 +1,6 @@
 {
   "Group": "Kalimero2Team",
   "Name": "DCLink",
-  "Main": "com.kalimero2.team.dclink.hytale.HytalePlugin"
+  "Main": "com.kalimero2.team.dclink.hytale.HytalePlugin",
+  "Version": "${version}"
 }

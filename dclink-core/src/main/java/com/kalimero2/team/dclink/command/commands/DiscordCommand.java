@@ -38,7 +38,7 @@ public class DiscordCommand extends DCLinkCommand {
         } else {
             gamePlayer = optionalGamePlayer.orElse(null);
             if (gamePlayer == null) {
-                Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().needsArgumentIfExecutedByConsole);
+                Component message = messages.getMinifiedMessage(messages.getGameMessages().needsArgumentIfExecutedByConsole);
                 context.sender().sendMessage(message);
                 return;
             }
@@ -46,11 +46,11 @@ public class DiscordCommand extends DCLinkCommand {
 
         DiscordAccount discordAccount = gamePlayer.getDiscordAccount();
         if (discordAccount == null) {
-            Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().notLinked);
+            Component message = messages.getMinifiedMessage(messages.getGameMessages().notLinked);
             context.sender().sendMessage(message);
         } else {
             String name = discordAccount.getName() + "#" + discordAccount.getDiscriminator();
-            Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().discordCommand, Placeholder.unparsed("discord_id", discordAccount.getId()), Placeholder.unparsed("discord_name", name));
+            Component message = messages.getMinifiedMessage(messages.getGameMessages().discordCommand, Placeholder.unparsed("discord_id", discordAccount.getId()), Placeholder.unparsed("discord_name", name));
             context.sender().sendMessage(message);
         }
     }

@@ -37,10 +37,8 @@ public class HytaleCommandManager<C> extends CommandManager<C> {
     @Override
     public @NonNull CommandRegistrationHandler<C> commandRegistrationHandler() {
         return command -> {
-            command.components().forEach(component -> {
-                var hytaleCommand = new HytaleCloudCommand<>(HytaleCommandManager.this, component);
-                com.hypixel.hytale.server.core.command.system.CommandManager.get().register(hytaleCommand);
-            });
+            var hytaleCommand = new HytaleCloudCommand<>(HytaleCommandManager.this, command.rootComponent());
+            com.hypixel.hytale.server.core.command.system.CommandManager.get().register(hytaleCommand);
 
             return true;
         };

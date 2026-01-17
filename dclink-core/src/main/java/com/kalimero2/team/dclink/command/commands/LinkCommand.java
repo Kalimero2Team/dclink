@@ -31,7 +31,7 @@ public class LinkCommand extends DCLinkCommand {
         if (context.sender() instanceof PlayerSender player) {
             GamePlayer gamePlayer = player.player();
             DCLinkMessages messages = commands.getDCLink().getMessages();
-            Component message = messages.getMinifiedMessage(messages.getMinecraftMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(gamePlayer)));
+            Component message = messages.getMinifiedMessage(messages.getGameMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(gamePlayer)));
             player.sendMessage(message);
         }
     }

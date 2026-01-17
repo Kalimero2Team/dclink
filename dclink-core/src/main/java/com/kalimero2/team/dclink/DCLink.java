@@ -142,7 +142,7 @@ public abstract class DCLink implements DCLinkApi {
             discordAccount.removeRole(linkRole);
         }
         if (getConfig().getLinkingConfiguration().isLinkRequired()) {
-            discordAccount.getLinkedPlayers().forEach(minecraftPlayer -> kickPlayer(minecraftPlayer, getMessages().getMinifiedMessage(getMessages().getMinecraftMessages().kickUnlinked)));
+            discordAccount.getLinkedPlayers().forEach(minecraftPlayer -> kickPlayer(minecraftPlayer, getMessages().getMinifiedMessage(getMessages().getGameMessages().kickUnlinked)));
         }
         storage.unLinkAccounts(discordAccount);
     }
@@ -154,7 +154,7 @@ public abstract class DCLink implements DCLinkApi {
             gamePlayer.getDiscordAccount().removeRole(linkRole);
         }
         if (getConfig().getLinkingConfiguration().isLinkRequired()) {
-            kickPlayer(gamePlayer, getMessages().getMinifiedMessage(getMessages().getMinecraftMessages().kickUnlinked));
+            kickPlayer(gamePlayer, getMessages().getMinifiedMessage(getMessages().getGameMessages().kickUnlinked));
         }
         storage.unLinkAccount(gamePlayer);
     }
@@ -187,7 +187,7 @@ public abstract class DCLink implements DCLinkApi {
                 };
             } catch (Exception e) {
                 getLogger().error("Couldn't create GamePlayer Object for (UUID " + playerUUID + ")");
-                return JoinResult.failure(dcLinkMessages.getMinifiedMessage(dcLinkMessages.getMinecraftMessages().dbError));
+                return JoinResult.failure(dcLinkMessages.getMinifiedMessage(dcLinkMessages.getGameMessages().dbError));
             }
         } else {
             if (!playerName.equals(gamePlayer.getName())) {
@@ -201,7 +201,7 @@ public abstract class DCLink implements DCLinkApi {
         }
 
         if (!gamePlayer.isLinked() && dcLinkConfig.getLinkingConfiguration().isLinkRequired()) {
-            Component code = dcLinkMessages.getMinifiedMessage(dcLinkMessages.getMinecraftMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(gamePlayer)));
+            Component code = dcLinkMessages.getMinifiedMessage(dcLinkMessages.getGameMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(gamePlayer)));
             return JoinResult.failure(code);
         } else {
             return JoinResult.success(null);

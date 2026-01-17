@@ -16,7 +16,7 @@ public class DCLinkMessages {
     private final HoconConfigurationLoader loader;
     private final CommentedConfigurationNode node;
     private final DiscordBotMessages discordBotMessages;
-    private final MinecraftMessages minecraftMessages;
+    private final GameMessages gameMessages;
 
     public DCLinkMessages(String configPath) throws ConfigurateException {
         File config = new File(configPath);
@@ -31,7 +31,14 @@ public class DCLinkMessages {
         }
 
         discordBotMessages = node.node("discord").get(DiscordBotMessages.class);
-        minecraftMessages = node.node("minecraft").get(MinecraftMessages.class);
+
+        if (!node.node("minecraft").virtual()) {
+            gameMessages = node.node("minecraft").get(GameMessages.class);
+            node.node("minecraft").raw(null);
+            save();
+        } else {
+            gameMessages = node.node("game").get(GameMessages.class);
+        }
 
         if (!config.exists()) {
             save();
@@ -40,7 +47,7 @@ public class DCLinkMessages {
 
     public void save() throws ConfigurateException {
         node.node("discord").set(DiscordBotMessages.class, discordBotMessages);
-        node.node("minecraft").set(MinecraftMessages.class, minecraftMessages);
+        node.node("game").set(GameMessages.class, gameMessages);
         loader.save(node);
     }
 
@@ -52,8 +59,8 @@ public class DCLinkMessages {
         return discordBotMessages;
     }
 
-    public MinecraftMessages getMinecraftMessages() {
-        return minecraftMessages;
+    public GameMessages getGameMessages() {
+        return gameMessages;
     }
 
     @ConfigSerializable
@@ -77,7 +84,7 @@ public class DCLinkMessages {
     }
 
     @ConfigSerializable
-    public static class MinecraftMessages {
+    public static class GameMessages {
         public String altsCommand = "Alts: <alts>";
         public String discordCommand = "Name: <hover:show_text:\"ID: <discord_id>\"><discord_name>";
         public String notLinked = "Not Linked";
