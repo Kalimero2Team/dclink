@@ -4,6 +4,7 @@ import com.kalimero2.team.dclink.DCLink;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.game.GamePlayer;
 import com.kalimero2.team.dclink.api.game.GameType;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -106,8 +107,21 @@ public class BotCommands extends ListenerAdapter {
             unLinkCommand(event);
         } else {
             String id = "rmCmd" + event.getCommandId();
-            event.reply("I can't handle that command right now :(").setEphemeral(true).addComponents(ActionRow.of(Button.danger(id, "Delete Command"))).queue();
+            String message = "I can't handle that command right now :(";
+            if (dcLink.getConfig().getDiscordConfiguration().isUseEmbed()) {
+                event.replyEmbeds(new EmbedBuilder().setDescription(message).build()).setEphemeral(true).addComponents(ActionRow.of(Button.danger(id, "Delete Command"))).queue();
+            } else {
+                event.reply(message).setEphemeral(true).addComponents(ActionRow.of(Button.danger(id, "Delete Command"))).queue();
+            }
             logger.error("Unhandled command {}", event.getName());
+        }
+    }
+
+    private void reply(SlashCommandInteractionEvent event, String message) {
+        if (dcLink.getConfig().getDiscordConfiguration().isUseEmbed()) {
+            event.replyEmbeds(new EmbedBuilder().setDescription(message).build()).setEphemeral(true).queue();
+        } else {
+            event.reply(message).setEphemeral(true).queue();
         }
     }
 
@@ -126,23 +140,23 @@ public class BotCommands extends ListenerAdapter {
             if (!linkedPlayers.isEmpty()) {
                 StringBuilder message = new StringBuilder("Game accounts linked to " + user.getAsMention() + ": ");
                 linkedPlayers.forEach(minecraftPlayer -> message.append(minecraftPlayer.getName()).append(" "));
-                event.reply(message.toString()).setEphemeral(true).queue();
+                reply(event, message.toString());
             } else {
-                event.reply("No Game accounts linked to " + user.getAsMention()).setEphemeral(true).queue();
+                reply(event, "No Game accounts linked to " + user.getAsMention());
             }
         } else if (subcommandName.equals(gameName) && gameOption != null) {
             String name = gameOption.getAsString();
             UUID uuid = dcLink.getUUID(name);
             if (uuid == null) {
-                event.reply("Could not find Game account with name " + name).setEphemeral(true).queue();
+                reply(event, "Could not find Game account with name " + name);
                 return;
             }
             GamePlayer gamePlayer = dcLink.getGamePlayer(uuid);
             if (gamePlayer != null && gamePlayer.getDiscordAccount() != null) {
                 User discordUser = jda.retrieveUserById(gamePlayer.getDiscordAccount().getId()).complete();
-                event.reply("Discord account linked to " + name + ": " + discordUser.getAsMention()).setEphemeral(true).queue();
+                reply(event, "Discord account linked to " + name + ": " + discordUser.getAsMention());
             } else {
-                event.reply("No Discord accounts linked to " + name).setEphemeral(true).queue();
+                reply(event, "No Discord accounts linked to " + name);
             }
         }
     }
@@ -164,7 +178,7 @@ public class BotCommands extends ListenerAdapter {
             }
 
             if (playerUUID == null) {
-                event.reply("Could not find Account with name " + playerName).setEphemeral(true).queue();
+                reply(event, "Could not find Account with name " + playerName);
             } else {
                 GamePlayer gamePlayer = dcLink.getGamePlayer(playerUUID);
                 if (gamePlayer == null) {
@@ -177,12 +191,12 @@ public class BotCommands extends ListenerAdapter {
                 }
 
                 if (discordAccount.getLinkedPlayers().contains(gamePlayer)) {
-                    event.reply("Game account " + gamePlayer.getName() + " is already linked to " + user.getAsMention()).setEphemeral(true).queue();
+                    reply(event, "Game account " + gamePlayer.getName() + " is already linked to " + user.getAsMention());
                 } else {
                     if (dcLink.linkAccounts(gamePlayer, discordAccount)) {
-                        event.reply("Linked " + user.getAsMention() + " to " + gamePlayer.getName()).setEphemeral(true).queue();
+                        reply(event, "Linked " + user.getAsMention() + " to " + gamePlayer.getName());
                     } else {
-                        event.reply("Could not link " + user.getAsMention() + " to " + gamePlayer.getName()).setEphemeral(true).queue();
+                        reply(event, "Could not link " + user.getAsMention() + " to " + gamePlayer.getName());
                     }
                 }
             }
@@ -202,18 +216,18 @@ public class BotCommands extends ListenerAdapter {
             } else {
                 UUID uuid = dcLink.getUUID(gameOption.getAsString());
                 if (uuid == null) {
-                    event.reply("Could not find Account with name " + gameOption.getAsString()).setEphemeral(true).queue();
+                    reply(event, "Could not find Account with name " + gameOption.getAsString());
                 }
                 GamePlayer gamePlayer = dcLink.getGamePlayer(uuid);
                 removeLinkList.add(gamePlayer);
             }
             if(removeLinkList.isEmpty()){
-                event.reply("No Game accounts linked to " + discorduser.getAsUser().getAsMention()).setEphemeral(true).queue();
+                reply(event, "No Game accounts linked to " + discorduser.getAsUser().getAsMention());
             }
             StringBuilder message = new StringBuilder("Unlinked " + discorduser.getAsUser().getAsMention() + " from ");
             removeLinkList.forEach(gamePlayer -> message.append(gamePlayer.getName()).append(" "));
             removeLinkList.forEach(dcLink::unLinkAccount);
-            event.reply(message.toString()).setEphemeral(true).queue();
+            reply(event, message.toString());
         }
     }
 

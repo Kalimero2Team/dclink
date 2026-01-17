@@ -85,6 +85,8 @@ public class DCLinkConfig {
         private @Nullable String linkRole = "";
         @Comment("Message to show on the bot's status (Examples: Hytale, Minecraft)")
         private String statusMessage = "Minecraft";
+        @Comment("If true, the bot will send the link message as an embed")
+        private boolean useEmbed = false;
 
         public String getToken() {
             return token;
@@ -125,6 +127,14 @@ public class DCLinkConfig {
 
         public void setStatusMessage(String statusMessage) {
             this.statusMessage = statusMessage;
+        }
+
+        public boolean isUseEmbed() {
+            return useEmbed;
+        }
+
+        public void setUseEmbed(boolean useEmbed) {
+            this.useEmbed = useEmbed;
         }
     }
 

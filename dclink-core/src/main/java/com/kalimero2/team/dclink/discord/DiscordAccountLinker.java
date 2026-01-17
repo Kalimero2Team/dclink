@@ -7,6 +7,7 @@ import com.kalimero2.team.dclink.DCLinkMessages;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.game.GamePlayer;
 import com.kalimero2.team.dclink.api.game.GameType;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -14,7 +15,6 @@ import net.dv8tion.jda.api.components.label.Label;
 import net.dv8tion.jda.api.components.textinput.TextInput;
 import net.dv8tion.jda.api.components.textinput.TextInputStyle;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
@@ -83,10 +83,17 @@ public class DiscordAccountLinker extends ListenerAdapter {
         }
         boolean found = linkChannel.retrievePinnedMessages().complete().stream().anyMatch(message -> message.getMessage().getAuthor().getId().equals(jda.getSelfUser().getId()));
         if (!found) {
-            Message message = linkChannel.sendMessage(messages.infoChannel).setComponents(
-                    ActionRow.of(Button.primary("add", messages.add).asEnabled())
-            ).complete();
-            message.pin().queue();
+            if (config.isUseEmbed()) {
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                embedBuilder.setDescription(messages.infoChannel);
+                linkChannel.sendMessageEmbeds(embedBuilder.build()).setComponents(
+                        ActionRow.of(Button.primary("add", messages.add).asEnabled())
+                ).complete().pin().queue();
+            } else {
+                linkChannel.sendMessage(messages.infoChannel).setComponents(
+                        ActionRow.of(Button.primary("add", messages.add).asEnabled())
+                ).complete().pin().queue();
+            }
         }
     }
 
@@ -140,23 +147,39 @@ public class DiscordAccountLinker extends ListenerAdapter {
                         dcLink.linkAccounts(gamePlayer, discordAccount);
                         preLinkedPlayers.remove(discordAccount);
                         logger.info(event.getUser().getAsTag() + " accepted the rules");
-                        event.editMessage(messages.rulesAccepted).setComponents().queue();
+                        if (config.isUseEmbed()) {
+                            event.editMessageEmbeds(new EmbedBuilder().setDescription(messages.rulesAccepted).build()).setComponents().queue();
+                        } else {
+                            event.editMessage(messages.rulesAccepted).setComponents().queue();
+                        }
                         if (giveRoleWhenLinked) {
                             discordAccount.addRole(dcLink.getDiscordRole(config.getLinkRole()));
                         }
                     } else {
                         logger.error(event.getUser().getAsTag() + " tried to accept the rules but was not pre-linked");
-                        event.editMessage(messages.genericLinkError).setComponents().queue();
+                        if (config.isUseEmbed()) {
+                            event.editMessageEmbeds(new EmbedBuilder().setDescription(messages.genericLinkError).build()).setComponents().queue();
+                        } else {
+                            event.editMessage(messages.genericLinkError).setComponents().queue();
+                        }
                     }
                 }
                 case "decline" -> {
                     if (preLinkedPlayers.containsKey(discordAccount)) {
                         preLinkedPlayers.remove(discordAccount);
                         logger.info(event.getUser().getAsTag() + " declined the rules");
-                        event.editMessage(messages.rulesDenied).setComponents().queue();
+                        if (config.isUseEmbed()) {
+                            event.editMessageEmbeds(new EmbedBuilder().setDescription(messages.rulesDenied).build()).setComponents().queue();
+                        } else {
+                            event.editMessage(messages.rulesDenied).setComponents().queue();
+                        }
                     } else {
                         logger.error(event.getUser().getAsTag() + " tried to decline the rules but was not pre-linked");
-                        event.editMessage(messages.genericLinkError).setComponents().queue();
+                        if (config.isUseEmbed()) {
+                            event.editMessageEmbeds(new EmbedBuilder().setDescription(messages.genericLinkError).build()).setComponents().queue();
+                        } else {
+                            event.editMessage(messages.genericLinkError).setComponents().queue();
+                        }
                     }
                 }
             }
@@ -174,7 +197,11 @@ public class DiscordAccountLinker extends ListenerAdapter {
                 Collection<GamePlayer> linkedPlayers = discordAccount.getLinkedPlayers();
 
                 if (linkedPlayers.contains(gamePlayer)) {
-                    event.reply(messages.alreadyLinked).setEphemeral(true).queue();
+                    if (config.isUseEmbed()) {
+                        event.replyEmbeds(new EmbedBuilder().setDescription(messages.alreadyLinked).build()).setEphemeral(true).queue();
+                    } else {
+                        event.reply(messages.alreadyLinked).setEphemeral(true).queue();
+                    }
                     preLinkedPlayers.remove(discordAccount);
                     return;
                 }
@@ -203,25 +230,45 @@ public class DiscordAccountLinker extends ListenerAdapter {
 
                 if (overBedrockLimit && isBedrock) {
                     logger.info("Link for {} failed because has linked {} Bedrock accounts, which is over the limit of {}", event.getUser().getAsTag(), bedrock, bedrockLimit);
-                    event.reply(messages.maxBedrock).setEphemeral(true).queue();
+                    if (config.isUseEmbed()) {
+                        event.replyEmbeds(new EmbedBuilder().setDescription(messages.maxBedrock).build()).setEphemeral(true).queue();
+                    } else {
+                        event.reply(messages.maxBedrock).setEphemeral(true).queue();
+                    }
                     return;
                 }
                 if (overJavaLimit && isJava) {
                     logger.info("Link for {} failed because has linked {} Java accounts, which is over the limit of {}", event.getUser().getAsTag(), java, javaLimit);
-                    event.reply(messages.maxJava).setEphemeral(true).queue();
+                    if (config.isUseEmbed()) {
+                        event.replyEmbeds(new EmbedBuilder().setDescription(messages.maxJava).build()).setEphemeral(true).queue();
+                    } else {
+                        event.reply(messages.maxJava).setEphemeral(true).queue();
+                    }
                     return;
                 }
 
                 preLinkedPlayers.put(discordAccount, gamePlayer);
                 DCLinkCodes.removePlayer(code);
 
-                event.reply(messages.rules).setEphemeral(true).addComponents(ActionRow.of(
-                                Button.success("accept", messages.accept),
-                                Button.danger("decline", messages.decline)
-                        )
-                ).queue();
+                if (config.isUseEmbed()) {
+                    event.replyEmbeds(new EmbedBuilder().setDescription(messages.rules).build()).setEphemeral(true).addComponents(ActionRow.of(
+                                    Button.success("accept", messages.accept),
+                                    Button.danger("decline", messages.decline)
+                            )
+                    ).queue();
+                } else {
+                    event.reply(messages.rules).setEphemeral(true).addComponents(ActionRow.of(
+                                    Button.success("accept", messages.accept),
+                                    Button.danger("decline", messages.decline)
+                            )
+                    ).queue();
+                }
             } else {
-                event.reply(messages.wrongCode).setEphemeral(true).queue();
+                if (config.isUseEmbed()) {
+                    event.replyEmbeds(new EmbedBuilder().setDescription(messages.wrongCode).build()).setEphemeral(true).queue();
+                } else {
+                    event.reply(messages.wrongCode).setEphemeral(true).queue();
+                }
             }
         }
     }
