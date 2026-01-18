@@ -5,6 +5,8 @@ import com.kalimero2.team.dclink.api.DCLinkApiHolder;
 import com.kalimero2.team.dclink.api.discord.DiscordAccount;
 import com.kalimero2.team.dclink.api.discord.DiscordRole;
 import com.kalimero2.team.dclink.api.game.GamePlayer;
+import com.kalimero2.team.dclink.api.game.GameType;
+import com.kalimero2.team.dclink.discord.DiscordAccountLinker;
 import com.kalimero2.team.dclink.discord.DiscordBot;
 import com.kalimero2.team.dclink.impl.discord.DiscordRoleImpl;
 import com.kalimero2.team.dclink.impl.minecraft.GamePlayerImpl;
@@ -66,16 +68,18 @@ public abstract class DCLink implements DCLinkApi {
             try {
                 discordBot = new DiscordBot(this);
             } catch (LoginException | InterruptedException e) {
-                logger.error("Failed to load discord bot" + e.getMessage());
+                logger.error("Failed to load discord bot. Error: {}", e.getMessage());
                 shutdownServer();
                 return;
             }
             logger.info("Initialised Discord bot");
-            try {
-                Class.forName("org.geysermc.floodgate.api.FloodgateApi");
-                logger.info("Found Floodgate API");
-            } catch (ClassNotFoundException e) {
-                logger.info("Floodgate not found, Bedrock players won't be detected");
+            if (getGameType().equals(GameType.MINECRAFT)) {
+                try {
+                    Class.forName("org.geysermc.floodgate.api.FloodgateApi");
+                    logger.info("Found Floodgate API");
+                } catch (ClassNotFoundException e) {
+                    logger.info("Floodgate not found, Bedrock players won't be detected");
+                }
             }
             initialised = true;
             logger.info("Initialised DCLink");
@@ -186,7 +190,7 @@ public abstract class DCLink implements DCLinkApi {
                     }
                 };
             } catch (Exception e) {
-                getLogger().error("Couldn't create GamePlayer Object for (UUID " + playerUUID + ")");
+                getLogger().error("Couldn't create GamePlayer Object for (UUID {})", playerUUID);
                 return JoinResult.failure(dcLinkMessages.getMinifiedMessage(dcLinkMessages.getGameMessages().dbError));
             }
         } else {
@@ -194,13 +198,25 @@ public abstract class DCLink implements DCLinkApi {
                 try {
                     storage.setLastKnownName(gamePlayer.getUuid(), playerName);
                 } catch (SQLException e) {
-                    getLogger().error("Couldn't update name for player with UUID " + playerUUID + " (from " + gamePlayer.getName() + " to " + playerName + ")");
+                    getLogger().error("Couldn't update name for player with UUID {} (from {} to {})", playerUUID, gamePlayer.getName(), playerName);
                 }
                 gamePlayer.setName(playerName);
             }
         }
 
-        if (!gamePlayer.isLinked() && dcLinkConfig.getLinkingConfiguration().isLinkRequired()) {
+        boolean validated = true;
+
+        boolean validateOnJoin = dcLinkConfig.getLinkingConfiguration().getValidateOnJoin();
+        if (validateOnJoin && gamePlayer.isLinked()) {
+            if (gamePlayer.getDiscordAccount() != null) {
+                DiscordAccountLinker discordAccountLinker = getDiscordBot().getDiscordAccountLinker();
+                if (discordAccountLinker != null) {
+                    validated = discordAccountLinker.validateAccess(gamePlayer.getDiscordAccount());
+                }
+            }
+        }
+
+        if (!gamePlayer.isLinked() && dcLinkConfig.getLinkingConfiguration().isLinkRequired() || !validated) {
             Component code = dcLinkMessages.getMinifiedMessage(dcLinkMessages.getGameMessages().linkCodeMessage, Placeholder.unparsed("code", DCLinkCodes.addPlayer(gamePlayer)));
             return JoinResult.failure(code);
         } else {
@@ -232,7 +248,7 @@ public abstract class DCLink implements DCLinkApi {
         try {
             return storage.getUUIDByLastKnownName(username);
         } catch (SQLException e) {
-            getLogger().error("Minecraft account with username: \"" + username + "\" does not exist");
+            getLogger().error("Minecraft account with username: \"{}\" does not exist", username);
             return null;
         }
     }

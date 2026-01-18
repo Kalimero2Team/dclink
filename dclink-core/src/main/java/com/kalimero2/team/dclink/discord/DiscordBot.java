@@ -20,6 +20,7 @@ public class DiscordBot {
     private final DCLink dcLink;
     private final JDA jda;
     private final DCLinkConfig.DiscordConfiguration discordConfiguration;
+    private DiscordAccountLinker discordAccountLinker;
 
     public DiscordBot(DCLink dcLink) throws LoginException, InterruptedException {
         this.dcLink = dcLink;
@@ -32,7 +33,7 @@ public class DiscordBot {
             throw new LoginException("No token found in config");
         }
 
-        JDABuilder builder = JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGES);
+        JDABuilder builder = JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES);
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setLargeThreshold(50);
@@ -47,7 +48,7 @@ public class DiscordBot {
 
     public void loadFeatures() {
         new BotCommands(dcLink, jda, discordConfiguration.getGuild());
-        new DiscordAccountLinker(dcLink, jda);
+        discordAccountLinker = new DiscordAccountLinker(dcLink, jda);
     }
 
     public void shutdown() {
@@ -60,6 +61,10 @@ public class DiscordBot {
         } catch (InterruptedException e) {
             logger.error("Failed to shutdown discord bot", e);
         }
+    }
+
+    public DiscordAccountLinker getDiscordAccountLinker() {
+        return discordAccountLinker;
     }
 
     public JDA getJda() {

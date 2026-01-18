@@ -217,12 +217,14 @@ public class BotCommands extends ListenerAdapter {
                 UUID uuid = dcLink.getUUID(gameOption.getAsString());
                 if (uuid == null) {
                     reply(event, "Could not find Account with name " + gameOption.getAsString());
+                    return;
                 }
                 GamePlayer gamePlayer = dcLink.getGamePlayer(uuid);
                 removeLinkList.add(gamePlayer);
             }
             if(removeLinkList.isEmpty()){
                 reply(event, "No Game accounts linked to " + discorduser.getAsUser().getAsMention());
+                return;
             }
             StringBuilder message = new StringBuilder("Unlinked " + discorduser.getAsUser().getAsMention() + " from ");
             removeLinkList.forEach(gamePlayer -> message.append(gamePlayer.getName()).append(" "));

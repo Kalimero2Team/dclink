@@ -37,9 +37,7 @@ public class DCLinkConfig {
         discordConfiguration = node.node("discord").get(DiscordConfiguration.class);
         linkingConfiguration = node.node("linking").get(LinkingConfiguration.class);
 
-        if (!config.exists()) {
-            save();
-        }
+        save();
     }
 
     public void save() throws ConfigurateException {
@@ -154,6 +152,8 @@ public class DCLinkConfig {
     public static class LinkingConfiguration {
         @Comment("If true, the player needs to be linked before they can join the server")
         private boolean linkRequired = true;
+        @Comment("If true, the bot will validate required roles and guild membership on every join instead of just relying on the events.")
+        private boolean validateOnJoin = false;
         @Comment("Limit of Minecraft Java Edition or Hytale accounts that can be linked to one Discord account")
         private int javaLimit = 1;
         @Comment("(Minecraft ONLY) Limit of Bedrock Edition accounts that can be linked to one Discord account. Requires Floodgate to be installed")
@@ -165,6 +165,14 @@ public class DCLinkConfig {
 
         public void setLinkRequired(boolean linkRequired) {
             this.linkRequired = linkRequired;
+        }
+
+        public boolean getValidateOnJoin() {
+            return validateOnJoin;
+        }
+
+        public void setValidateOnJoin(boolean validateOnJoin) {
+            this.validateOnJoin = validateOnJoin;
         }
 
         public int getJavaLimit() {

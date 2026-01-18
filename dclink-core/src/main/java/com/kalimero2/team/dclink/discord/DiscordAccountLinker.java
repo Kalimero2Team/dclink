@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.components.label.Label;
 import net.dv8tion.jda.api.components.textinput.TextInput;
 import net.dv8tion.jda.api.components.textinput.TextInputStyle;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
@@ -55,7 +56,7 @@ public class DiscordAccountLinker extends ListenerAdapter {
             return;
         }
         String linkRoleId = config.getLinkRole();
-        if (linkRoleId == null || linkRoleId.equals("")) {
+        if (linkRoleId == null || linkRoleId.isEmpty()) {
             logger.info("No link role configured");
         } else {
             Role linkRole = guild.getRoleById(linkRoleId);
@@ -98,6 +99,22 @@ public class DiscordAccountLinker extends ListenerAdapter {
         }
     }
 
+    public boolean validateAccess(DiscordAccount discordAccount) {
+        Guild guild = jda.getGuildById(config.getGuild());
+        if (guild == null) {
+            logger.error("Could not find guild with id {}", config.getGuild());
+            return false;
+        }
+        Member member = guild.getMemberById(discordAccount.getId());
+        if (member == null) {
+            logger.error("Could not find member with id {}", discordAccount.getId());
+
+            dcLink.unLinkAccounts(discordAccount);
+            return false;
+        }
+        return checkRolesForMember(member);
+    }
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         boolean isSelf = event.getAuthor().getId().equals(jda.getSelfUser().getId());
@@ -114,19 +131,28 @@ public class DiscordAccountLinker extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event) {
-        if (!config.getRequiredRoles().isEmpty()) {
+        if (event.getRoles().stream().anyMatch(role -> config.getRequiredRoles().contains(role.getId()))) {
+            Member member = event.getMember();
+            checkRolesForMember(member);
+        }
+    }
+
+    private boolean checkRolesForMember(Member member) {
+        if (config.getRequiredRoles() != null && !config.getRequiredRoles().isEmpty()) {
             boolean hasRequiredRole = false;
-            for (Role role : event.getMember().getRoles()) {
+            for (Role role : member.getRoles()) {
                 if (config.getRequiredRoles().contains(role.getId())) {
                     hasRequiredRole = true;
                     break;
                 }
             }
             if (!hasRequiredRole) {
-                dcLink.unLinkAccounts(dcLink.getDiscordAccount(event.getUser().getId()));
-                logger.info("Unlinked {} because they no longer have any required roles", event.getUser().getAsTag());
+                dcLink.unLinkAccounts(dcLink.getDiscordAccount(member.getId()));
+                logger.info("Unlinked {} because they no longer have any required roles", member.getUser().getAsTag());
+                return false;
             }
         }
+        return true;
     }
 
     @Override

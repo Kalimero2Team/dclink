@@ -41,9 +41,9 @@ dependencyResolutionManagement {
 
 
             // Fabric
-            plugin("fabric-loom", "fabric-loom").version("1.13.3")
+            plugin("fabric-loom", "fabric-loom").version("1.15.1")
             plugin("stonecutter", "dev.kikugie.stonecutter").version("0.8.2")
-            version("fabric-loader", "0.16.10")
+            version("fabric-loader", "0.18.4")
 
             library("fabric-loader", "net.fabricmc", "fabric-loader").versionRef("fabric-loader")
 
@@ -55,6 +55,7 @@ dependencyResolutionManagement {
             // Hytale
             library("hytale", "com.hypixel", "Server").version("2026.01.13-50e69c385")
             library("slf4j-api", "org.slf4j", "slf4j-api").version("2.0.17")
+            library("adventure-serializer-plain", "net.kyori", "adventure-text-serializer-plain").versionRef("adventure")
         }
     }
 }
