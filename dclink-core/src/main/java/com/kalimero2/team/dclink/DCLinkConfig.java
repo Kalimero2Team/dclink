@@ -9,6 +9,8 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DCLinkConfig {
 
@@ -83,6 +85,8 @@ public class DCLinkConfig {
         private String linkChannel = "";
         @Comment("Role ID of the role that the bot will give to the linked players (If left blank, the bot will not give any roles)")
         private @Nullable String linkRole = "";
+        @Comment("List of Role IDs that are required to link an account (If empty, no roles are required)")
+        private List<String> requiredRoles = new ArrayList<>();
         @Comment("Message to show on the bot's status (Examples: Hytale, Minecraft)")
         private String statusMessage = "Minecraft";
         @Comment("If true, the bot will send the link message as an embed")
@@ -119,6 +123,14 @@ public class DCLinkConfig {
 
         public void setLinkRole(String linkRole) {
             this.linkRole = linkRole;
+        }
+
+        public List<String> getRequiredRoles() {
+            return requiredRoles;
+        }
+
+        public void setRequiredRoles(List<String> requiredRoles) {
+            this.requiredRoles = requiredRoles;
         }
 
         public String getStatusMessage() {

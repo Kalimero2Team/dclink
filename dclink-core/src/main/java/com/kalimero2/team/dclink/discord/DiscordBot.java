@@ -32,7 +32,7 @@ public class DiscordBot {
             throw new LoginException("No token found in config");
         }
 
-        JDABuilder builder = JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES);
+        JDABuilder builder = JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGES);
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setLargeThreshold(50);

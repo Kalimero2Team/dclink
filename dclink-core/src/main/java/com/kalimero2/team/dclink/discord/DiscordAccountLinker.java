@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -112,6 +113,23 @@ public class DiscordAccountLinker extends ListenerAdapter {
     }
 
     @Override
+    public void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event) {
+        if (!config.getRequiredRoles().isEmpty()) {
+            boolean hasRequiredRole = false;
+            for (Role role : event.getMember().getRoles()) {
+                if (config.getRequiredRoles().contains(role.getId())) {
+                    hasRequiredRole = true;
+                    break;
+                }
+            }
+            if (!hasRequiredRole) {
+                dcLink.unLinkAccounts(dcLink.getDiscordAccount(event.getUser().getId()));
+                logger.info("Unlinked {} because they no longer have any required roles", event.getUser().getAsTag());
+            }
+        }
+    }
+
+    @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String componentId = event.getComponentId();
         if (componentId.startsWith("rmCmd")) {
@@ -193,6 +211,26 @@ public class DiscordAccountLinker extends ListenerAdapter {
             logger.info("{} entered {}", event.getUser().getAsTag(), code);
             GamePlayer gamePlayer = DCLinkCodes.getPlayer(code);
             if (gamePlayer != null) {
+                if (!config.getRequiredRoles().isEmpty()) {
+                    boolean hasRequiredRole = false;
+                    if (event.getMember() != null) {
+                        for (Role role : event.getMember().getRoles()) {
+                            if (config.getRequiredRoles().contains(role.getId())) {
+                                hasRequiredRole = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!hasRequiredRole) {
+                        if (config.isUseEmbed()) {
+                            event.replyEmbeds(new EmbedBuilder().setDescription(messages.noRequiredRole).build()).setEphemeral(true).queue();
+                        } else {
+                            event.reply(messages.noRequiredRole).setEphemeral(true).queue();
+                        }
+                        return;
+                    }
+                }
+
                 DiscordAccount discordAccount = dcLink.getDiscordAccount(event.getUser().getId());
                 Collection<GamePlayer> linkedPlayers = discordAccount.getLinkedPlayers();
 

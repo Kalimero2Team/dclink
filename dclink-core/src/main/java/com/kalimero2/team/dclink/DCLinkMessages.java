@@ -73,6 +73,7 @@ public class DCLinkMessages {
         public String maxBedrock = "You can't link any more Bedrock accounts.";
         public String maxJava = "You can't link any more Java accounts.";
         public String alreadyLinked = "You are already linked to this account.";
+        public String noRequiredRole = "You don't have the required role to link your account.";
 
         public String rules = "Accept the following rules in order to link your account!\nRules: \nRule1\nRule2\nRule3";
         public String rulesAccepted = "You have accepted the rules! Your account is now linked.";
