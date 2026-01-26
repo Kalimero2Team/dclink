@@ -49,7 +49,7 @@ dependencyResolutionManagement {
 
 
             // NeoForge
-            plugin("neoforge-moddev", "net.neoforged.moddev").version("2.0.139")
+            plugin("neoforge-moddev", "net.neoforged.moddev").version("2.0.140")
 
 
             // Hytale
