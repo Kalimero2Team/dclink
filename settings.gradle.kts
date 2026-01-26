@@ -37,7 +37,7 @@ dependencyResolutionManagement {
             version("velocity-api", "3.4.0-SNAPSHOT")
 
             library("velocity-api", "com.velocitypowered", "velocity-api").versionRef("velocity-api")
-            library("cloud-velocity", "org.incendo", "cloud-velocity").version("2.0.0-beta.14")
+            library("cloud-velocity", "org.incendo", "cloud-velocity").version("2.0.0-SNAPSHOT")
 
 
             // Fabric
