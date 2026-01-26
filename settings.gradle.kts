@@ -34,7 +34,7 @@ dependencyResolutionManagement {
             // Velocity
             plugin("velocity-run", "xyz.jpenilla.run-velocity").versionRef("runtask")
 
-            version("velocity-api", "3.4.0-SNAPSHOT")
+            version("velocity-api", "3.4.0")
 
             library("velocity-api", "com.velocitypowered", "velocity-api").versionRef("velocity-api")
             library("cloud-velocity", "org.incendo", "cloud-velocity").version("2.0.0-beta.14")
