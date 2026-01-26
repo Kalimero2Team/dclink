@@ -42,7 +42,7 @@ dependencyResolutionManagement {
 
             // Fabric
             plugin("fabric-loom", "fabric-loom").version("1.15.1")
-            plugin("stonecutter", "dev.kikugie.stonecutter").version("0.8.2")
+            plugin("stonecutter", "dev.kikugie.stonecutter").version("0.8.3")
             version("fabric-loader", "0.18.4")
 
             library("fabric-loader", "net.fabricmc", "fabric-loader").versionRef("fabric-loader")
@@ -69,7 +69,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.8.2"
+    id("dev.kikugie.stonecutter") version "0.8.3"
 }
 
 rootProject.name = "dclink"
