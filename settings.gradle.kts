@@ -19,7 +19,7 @@ dependencyResolutionManagement {
             library("floodgate-api", "org.geysermc.floodgate", "api").versionRef("floodgate-api")
             library("cloud-core", "org.incendo", "cloud-core").version("2.0.0")
             library("brigadier", "com.mojang", "brigadier").version("1.3.10")
-            library("cloud-brigadier", "org.incendo", "cloud-brigadier").version("2.0.0-beta.14")
+            library("cloud-brigadier", "org.incendo", "cloud-brigadier").version("2.0.0-SNAPSHOT")
 
             // Paper
             plugin("paper-run", "xyz.jpenilla.run-paper").versionRef("runtask")
