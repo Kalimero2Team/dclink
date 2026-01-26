@@ -26,7 +26,7 @@ java {
 
 dependencies {
     if(System.getenv("REPO_PASSWORD") != null){
-        compileOnly("com.hypixel:hytale:2026.01.17-4b0f30090")
+        compileOnly("com.hypixel:hytale:2026.01.24-6e2d4fc36")
     }else {
         compileOnly(files("libs/HytaleServer.jar"))
     }
