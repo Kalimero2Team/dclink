@@ -34,22 +34,22 @@ dependencyResolutionManagement {
             // Velocity
             plugin("velocity-run", "xyz.jpenilla.run-velocity").versionRef("runtask")
 
-            version("velocity-api", "3.4.0-SNAPSHOT")
+            version("velocity-api", "3.4.0")
 
             library("velocity-api", "com.velocitypowered", "velocity-api").versionRef("velocity-api")
             library("cloud-velocity", "org.incendo", "cloud-velocity").version("2.0.0-beta.14")
 
 
             // Fabric
-            plugin("fabric-loom", "fabric-loom").version("1.15.1")
             plugin("stonecutter", "dev.kikugie.stonecutter").version("0.8.3")
+            plugin("fabric-loom", "fabric-loom").version("1.15.3")
             version("fabric-loader", "0.18.4")
 
             library("fabric-loader", "net.fabricmc", "fabric-loader").versionRef("fabric-loader")
 
 
             // NeoForge
-            plugin("neoforge-moddev", "net.neoforged.moddev").version("2.0.139")
+            plugin("neoforge-moddev", "net.neoforged.moddev").version("2.0.140")
 
 
             // Hytale
